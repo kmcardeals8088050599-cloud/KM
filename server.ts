@@ -75,9 +75,8 @@ function sanitizeObject(obj: Record<string, any>): Record<string, any> {
   return result;
 }
 
-async function startServer() {
+export async function createApp() {
   const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
   // Security middleware
   app.use(helmet({
@@ -396,7 +395,16 @@ async function startServer() {
     });
   });
 
-  // --- VITE / SPA FALLBACK ---
+  return app;
+}
+
+// Standalone server entrypoint (local dev / non-Vercel hosting).
+// On Vercel, api/index.ts imports createApp() directly as a serverless function
+// and Vercel's static hosting + rewrites handle the frontend and SPA fallback instead.
+async function startServer() {
+  const app = await createApp();
+  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -418,4 +426,6 @@ async function startServer() {
   });
 }
 
-startServer();
+if (!process.env.VERCEL) {
+  startServer();
+}
