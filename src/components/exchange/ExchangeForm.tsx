@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Car, FuelType, Transmission } from '../../types';
-import { RefreshCw, CheckCircle2, Upload, MessageCircle, ImageIcon } from 'lucide-react';
+import { RefreshCw, CheckCircle2, MessageCircle } from 'lucide-react';
 import { submitExchangeApi, createWhatsAppLink } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
+import { ImageUploader } from '../common/ImageUploader';
 
 interface ExchangeFormProps {
   targetCar?: Car | null;
@@ -24,14 +25,6 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  // Photo Upload Simulation
-  const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const mockPhoto = URL.createObjectURL(e.target.files[0]);
-      setUploadedPhotos(prev => [...prev, mockPhoto]);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -250,22 +243,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                 3. Vehicle Photos &amp; Comments
               </h3>
 
-              <div className="space-y-3">
-                <label className="block text-xs text-slate-700 font-bold">Upload Photos of Your Existing Car (Optional)</label>
-                <div className="flex flex-wrap items-center gap-3">
-                  <label className="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 hover:border-amber-500 flex flex-col items-center justify-center cursor-pointer transition-colors text-slate-500">
-                    <Upload className="w-5 h-5 mb-1 text-amber-600" />
-                    <span className="text-[10px] font-bold">Add Photo</span>
-                    <input type="file" accept="image/*" onChange={handlePhotoAdd} className="hidden" />
-                  </label>
-
-                  {uploadedPhotos.map((p, idx) => (
-                    <div key={idx} className="relative w-24 h-24 rounded-2xl overflow-hidden border border-slate-300">
-                      <img src={p} alt="" className="w-full h-full object-cover" />
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ImageUploader images={uploadedPhotos} onChange={setUploadedPhotos} kind="exchange" maxImages={5} label="Upload Photos of Your Existing Car (Optional)" />
 
               <div>
                 <label className="block text-xs text-slate-700 font-bold mb-1">Condition Notes / Remarks</label>

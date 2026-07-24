@@ -32,6 +32,7 @@ import {
   updateExchangeSchema
 } from './server/validations.js';
 import { Car, Lead, ExchangeRequest } from './src/types/index.js';
+import { carUploadToken, exchangeUploadToken, deleteBlobsForUrls } from './server/upload.js';
 
 const LOGIN_RATE_LIMIT = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -45,6 +46,14 @@ const API_RATE_LIMIT = rateLimit({
   windowMs: 1 * 60 * 1000,
   max: 100,
   message: { error: 'Too many requests. Please slow down.' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+const UPLOAD_RATE_LIMIT = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: { error: 'Too many upload requests. Try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false
 });
@@ -255,6 +264,11 @@ export async function createApp() {
     }
   });
 
+  // --- IMAGE UPLOAD ENDPOINTS ---
+
+  app.post('/api/upload/token/car', authenticateAdmin, carUploadToken);
+  app.post('/api/upload/token/exchange', UPLOAD_RATE_LIMIT, exchangeUploadToken);
+
   // --- ADMIN-ONLY ENDPOINTS (all require JWT) ---
 
   app.get('/api/leads', authenticateAdmin, async (_req, res) => {
@@ -370,7 +384,14 @@ export async function createApp() {
         return;
       }
       const data = sanitizeObject(validation.data);
+      const existing = await getCarById(req.params.id);
       const updated = await dbUpdateCar(req.params.id, data);
+      if (existing && Array.isArray(data.images)) {
+        const removedImages = existing.images.filter(url => !data.images.includes(url));
+        if (removedImages.length > 0) {
+          deleteBlobsForUrls(removedImages).catch(() => {});
+        }
+      }
       res.json(updated);
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to update car', details: err.message });
@@ -379,7 +400,11 @@ export async function createApp() {
 
   app.delete('/api/cars/:id', authenticateAdmin, async (req, res) => {
     try {
+      const existing = await getCarById(req.params.id);
       await dbDeleteCar(req.params.id);
+      if (existing && existing.images.length > 0) {
+        deleteBlobsForUrls(existing.images).catch(() => {});
+      }
       res.json({ success: true, message: 'Car deleted successfully' });
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to delete car', details: err.message });

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { KmLogo } from '../common/KmLogo';
+import { ImageUploader } from '../common/ImageUploader';
 import { Car, Lead, ExchangeRequest, CarStatus, LeadStatus, ExchangeStatus, FuelType, Transmission, BodyType } from '../../types';
 import {
   LogOut,
@@ -97,7 +98,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [status, setStatus] = useState<CarStatus>('Available');
   const [isFeatured, setIsFeatured] = useState(true);
   const [isCertified, setIsCertified] = useState(true);
-  const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200');
+  const [images, setImages] = useState<string[]>(['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200']);
   const [description, setDescription] = useState('');
   const [featuresStr, setFeaturesStr] = useState('Sunroof, Touchscreen Infotainment, Reverse Camera, Push Start');
 
@@ -120,7 +121,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setStatus(car.status);
       setIsFeatured(car.isFeatured);
       setIsCertified(car.isCertified);
-      setImageUrl(car.images[0] || '');
+      setImages(car.images.length > 0 ? car.images : []);
       setDescription(car.description);
       setFeaturesStr(car.features.join(', '));
     } else {
@@ -140,7 +141,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setStatus('Available');
       setIsFeatured(true);
       setIsCertified(true);
-      setImageUrl('https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200');
+      setImages(['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200']);
       setDescription('Pristine condition pre-owned vehicle verified by KM Car Deals 150-point technical check.');
       setFeaturesStr('Sunroof, Touchscreen Infotainment, Reverse Camera, Alloy Wheels');
     }
@@ -170,7 +171,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         status,
         isFeatured,
         isCertified,
-        images: [imageUrl],
+        images,
         description,
         features: featuresList
       };
@@ -198,7 +199,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         isCertified,
         registrationYear: year,
         insuranceType: 'Comprehensive',
-        images: [imageUrl],
+        images,
         features: featuresList,
         description,
         specs: {
@@ -634,6 +635,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       )}
                     </div>
 
+                    {ex.images && ex.images.length > 0 && (
+                      <div className="grid grid-cols-4 gap-2">
+                        {ex.images.map((img, idx) => (
+                          <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="block aspect-video rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+                            <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+
                     <div className="pt-2 flex items-center justify-between">
                       <a
                         href={waUrl}
@@ -805,15 +816,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-slate-700 font-bold mb-1">Main Image Photo URL</label>
-                <input
-                  type="text"
-                  value={imageUrl}
-                  onChange={e => setImageUrl(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                />
-              </div>
+              <ImageUploader images={images} onChange={setImages} kind="car" maxImages={10} label="Vehicle Photos (first photo is the cover image)" />
 
               <div>
                 <label className="block text-slate-700 font-bold mb-1">Features (Comma separated)</label>
