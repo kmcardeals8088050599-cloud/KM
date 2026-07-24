@@ -1,0 +1,6 @@
+{
+  "name": "KM Car Deals",
+  "description": "Trusted Multi Brand Pre-Owned Cars in Kalaburagi. Buy, sell, exchange & commission brokerage.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" fill="none">
+  <!-- G (Left Half) -->
+  <path
+    d="M 100 550 V 380 L 485 100 V 550 Z
+       M 485 170 L 320 290 V 360 L 485 240 Z
+       M 170 480 H 415 V 410 H 340 L 260 335 L 170 400 Z"
+    fill="#0f172a"
+    fill-rule="evenodd"
+  />
+
+  <!-- M (Right Half) -->
+  <path
+    d="M 515 100 L 900 380 V 550 H 515 Z
+       M 580 550 V 217 L 645 264 V 550 Z
+       M 710 550 V 311 L 775 358 V 550 Z"
+    fill="#0f172a"
+    fill-rule="evenodd"
+  />
+</svg>
