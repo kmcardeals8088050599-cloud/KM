@@ -6,7 +6,6 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { createServer as createViteServer } from 'vite';
 import {
   getAllCars,
   getCarById,
@@ -406,6 +405,7 @@ async function startServer() {
   const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
   if (process.env.NODE_ENV !== 'production') {
+    const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa'
