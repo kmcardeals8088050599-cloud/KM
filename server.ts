@@ -21,8 +21,8 @@ import {
   updateExchange as dbUpdateExchange,
   findUserByUsername,
   ensureDefaultAdmin
-} from './server/db';
-import { authenticateAdmin, JWT_SECRET } from './server/middleware/auth';
+} from './server/db.js';
+import { authenticateAdmin, JWT_SECRET } from './server/middleware/auth.js';
 import {
   loginSchema,
   createCarSchema,
@@ -31,8 +31,8 @@ import {
   updateLeadSchema,
   createExchangeSchema,
   updateExchangeSchema
-} from './server/validations';
-import { Car, Lead, ExchangeRequest } from './src/types/index';
+} from './server/validations.js';
+import { Car, Lead, ExchangeRequest } from './src/types/index.js';
 
 const LOGIN_RATE_LIMIT = rateLimit({
   windowMs: 15 * 60 * 1000,

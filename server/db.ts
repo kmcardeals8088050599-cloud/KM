@@ -1,5 +1,5 @@
-import { supabase } from './supabase';
-import { Car, Lead, ExchangeRequest } from '../src/types/index';
+import { supabase } from './supabase.js';
+import { Car, Lead, ExchangeRequest } from '../src/types/index.js';
 import bcrypt from 'bcrypt';
 
 const SALT_ROUNDS = 10;
