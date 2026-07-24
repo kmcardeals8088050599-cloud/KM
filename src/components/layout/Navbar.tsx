@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { Phone, ShieldCheck, Menu, X, ArrowRight, RefreshCw, Star, Sparkles, Sun } from 'lucide-react';
+import { Phone, ShieldCheck, Menu, X, ArrowRight, RefreshCw, Star } from 'lucide-react';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 import { KmLogo } from '../common/KmLogo';
-import { useTheme } from '../../context/ThemeContext';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { theme, toggleTheme, isBlackGold } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -101,30 +99,6 @@ export const Navbar: React.FC = () => {
 
           {/* Right Action Buttons */}
           <div className="hidden md:flex items-center gap-2.5">
-            {/* Theme Toggle Button */}
-            <button
-              onClick={toggleTheme}
-              title={`Switch to ${isBlackGold ? 'Clean Light' : 'Black & Gold'} Theme`}
-              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-black rounded-xl border transition-all shadow-xs cursor-pointer ${
-                isBlackGold
-                  ? 'bg-slate-900 text-amber-400 border-slate-800 hover:bg-slate-800 hover:border-amber-500/50'
-                  : 'bg-sky-50 text-sky-800 border-sky-200 hover:bg-sky-100'
-              }`}
-            >
-              <div className={`w-2 h-2 rounded-full ${isBlackGold ? 'bg-amber-400 animate-pulse' : 'bg-sky-500'}`} />
-              {isBlackGold ? (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">Black &amp; Gold</span>
-                </>
-              ) : (
-                <>
-                  <Sun className="w-3.5 h-3.5 text-sky-600" />
-                  <span className="text-[11px] font-extrabold uppercase tracking-wide">Clean Light</span>
-                </>
-              )}
-            </button>
-
             <button
               onClick={() => {
                 navigate('/exchange');
@@ -140,16 +114,6 @@ export const Navbar: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 lg:hidden">
-            <button
-              onClick={toggleTheme}
-              className={`p-2 rounded-xl border text-xs font-bold flex items-center gap-1 ${
-                isBlackGold ? 'bg-slate-900 text-amber-400 border-slate-800' : 'bg-sky-50 text-sky-700 border-sky-200'
-              }`}
-              title="Toggle Theme"
-            >
-              {isBlackGold ? <Sparkles className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            </button>
-
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2.5 rounded-xl bg-slate-900 text-white border border-slate-800 focus:outline-none shadow-md"
@@ -187,22 +151,6 @@ export const Navbar: React.FC = () => {
             ))}
 
             <div className="pt-4 mt-2 border-t border-slate-200 flex flex-col gap-3">
-              {/* Mobile Theme Switcher */}
-              <button
-                onClick={toggleTheme}
-                className={`w-full flex items-center justify-between p-3 rounded-xl font-bold text-xs border ${
-                  isBlackGold
-                    ? 'bg-slate-900 text-amber-400 border-slate-800'
-                    : 'bg-sky-50 text-sky-800 border-sky-200'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  {isBlackGold ? <Sparkles className="w-4 h-4 text-amber-400" /> : <Sun className="w-4 h-4 text-sky-600" />}
-                  <span>Active Theme: {isBlackGold ? 'Black & Gold' : 'Clean Light'}</span>
-                </div>
-                <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded bg-white/20">Switch</span>
-              </button>
-
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

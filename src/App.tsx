@@ -118,9 +118,7 @@ function MainAppContent() {
   useEffect(() => {
     async function loadData() {
       const data = await fetchCars();
-      if (data && data.length > 0) {
-        setCars(data);
-      }
+      setCars(data);
     }
     loadData();
   }, []);
