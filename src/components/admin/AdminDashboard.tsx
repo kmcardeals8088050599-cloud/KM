@@ -3,6 +3,7 @@ import { KmLogo } from '../common/KmLogo';
 import { ImageUploader } from '../common/ImageUploader';
 import { Car, Lead, ExchangeRequest, CarStatus, LeadStatus, ExchangeStatus, FuelType, Transmission, BodyType } from '../../types';
 import { INDIAN_CAR_BRANDS } from '../inventory/InventoryFilter';
+import { KARNATAKA_RTO_CODES } from '../inventory/InventoryFilter';
 import {
   LogOut,
   Car as CarIcon,
@@ -284,6 +285,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const newLeadsCount = leads.filter(l => l.status === 'New').length;
   const newExchangesCount = exchangeRequests.filter(ex => ex.status === 'New').length;
 
+  // Admin car list filters
+  const [adminRtoFilter, setAdminRtoFilter] = useState('All');
+  const [adminStatusFilter, setAdminStatusFilter] = useState('All');
+
+  const KARNATAKA_ADMIN_RTO = KARNATAKA_RTO_CODES.map(r => ({
+    code: r.split(' ')[0],
+    label: r
+  }));
+
+  const filteredAdminCars = cars.filter(car => {
+    const rtoMatch = adminRtoFilter === 'All' || car.specs?.rto?.toLowerCase().startsWith(adminRtoFilter.toLowerCase());
+    const statusMatch = adminStatusFilter === 'All' || car.status === adminStatusFilter;
+    return rtoMatch && statusMatch;
+  });
+
   if (loading) {
     return (
       <div className="py-24 px-4 bg-slate-50 min-h-screen flex items-center justify-center">
@@ -461,6 +477,49 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </button>
             </div>
 
+            {/* Admin Filter Bar */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-wrap gap-3 text-xs shadow-xs">
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Filter by RTO</label>
+                <select
+                  value={adminRtoFilter}
+                  onChange={e => setAdminRtoFilter(e.target.value)}
+                  className="bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900 font-bold focus:outline-none focus:border-red-500 min-w-[200px]"
+                >
+                  <option value="All">All RTOs</option>
+                  {KARNATAKA_ADMIN_RTO.map(r => (
+                    <option key={r.code} value={r.code}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Filter by Status</label>
+                <select
+                  value={adminStatusFilter}
+                  onChange={e => setAdminStatusFilter(e.target.value)}
+                  className="bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900 font-bold focus:outline-none focus:border-red-500"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="Available">Available</option>
+                  <option value="Reserved">Reserved</option>
+                  <option value="Sold">Sold</option>
+                </select>
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={() => { setAdminRtoFilter('All'); setAdminStatusFilter('All'); }}
+                  className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl border border-slate-300 text-xs"
+                >
+                  Reset
+                </button>
+              </div>
+              <div className="flex items-end ml-auto">
+                <span className="text-[11px] text-slate-500 font-bold">
+                  Showing <strong className="text-slate-900">{filteredAdminCars.length}</strong> of {cars.length} cars
+                </span>
+              </div>
+            </div>
+
             {/* Cars Table */}
             <div className="bg-white border border-slate-200 rounded-2xl overflow-x-auto shadow-sm">
               <table className="w-full text-left text-xs text-slate-700">
@@ -468,6 +527,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <tr>
                     <th className="p-4">Car Details</th>
                     <th className="p-4">Year &amp; KM</th>
+                    <th className="p-4">RTO</th>
                     <th className="p-4">Price</th>
                     <th className="p-4">Status</th>
                     <th className="p-4">Featured</th>
@@ -475,7 +535,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                  {cars.map(car => (
+                  {filteredAdminCars.map(car => (
                     <tr key={car.id} className="hover:bg-slate-50 transition-colors">
                       <td className="p-4 flex items-center gap-3">
                         <img src={car.images[0]} alt="" className="w-14 h-10 object-cover rounded-lg shrink-0 border border-slate-200" referrerPolicy="no-referrer" />
@@ -487,6 +547,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <td className="p-4">
                         <span className="font-extrabold text-slate-900">{car.year}</span>
                         <p className="text-[10px] text-slate-500 font-medium">{car.kilometers.toLocaleString('en-IN')} km</p>
+                      </td>
+                      <td className="p-4">
+                        <span className="font-bold text-slate-800 text-[11px]">{car.specs?.rto || '—'}</span>
                       </td>
                       <td className="p-4 font-black text-amber-800 text-sm">
                         ₹ {car.price.toFixed(2)} Lakh
