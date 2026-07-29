@@ -66,13 +66,22 @@ export const ContactView: React.FC = () => {
                 <span className="font-black text-slate-900 text-base font-serif">Md Nadeem Khan</span>
               </div>
 
-              <a
-                href="tel:+918123991847"
-                className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-full font-extrabold text-sm shadow-md"
-              >
-                <Phone className="w-4 h-4 fill-white" />
-                <span>+91 81239 91847</span>
-              </a>
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href="tel:+918123991847"
+                  className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-full font-extrabold text-sm shadow-md"
+                >
+                  <Phone className="w-4 h-4 fill-white" />
+                  <span>+91 81239 91847</span>
+                </a>
+                <a
+                  href="tel:+918088050599"
+                  className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-1.5 rounded-full font-bold text-sm border border-slate-300"
+                >
+                  <Phone className="w-4 h-4 text-slate-600" />
+                  <span>+91 80880 50599</span>
+                </a>
+              </div>
             </div>
 
             {/* Center Logo & Title */}
@@ -193,10 +202,18 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918123991847"
+                className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl flex items-center justify-center gap-1.5"
+              >
+                <Phone className="w-4 h-4 text-amber-400" />
+                <span>+91 81239 91847</span>
+              </a>
+
+              <a
+                href="tel:+918088050599"
                 className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 font-extrabold rounded-xl flex items-center justify-center gap-1.5 border border-slate-300"
               >
                 <Phone className="w-4 h-4 text-slate-700" />
-                <span>Call Directly</span>
+                <span>+91 80880 50599</span>
               </a>
             </div>
           </div>

@@ -131,6 +131,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
               <span>+91 81239 91847</span>
             </a>
 
+            <a
+              href="tel:+918088050599"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-300 text-slate-800 font-bold text-xs shadow-xs hover:bg-slate-200 transition-colors"
+            >
+              <Phone className="w-3.5 h-3.5 text-slate-600" />
+              <span>+91 80880 50599</span>
+            </a>
+
             <div className="inline-flex items-center gap-1 text-slate-800 font-bold text-xs bg-slate-200/80 px-3 py-1 rounded-full border border-slate-300">
               <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
               <span>5.0 Rated Showroom</span>
@@ -298,14 +306,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-slate-800"
                   >
                     <option value="All">All Brands</option>
-                    <option value="Hyundai">Hyundai</option>
                     <option value="Maruti Suzuki">Maruti Suzuki</option>
+                    <option value="Hyundai">Hyundai</option>
+                    <option value="Tata">Tata</option>
                     <option value="Mahindra">Mahindra</option>
                     <option value="Toyota">Toyota</option>
-                    <option value="Tata">Tata</option>
                     <option value="Kia">Kia</option>
-                    <option value="BMW">BMW</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Renault">Renault</option>
+                    <option value="Nissan">Nissan</option>
+                    <option value="Skoda">Skoda</option>
+                    <option value="Volkswagen">Volkswagen</option>
+                    <option value="MG">MG</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Jeep">Jeep</option>
                     <option value="Mercedes-Benz">Mercedes-Benz</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Audi">Audi</option>
+                    <option value="Volvo">Volvo</option>
+                    <option value="Lexus">Lexus</option>
+                    <option value="Land Rover">Land Rover</option>
+                    <option value="Porsche">Porsche</option>
+                    <option value="Citroen">Citroen</option>
                   </select>
                 </div>
 
@@ -316,10 +338,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-slate-800"
                   >
                     <option value="All">All Body Types</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Sedan">Sedan</option>
                     <option value="Hatchback">Hatchback</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="MUV">MUV</option>
                     <option value="Luxury">Luxury</option>
+                    <option value="Coupe">Coupe</option>
+                    <option value="Convertible">Convertible</option>
+                    <option value="Pickup">Pickup / Truck</option>
                   </select>
                 </div>
 

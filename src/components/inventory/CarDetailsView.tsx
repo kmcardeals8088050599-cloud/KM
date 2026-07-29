@@ -386,6 +386,14 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                 </a>
 
                 <a
+                  href="tel:+918123991847"
+                  className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-700 block text-center"
+                >
+                  <Phone className="w-4 h-4 text-amber-400" />
+                  <span>Call +91 81239 91847</span>
+                </a>
+
+                <a
                   href="tel:+918088050599"
                   className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-300 block text-center"
                 >

@@ -52,6 +52,13 @@ export const Navbar: React.FC = () => {
               <Phone className="w-3.5 h-3.5 fill-slate-100 text-slate-100" />
               <span>+91 81239 91847</span>
             </a>
+            <a
+              href="tel:+918088050599"
+              className="hidden sm:flex items-center gap-1.5 text-slate-400 hover:text-amber-400 transition-colors font-bold px-2 py-1"
+            >
+              <Phone className="w-3 h-3 text-slate-500" />
+              <span>+91 80880 50599</span>
+            </a>
           </div>
         </div>
       </div>

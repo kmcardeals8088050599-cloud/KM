@@ -25,7 +25,7 @@ export const Footer: React.FC = () => {
             </Link>
 
             <p className="text-xs text-slate-300 leading-relaxed font-medium">
-              Kalaburagi's premier multi-brand pre-owned car dealership. Managed by <strong className="text-white font-bold">Md Nawaz Khan</strong>. Every car undergoes a stringent 150-point technical check with non-accidental guarantee.
+              Kalaburagi's premier multi-brand pre-owned car dealership. Managed by <strong className="text-white font-bold">Md Nadeem Khan</strong>. Every car undergoes a stringent 150-point technical check with non-accidental guarantee.
             </p>
 
             <div className="pt-2 flex items-center gap-2">

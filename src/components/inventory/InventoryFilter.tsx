@@ -266,11 +266,14 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
             className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
           >
             <option value="All">All Styles</option>
-            <option value="SUV">SUV</option>
-            <option value="Sedan">Sedan</option>
             <option value="Hatchback">Hatchback</option>
+            <option value="Sedan">Sedan</option>
+            <option value="SUV">SUV</option>
             <option value="MUV">MUV</option>
             <option value="Luxury">Luxury</option>
+            <option value="Coupe">Coupe</option>
+            <option value="Convertible">Convertible</option>
+            <option value="Pickup">Pickup / Truck</option>
           </select>
         </div>
 
@@ -334,7 +337,6 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
             <option value="newest">Newest Arrivals</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
-            <option value="km-asc">Lowest Mileage</option>
           </select>
         </div>
 
