@@ -15,7 +15,11 @@ import {
   MessageCircle,
   Phone,
   X,
-  TrendingUp
+  TrendingUp,
+  Sparkles,
+  Bell,
+  ShieldAlert,
+  Send
 } from 'lucide-react';
 import {
   createCarApi,
@@ -28,7 +32,8 @@ import {
   fetchAdminLeads,
   fetchAdminExchanges,
   fetchAdminStats,
-  clearAuthToken
+  clearAuthToken,
+  getAuthToken
 } from '../../lib/api';
 
 interface AdminDashboardProps {
@@ -279,6 +284,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     await updateExchangeStatusApi(exId, newStatus);
   };
 
+  // AI Description Generator
+  const handleGenerateDescription = async () => {
+    if (!brand || !model) return;
+    setAiGenerating(true);
+    try {
+      const token = getAuthToken();
+      const res = await fetch('/api/admin/generate-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ brand, model, variant: variantStr, year, kilometers, fuelType, transmission, bodyType, color: colorStr, features: featuresStr.split(',').map(s => s.trim()), ownerCount: ownerCountStr })
+      });
+      const data = await res.json();
+      if (data.description) setDescription(data.description);
+    } catch { /* silent */ } finally {
+      setAiGenerating(false);
+    }
+  };
+
   // Stats Counters
   const availableCarsCount = cars.filter(c => c.status === 'Available').length;
   const soldCarsCount = cars.filter(c => c.status === 'Sold').length;
@@ -299,6 +322,46 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     const statusMatch = adminStatusFilter === 'All' || car.status === adminStatusFilter;
     return rtoMatch && statusMatch;
   });
+
+  // Insurance alerts state
+  const [insuranceAlerts, setInsuranceAlerts] = useState<any[]>([]);
+  const [insuranceLoading, setInsuranceLoading] = useState(false);
+  const [activeTab2, setActiveTab2] = useState<'overview' | 'cars' | 'leads' | 'exchanges' | 'alerts'>('overview');
+
+  const loadInsuranceAlerts = async () => {
+    setInsuranceLoading(true);
+    try {
+      const token = getAuthToken();
+      const res = await fetch('/api/admin/insurance-alerts', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) setInsuranceAlerts(await res.json());
+    } catch { /* silent */ } finally {
+      setInsuranceLoading(false);
+    }
+  };
+
+  // Daily report
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportResult, setReportResult] = useState<string | null>(null);
+
+  const handleDailyReport = async () => {
+    setReportLoading(true);
+    setReportResult(null);
+    try {
+      const token = getAuthToken();
+      const res = await fetch('/api/admin/daily-report', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setReportResult(data.message || 'Report sent!');
+    } catch { setReportResult('Failed to generate report.'); }
+    finally { setReportLoading(false); }
+  };
+
+  // AI description generator state
+  const [aiGenerating, setAiGenerating] = useState(false);
 
   if (loading) {
     return (
@@ -399,6 +462,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 {newExchangesCount}
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => { setActiveTab2('alerts'); loadInsuranceAlerts(); }}
+            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
+              activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges'
+                ? 'bg-red-600 text-white shadow-xs'
+                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Bell className="w-4 h-4" />
+            <span>Alerts &amp; Reports</span>
           </button>
         </div>
 
@@ -761,6 +836,81 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         )}
       </div>
 
+      {/* Tab Content: ALERTS & REPORTS */}
+      {activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges' && (
+        <div className="space-y-6">
+          <h2 className="text-lg font-black text-slate-900">Alerts &amp; Automated Reports</h2>
+
+          {/* Daily Report */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
+            <div className="flex items-center gap-3">
+              <Send className="w-5 h-5 text-amber-600" />
+              <div>
+                <h3 className="text-sm font-black text-slate-900">Daily Summary Report</h3>
+                <p className="text-[11px] text-slate-500 font-medium">Sends today's inventory, leads, and exchange stats to admin WhatsApp</p>
+              </div>
+            </div>
+            <button
+              onClick={handleDailyReport}
+              disabled={reportLoading}
+              className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl flex items-center gap-2 disabled:opacity-50"
+            >
+              <Send className="w-3.5 h-3.5" />
+              {reportLoading ? 'Generating...' : 'Send Daily Report Now'}
+            </button>
+            {reportResult && (
+              <div className="mt-3 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <pre className="text-[10px] text-slate-700 font-medium whitespace-pre-wrap">{reportResult}</pre>
+              </div>
+            )}
+          </div>
+
+          {/* Insurance Alerts */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <ShieldAlert className="w-5 h-5 text-red-600" />
+                <div>
+                  <h3 className="text-sm font-black text-slate-900">Insurance Expiry Alerts</h3>
+                  <p className="text-[11px] text-slate-500 font-medium">Cars with insurance expiring within 60 days</p>
+                </div>
+              </div>
+              <button
+                onClick={loadInsuranceAlerts}
+                disabled={insuranceLoading}
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-300"
+              >
+                {insuranceLoading ? 'Loading...' : 'Refresh'}
+              </button>
+            </div>
+
+            {insuranceAlerts.length === 0 ? (
+              <p className="text-xs text-slate-500 font-medium py-4 text-center">
+                {insuranceLoading ? 'Loading...' : '✅ No insurance expiring within 60 days'}
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {insuranceAlerts.map((alert: any) => (
+                  <div key={alert.carId} className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
+                    alert.isExpired ? 'bg-red-50 border-red-200' : alert.daysUntilExpiry <= 14 ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200'
+                  }`}>
+                    <div>
+                      <p className="font-extrabold text-slate-900">{alert.title}</p>
+                      <p className="text-[10px] text-slate-500 font-medium mt-0.5">{alert.insuranceType}</p>
+                    </div>
+                    <span className={`font-black px-2.5 py-1 rounded-lg text-[10px] ${
+                      alert.isExpired ? 'bg-red-600 text-white' : alert.daysUntilExpiry <= 14 ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700'
+                    }`}>
+                      {alert.isExpired ? 'EXPIRED' : `${alert.daysUntilExpiry}d left`}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Add / Edit Car Modal */}
       {carModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md overflow-y-auto">
@@ -921,7 +1071,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">Vehicle Description</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block text-slate-700 font-bold">Vehicle Description</label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateDescription}
+                    disabled={aiGenerating || !brand || !model}
+                    className="flex items-center gap-1.5 px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 font-extrabold text-[10px] rounded-lg border border-amber-300 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    {aiGenerating ? 'Generating...' : '✨ AI Generate'}
+                  </button>
+                </div>
                 <textarea
                   rows={3}
                   value={description}

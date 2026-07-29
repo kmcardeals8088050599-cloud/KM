@@ -113,3 +113,18 @@ CREATE POLICY "Admin full access on exchanges" ON exchange_requests FOR ALL USIN
 
 -- Users table - no public access
 CREATE POLICY "No public user access" ON users FOR ALL USING (false) WITH CHECK (false);
+
+-- ── PRICE DROP ALERTS TABLE (Feature 7) ──────────────────────────────────
+CREATE TABLE IF NOT EXISTS price_alerts (
+  id TEXT PRIMARY KEY,
+  car_id TEXT NOT NULL,
+  car_title TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  notified_at TIMESTAMP WITH TIME ZONE,
+  is_active BOOLEAN DEFAULT true
+);
+
+CREATE INDEX IF NOT EXISTS idx_price_alerts_car ON price_alerts(car_id);
+CREATE INDEX IF NOT EXISTS idx_price_alerts_phone ON price_alerts(phone);
+CREATE INDEX IF NOT EXISTS idx_price_alerts_active ON price_alerts(is_active);

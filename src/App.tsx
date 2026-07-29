@@ -26,12 +26,14 @@ import { LocationSection } from './components/home/LocationSection';
 // Page Views
 import { InventoryFilter } from './components/inventory/InventoryFilter';
 import { CarDetailsView } from './components/inventory/CarDetailsView';
+import { CompareView } from './components/inventory/CompareView';
 import { ExchangeForm } from './components/exchange/ExchangeForm';
 import { AboutView } from './components/about/AboutView';
 import { ContactView } from './components/contact/ContactView';
 import { BuySellView } from './components/buysell/BuySellView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
+import { CompareBar } from './components/common/CompareBar';
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -90,6 +92,15 @@ function MainAppContent() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [quickViewCar, setQuickViewCar] = useState<Car | null>(null);
   const [exchangeTargetCar, setExchangeTargetCar] = useState<Car | null>(null);
+  const [compareCars, setCompareCars] = useState<Car[]>([]);
+
+  const handleAddToCompare = (car: Car) => {
+    setCompareCars(prev => {
+      if (prev.find(c => c.id === car.id)) return prev.filter(c => c.id !== car.id);
+      if (prev.length >= 3) return prev;
+      return [...prev, car];
+    });
+  };
 
   // Admin Auth State - check for existing valid token
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
@@ -285,6 +296,8 @@ function MainAppContent() {
                         onSelectCar={handleSelectCar}
                         onQuickView={c => setQuickViewCar(c)}
                         onExchangeSelect={c => handleOpenExchangeForCar(c)}
+                        onAddToCompare={handleAddToCompare}
+                        isInCompare={compareCars.some(c => c.id === car.id)}
                       />
                     ))}
                   </div>
@@ -373,6 +386,19 @@ function MainAppContent() {
           {/* Contact Route */}
           <Route path="/contact" element={<ContactView />} />
 
+          {/* Compare Route */}
+          <Route
+            path="/compare"
+            element={
+              <CompareView
+                cars={compareCars}
+                onBack={() => navigate('/inventory')}
+                onSelectCar={handleSelectCar}
+                onRemove={id => setCompareCars(prev => prev.filter(c => c.id !== id))}
+              />
+            }
+          />
+
           {/* Admin Route */}
           <Route
             path="/admin"
@@ -410,6 +436,16 @@ function MainAppContent() {
 
       {/* Floating WhatsApp Action Button - hidden on admin */}
       {!location.pathname.startsWith('/admin') && <WhatsAppButton />}
+
+      {/* Compare Bar - shown when cars are selected for comparison */}
+      {!location.pathname.startsWith('/admin') && (
+        <CompareBar
+          compareCars={compareCars}
+          onRemove={id => setCompareCars(prev => prev.filter(c => c.id !== id))}
+          onCompare={() => navigate('/compare')}
+          onClear={() => setCompareCars([])}
+        />
+      )}
 
       {/* Footer - hidden on admin */}
       {!location.pathname.startsWith('/admin') && <Footer />}

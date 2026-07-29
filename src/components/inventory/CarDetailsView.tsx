@@ -10,11 +10,14 @@ import {
   MessageCircle,
   CheckCircle2,
   Check,
-  Award
+  Award,
+  Bell,
+  ChevronRight
 } from 'lucide-react';
 import { createWhatsAppLink, submitLeadApi } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 import { EmiCalculator } from '../common/EmiCalculator';
+import { CarCard } from '../common/CarCard';
 
 interface CarDetailsViewProps {
   car: Car;
@@ -28,6 +31,8 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
   car,
   onBack,
   onOpenExchangeModal,
+  relatedCars,
+  onSelectCar
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'inspection' | 'emi'>('overview');
@@ -38,6 +43,11 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
   const [buyerMessage] = useState(`Hi, I'm interested in the ${car.year} ${car.title} (₹ ${car.price.toFixed(2)} Lakh).`);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Price drop alert state
+  const [alertPhone, setAlertPhone] = useState('');
+  const [alertSubmitting, setAlertSubmitting] = useState(false);
+  const [alertSubmitted, setAlertSubmitted] = useState(false);
 
   const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title} (₹ ${car.price.toFixed(2)} Lakhs) at Kalaburagi showroom. Phone: ${buyerPhone || 'Not specified'}`;
   const whatsappUrl = createWhatsAppLink(DEALERSHIP_INFO.whatsappNumber, whatsappMsg);
@@ -58,6 +68,24 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
     setSubmitting(false);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
+  };
+
+  const handlePriceAlertSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!alertPhone) return;
+    setAlertSubmitting(true);
+    try {
+      await fetch('/api/price-alerts/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ carId: car.id, phone: alertPhone })
+      });
+      setAlertSubmitted(true);
+    } catch {
+      // silent
+    } finally {
+      setAlertSubmitting(false);
+    }
   };
 
   const handleShare = () => {
@@ -401,6 +429,74 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* ── PRICE DROP ALERT SUBSCRIPTION ─────────────────────── */}
+      <div className="max-w-7xl mx-auto">
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-amber-700" />
+            </div>
+            <div>
+              <p className="text-xs font-black text-slate-900">Price Drop Alert</p>
+              <p className="text-[10px] text-slate-500 font-medium">Get WhatsApp notification if price drops</p>
+            </div>
+          </div>
+          {alertSubmitted ? (
+            <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>You're subscribed! We'll WhatsApp you if price drops.</span>
+            </div>
+          ) : (
+            <form onSubmit={handlePriceAlertSubmit} className="flex flex-1 gap-2">
+              <input
+                type="tel"
+                placeholder="Your WhatsApp number (+91...)"
+                value={alertPhone}
+                onChange={e => setAlertPhone(e.target.value)}
+                required
+                className="flex-1 bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-amber-500 min-w-0"
+              />
+              <button
+                type="submit"
+                disabled={alertSubmitting}
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl shrink-0"
+              >
+                {alertSubmitting ? '...' : 'Notify Me'}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+
+      {/* ── SIMILAR CARS ──────────────────────────────────────── */}
+      {relatedCars && relatedCars.length > 0 && (
+        <div className="max-w-7xl mx-auto space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-black text-slate-900 font-serif">Similar {car.brand} Cars</h2>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">Other {car.brand} vehicles available at KM Car Deals</p>
+            </div>
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-800"
+            >
+              View All <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedCars.slice(0, 3).map(rc => (
+              <CarCard
+                key={rc.id}
+                car={rc}
+                onSelectCar={onSelectCar}
+                onQuickView={onSelectCar}
+                onExchangeSelect={onOpenExchangeModal}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Car } from '../../types';
-import { ShieldCheck, Calendar, Gauge, Fuel, MessageCircle, ArrowRight, Eye } from 'lucide-react';
+import { ShieldCheck, Calendar, Gauge, Fuel, MessageCircle, ArrowRight, Eye, BarChart2 } from 'lucide-react';
 import { createWhatsAppLink } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 
@@ -11,12 +11,16 @@ interface CarCardProps {
   onSelectCar?: (car: Car) => void;
   onQuickView: (car: Car) => void;
   onExchangeSelect?: (car: Car) => void;
+  onAddToCompare?: (car: Car) => void;
+  isInCompare?: boolean;
 }
 
 export const CarCard: React.FC<CarCardProps> = ({
   car,
   onSelectCar,
   onQuickView,
+  onAddToCompare,
+  isInCompare,
 }) => {
   const navigate = useNavigate();
   const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title} listed at ₹ ${car.price.toFixed(2)} Lakhs. Please contact me with details.`;
@@ -170,6 +174,20 @@ export const CarCard: React.FC<CarCardProps> = ({
               <span>WhatsApp</span>
             </a>
           </div>
+
+          {onAddToCompare && (
+            <button
+              onClick={e => { e.stopPropagation(); onAddToCompare(car); }}
+              className={`w-full py-2 text-[10px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 border transition-all ${
+                isInCompare
+                  ? 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-amber-200'
+                  : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+            >
+              <BarChart2 className="w-3 h-3" />
+              {isInCompare ? '✓ Added to Compare' : 'Add to Compare'}
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

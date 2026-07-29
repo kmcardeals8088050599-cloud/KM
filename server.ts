@@ -6,6 +6,7 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { GoogleGenAI } from '@google/genai';
 import {
   getAllCars,
   getCarById,
@@ -33,6 +34,20 @@ import {
 } from './server/validations.js';
 import { Car, Lead, ExchangeRequest } from './src/types/index.js';
 import { carUploadToken, exchangeUploadToken, deleteBlobsForUrls } from './server/upload.js';
+import {
+  sendWhatsAppAlert,
+  buildNewLeadMessage,
+  buildNewExchangeMessage,
+  buildDailySummaryMessage,
+  buildPriceDropMessage
+} from './server/whatsapp.js';
+import { getInsuranceAlerts } from './server/insurance.js';
+import {
+  subscribePriceAlert,
+  getAlertsForCar,
+  markAlertNotified,
+  getAllActiveAlerts
+} from './server/priceAlerts.js';
 
 const LOGIN_RATE_LIMIT = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -186,6 +201,19 @@ export async function createApp() {
         status: 'New'
       });
 
+      // FEATURE 1: Auto WhatsApp alert to admin
+      const adminPhone = process.env.WHATSAPP_ADMIN_PHONE || '918123991847';
+      sendWhatsAppAlert({
+        to: adminPhone,
+        text: buildNewLeadMessage({
+          name: data.name,
+          phone: data.phone,
+          type: data.type || 'Inquiry',
+          carTitle: data.carTitle,
+          message: data.message
+        })
+      }).catch(() => {}); // fire-and-forget, don't fail the request
+
       res.status(201).json(newLead);
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to submit inquiry', details: err.message });
@@ -218,6 +246,22 @@ export async function createApp() {
         targetCarTitle: data.targetCarTitle,
         status: 'New'
       });
+
+      // FEATURE 1: Auto WhatsApp alert to admin
+      const adminPhone = process.env.WHATSAPP_ADMIN_PHONE || '918123991847';
+      sendWhatsAppAlert({
+        to: adminPhone,
+        text: buildNewExchangeMessage({
+          customerName: data.customerName,
+          phone: data.phone,
+          currentBrand: data.currentBrand,
+          currentModel: data.currentModel,
+          currentYear: Number(data.currentYear) || 2020,
+          currentKilometers: Number(data.currentKilometers) || 50000,
+          expectedPrice: Number(data.expectedPrice) || 0,
+          targetCarTitle: data.targetCarTitle
+        })
+      }).catch(() => {}); // fire-and-forget
 
       res.status(201).json(newExchange);
     } catch (err: any) {
@@ -386,6 +430,22 @@ export async function createApp() {
       const data = sanitizeObject(validation.data);
       const existing = await getCarById(req.params.id);
       const updated = await dbUpdateCar(req.params.id, data);
+
+      // FEATURE 7: Trigger price drop alerts if price decreased
+      if (existing && data.price !== undefined && Number(data.price) < existing.price) {
+        const subscribers = await getAlertsForCar(req.params.id);
+        for (const sub of subscribers) {
+          sendWhatsAppAlert({
+            to: sub.phone.replace(/[^0-9]/g, ''),
+            text: buildPriceDropMessage(
+              { title: existing.title, oldPrice: existing.price, newPrice: Number(data.price) },
+              sub.phone
+            )
+          }).catch(() => {});
+          markAlertNotified(sub.id).catch(() => {});
+        }
+      }
+
       if (existing && Array.isArray(data.images)) {
         const removedImages = existing.images.filter(url => !data.images.includes(url));
         if (removedImages.length > 0) {
@@ -417,6 +477,127 @@ export async function createApp() {
       tagline: 'Multi Brand Pre-Owned Cars',
       city: 'Kalaburagi'
     });
+  });
+
+  // -------------------------------------------------------
+  // FEATURE 1: WhatsApp alert already hooked into leads/exchange below
+  // (see POST /api/leads and POST /api/exchange-requests modifications)
+
+  // -------------------------------------------------------
+  // FEATURE 2: AI Car Description Generator
+  app.post('/api/admin/generate-description', authenticateAdmin, async (req, res) => {
+    try {
+      const { brand, model, variant, year, kilometers, fuelType, transmission, bodyType, color, features, ownerCount } = req.body;
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        res.status(400).json({ error: 'GEMINI_API_KEY not configured' });
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
+      const prompt = `Write a compelling, honest, and professional 2-3 sentence car description for a pre-owned car listing at KM Car Deals, a trusted multi-brand used car dealership in Kalaburagi, Karnataka, India.
+
+Car Details:
+- Brand: ${brand}
+- Model: ${model}
+- Variant: ${variant || 'Standard'}
+- Year: ${year}
+- Kilometers: ${kilometers?.toLocaleString('en-IN')} km
+- Fuel: ${fuelType}
+- Transmission: ${transmission}
+- Body Type: ${bodyType}
+- Color: ${color}
+- Owner: ${ownerCount || '1st Owner'}
+- Key Features: ${Array.isArray(features) ? features.slice(0, 5).join(', ') : features || 'Standard'}
+
+Rules: Keep it under 60 words. Mention condition positively but honestly. Include KM Car Deals 150-point inspection certified. No made-up specs. Professional tone for Indian used car market.`;
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: prompt
+      });
+      const description = response.text?.trim() || '';
+      res.json({ description });
+    } catch (err: any) {
+      res.status(500).json({ error: 'AI generation failed', details: err.message });
+    }
+  });
+
+  // -------------------------------------------------------
+  // FEATURE 4: Daily Summary Report → returns data + optionally sends WhatsApp
+  app.post('/api/admin/daily-report', authenticateAdmin, async (req, res) => {
+    try {
+      const [cars, leads, exchanges] = await Promise.all([getAllCars(), getAllLeads(), getAllExchanges()]);
+      const insuranceAlerts = getInsuranceAlerts(cars, 60);
+      const stats = {
+        totalCars: cars.length,
+        availableCars: cars.filter(c => c.status === 'Available').length,
+        soldCars: cars.filter(c => c.status === 'Sold').length,
+        reservedCars: cars.filter(c => c.status === 'Reserved').length,
+        totalLeads: leads.length,
+        newLeads: leads.filter(l => l.status === 'New').length,
+        totalExchanges: exchanges.length,
+        newExchanges: exchanges.filter(e => e.status === 'New').length,
+        insuranceExpiring: insuranceAlerts.slice(0, 5).map(a => ({
+          title: a.title,
+          date: a.expiryDate.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
+        }))
+      };
+      const message = buildDailySummaryMessage(stats);
+      const adminPhone = process.env.WHATSAPP_ADMIN_PHONE || '918123991847';
+      await sendWhatsAppAlert({ to: adminPhone, text: message });
+      res.json({ success: true, stats, message });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to generate report', details: err.message });
+    }
+  });
+
+  // -------------------------------------------------------
+  // FEATURE 6: Insurance Expiry Alerts
+  app.get('/api/admin/insurance-alerts', authenticateAdmin, async (_req, res) => {
+    try {
+      const cars = await getAllCars();
+      const alerts = getInsuranceAlerts(cars, 60);
+      res.json(alerts.map(a => ({
+        carId: a.carId,
+        title: a.title,
+        insuranceType: a.insuranceType,
+        expiryDate: a.expiryDate.toISOString(),
+        daysUntilExpiry: a.daysUntilExpiry,
+        isExpired: a.isExpired
+      })));
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to fetch insurance alerts', details: err.message });
+    }
+  });
+
+  // -------------------------------------------------------
+  // FEATURE 7: Price Drop Alerts — subscribe (public) + list/trigger (admin)
+  app.post('/api/price-alerts/subscribe', async (req, res) => {
+    try {
+      const { carId, phone } = req.body;
+      if (!carId || !phone) {
+        res.status(400).json({ error: 'carId and phone are required' });
+        return;
+      }
+      const car = await getCarById(carId);
+      if (!car) {
+        res.status(404).json({ error: 'Car not found' });
+        return;
+      }
+      const alert = await subscribePriceAlert(carId, car.title, phone);
+      res.status(201).json({ success: true, alert });
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to subscribe', details: err.message });
+    }
+  });
+
+  app.get('/api/admin/price-alerts', authenticateAdmin, async (_req, res) => {
+    try {
+      const alerts = await getAllActiveAlerts();
+      res.json(alerts);
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to fetch price alerts', details: err.message });
+    }
   });
 
   return app;
