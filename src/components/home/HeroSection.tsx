@@ -63,9 +63,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
     },
     {
       title: 'Md Nadeem Khan (Managing Director)',
-      tag: 'Founder & Managing Director',
+      tag: 'Managing Director',
       img: photos[2]?.imageUrl,
-      desc: 'Leader of KM Car Deals Kalaburagi'
+      desc: 'Managing Director of KM Car Deals Kalaburagi'
     },
     {
       title: 'KM Car Deals Executive Team',
