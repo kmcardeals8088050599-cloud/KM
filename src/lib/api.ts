@@ -47,7 +47,10 @@ export function filterCarsLocal(cars: Car[], filters: Partial<FilterState>): Car
   }
 
   if (filters.rto && filters.rto !== 'All') {
-    result = result.filter(c => c.specs.rto.toLowerCase().includes(filters.rto?.toLowerCase() || ''));
+    // Match by KA code prefix (e.g. "KA-32") so it works regardless of
+    // how the district name is formatted in the stored rto field
+    const rtoCode = filters.rto.split(' ')[0].toLowerCase(); // "KA-32"
+    result = result.filter(c => c.specs.rto.toLowerCase().startsWith(rtoCode));
   }
 
   if (filters.ownerCount && filters.ownerCount !== 'All') {

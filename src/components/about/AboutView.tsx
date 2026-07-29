@@ -17,8 +17,8 @@ export const AboutView: React.FC = () => {
   }, []);
 
   const storefrontPhoto = photos[0]?.imageUrl;
-  const nawazPortrait = photos[2]?.imageUrl;
   const nadeemPortrait = photos[3]?.imageUrl;
+  const nawazPortrait = photos[2]?.imageUrl;
   const executiveTeam = photos[4]?.imageUrl;
 
   return (

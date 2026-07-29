@@ -343,9 +343,12 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
             className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
           >
             <option value="All">All RTOs</option>
-            {KARNATAKA_RTO_CODES.map(rto => (
-              <option key={rto} value={rto}>{rto}</option>
-            ))}
+            {KARNATAKA_RTO_CODES.map(rto => {
+              const code = rto.split(' ')[0]; // e.g. "KA-32"
+              return (
+                <option key={code} value={code}>{rto}</option>
+              );
+            })}
           </select>
         </div>
 
