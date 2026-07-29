@@ -158,6 +158,7 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
       brand: 'All',
       model: 'All',
       rto: 'All',
+      ownerCount: 'All',
       bodyType: 'All',
       fuelType: 'All',
       transmission: 'All',
@@ -296,7 +297,7 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
       </div>
 
       {/* Filter Select Controls — Row 2 */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 text-xs">
         {/* Transmission */}
         <div>
           <label className="block text-[10px] font-black text-slate-500 uppercase mb-1">Gearbox</label>
@@ -308,6 +309,28 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
             <option value="All">All Transmission</option>
             <option value="Automatic">Automatic</option>
             <option value="Manual">Manual</option>
+          </select>
+        </div>
+
+        {/* Owner Count */}
+        <div>
+          <label className="block text-[10px] font-black text-slate-500 uppercase mb-1">Owner</label>
+          <select
+            value={filters.ownerCount}
+            onChange={e => setFilters(prev => ({ ...prev, ownerCount: e.target.value }))}
+            className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+          >
+            <option value="All">Any Owner</option>
+            <option value="1st Owner">1st Owner</option>
+            <option value="2nd Owner">2nd Owner</option>
+            <option value="3rd Owner">3rd Owner</option>
+            <option value="4th Owner">4th Owner</option>
+            <option value="5th Owner">5th Owner</option>
+            <option value="6th Owner">6th Owner</option>
+            <option value="7th Owner">7th Owner</option>
+            <option value="8th Owner">8th Owner</option>
+            <option value="9th Owner">9th Owner</option>
+            <option value="10th Owner">10th Owner</option>
           </select>
         </div>
 

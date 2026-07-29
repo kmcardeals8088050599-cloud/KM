@@ -112,8 +112,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [registrationYearNum, setRegistrationYearNum] = useState<number>(2022);
   const [engineCapacityStr, setEngineCapacityStr] = useState('');
   const [rtoStr, setRtoStr] = useState('KA-32 (Kalaburagi)');
-  const [mileageStr, setMileageStr] = useState('16.5 kmpl');
-  const [powerStr, setPowerStr] = useState('115 bhp');
+  const [mileageStr, setMileageStr] = useState('');
+  const [powerStr, setPowerStr] = useState('');
   const [seatingCapacityNum, setSeatingCapacityNum] = useState<number>(5);
 
   // Open Modal for Create or Edit
@@ -147,8 +147,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setRegistrationYearNum(car.registrationYear || car.year);
       setEngineCapacityStr(car.engineCapacity || '');
       setRtoStr(car.specs?.rto || 'KA-32 (Kalaburagi)');
-      setMileageStr(car.specs?.mileage || '16.5 kmpl');
-      setPowerStr(car.specs?.power || '115 bhp');
+      setMileageStr(car.specs?.mileage || '');
+      setPowerStr(car.specs?.power || '');
       setSeatingCapacityNum(car.specs?.seatingCapacity || 5);
     } else {
       setEditingCarId(null);
@@ -178,8 +178,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setRegistrationYearNum(2022);
       setEngineCapacityStr('');
       setRtoStr('KA-32 (Kalaburagi)');
-      setMileageStr('16.5 kmpl');
-      setPowerStr('115 bhp');
+      setMileageStr('');
+      setPowerStr('');
       setSeatingCapacityNum(5);
     }
     setCarModalOpen(true);
@@ -892,6 +892,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <option>2nd Owner</option>
                       <option>3rd Owner</option>
                       <option>4th Owner</option>
+                      <option>5th Owner</option>
+                      <option>6th Owner</option>
+                      <option>7th Owner</option>
+                      <option>8th Owner</option>
+                      <option>9th Owner</option>
+                      <option>10th Owner</option>
                     </select>
                   </div>
                   <div>

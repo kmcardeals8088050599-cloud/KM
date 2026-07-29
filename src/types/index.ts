@@ -101,6 +101,7 @@ export interface FilterState {
   brand: string;
   model: string;
   rto: string;
+  ownerCount: string;
   bodyType: string;
   fuelType: string;
   transmission: string;

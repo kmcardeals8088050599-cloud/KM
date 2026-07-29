@@ -50,6 +50,10 @@ export function filterCarsLocal(cars: Car[], filters: Partial<FilterState>): Car
     result = result.filter(c => c.specs.rto.toLowerCase().includes(filters.rto?.toLowerCase() || ''));
   }
 
+  if (filters.ownerCount && filters.ownerCount !== 'All') {
+    result = result.filter(c => c.ownerCount.toLowerCase() === filters.ownerCount?.toLowerCase());
+  }
+
   if (filters.bodyType && filters.bodyType !== 'All') {
     result = result.filter(c => c.bodyType.toLowerCase() === filters.bodyType?.toLowerCase());
   }

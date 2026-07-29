@@ -241,10 +241,6 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                           <span className="font-extrabold text-slate-900">{car.engineCapacity || 'Standard'}</span>
                         </div>
                         <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
-                          <span>Mileage (ARA):</span>
-                          <span className="font-extrabold text-slate-900">{car.specs.mileage}</span>
-                        </div>
-                        <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
                           <span>Seating Capacity:</span>
                           <span className="font-extrabold text-slate-900">{car.specs.seatingCapacity} Persons</span>
                         </div>
