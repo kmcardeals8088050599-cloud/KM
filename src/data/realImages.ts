@@ -48,30 +48,30 @@ export const REAL_SHOWROOM_PHOTOS: ShowroomPhoto[] = [
   },
   {
     id: 'photo-3',
-    title: 'Md Nawaz Khan - Managing Director',
-    subtitle: 'Founder & Managing Director - KM Car Deals',
+    title: 'Md Nawaz Khan - Executive Director',
+    subtitle: 'Executive Director - KM Car Deals',
     category: 'Leadership',
     photoKey: 'nawazPortrait',
     imageUrl: '/nawazPortrait.jpeg',
-    description: 'Md Nawaz Khan, Founder & Managing Director of KM Car Deals Kalaburagi.',
+    description: 'Md Nawaz Khan, Executive Director of KM Car Deals Kalaburagi.',
     locationTag: 'Kalaburagi Headquarters',
     details: [
-      'Founder & Managing Director - KM Car Deals',
+      'Executive Director - KM Car Deals',
       'Pioneered Non-Accidental Mandate in Kalaburagi',
       'Direct Customer Care: +91 80880 50599'
     ]
   },
   {
     id: 'photo-4',
-    title: 'Md Nadeem Khan - Executive Director',
-    subtitle: 'Executive Director - KM Car Deals',
+    title: 'Md Nadeem Khan - Managing Director',
+    subtitle: 'Managing Director - KM Car Deals',
     category: 'Leadership',
     photoKey: 'nawazSunglasses',
     imageUrl: '/nadeemPortrait.jpeg',
-    description: 'Md Nadeem Khan, Executive Director at KM Car Deals Kalaburagi, leading vehicle procurement, customer relations, and transparent deal approvals.',
+    description: 'Md Nadeem Khan, Managing Director at KM Car Deals Kalaburagi, leading vehicle procurement, customer relations, and transparent deal approvals.',
     locationTag: 'Executive Suite, Kalaburagi',
     details: [
-      'Executive Director & Partner - KM Car Deals',
+      'Managing Director & Partner - KM Car Deals',
       'Vehicle Trade-In & Valuation Specialist',
       'Direct Customer Care & Deal Approval'
     ]
