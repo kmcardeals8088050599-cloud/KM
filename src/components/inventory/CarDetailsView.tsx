@@ -30,6 +30,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
   onSelectCar
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -41,6 +42,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
   const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!buyerName || !buyerPhone) return;
+
     setSubmitting(true);
     await submitLeadApi({
       name: buyerName,
@@ -57,9 +59,14 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({ title: car.title, text: `Check out this ${car.title} at KM Car Deals Kalaburagi!`, url: window.location.href });
+      navigator.share({
+        title: car.title,
+        text: `Check out this ${car.title} at KM Car Deals Kalaburagi!`,
+        url: window.location.href
+      });
     } else {
       navigator.clipboard.writeText(window.location.href);
+      alert('Car link copied to clipboard!');
     }
   };
 
@@ -68,41 +75,55 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="py-28 px-4 lg:px-8 min-h-screen"
+      className="py-28 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900"
     >
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-700/50">
-          <button onClick={onBack} className="inline-flex items-center gap-2 text-xs font-bold text-slate-300 hover:text-white transition-colors glass-panel px-4 py-2 rounded-xl w-fit">
-            <ArrowLeft className="w-4 h-4 text-amber-400" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-slate-950 transition-colors bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm w-fit"
+          >
+            <ArrowLeft className="w-4 h-4 text-amber-600" />
             <span>Back to Inventory</span>
           </button>
+
           <div className="flex items-center gap-3">
-            <button onClick={handleShare} className="px-3.5 py-2 glass-panel hover:bg-slate-700/60 text-slate-300 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors">
-              <Share2 className="w-3.5 h-3.5 text-slate-400" />
+            <button
+              onClick={handleShare}
+              className="px-3.5 py-2 bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold rounded-xl border border-slate-200 flex items-center gap-1.5 transition-colors shadow-sm"
+            >
+              <Share2 className="w-3.5 h-3.5 text-slate-600" />
               <span>Share</span>
             </button>
-            <button onClick={() => onOpenExchangeModal(car)} className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-md">
-              <RefreshCw className="w-3.5 h-3.5 text-white" />
+
+            <button
+              onClick={() => onOpenExchangeModal(car)}
+              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-md"
+            >
+              <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
               <span>Exchange Your Car</span>
             </button>
           </div>
         </div>
 
         <div className="space-y-2">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-black text-amber-400 bg-amber-950/40 px-2.5 py-0.5 rounded border border-amber-500/20 uppercase tracking-wider">{car.brand}</span>
-            <span className="text-slate-600">•</span>
-            <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded ${car.status === 'Available' ? 'text-emerald-300 bg-emerald-950/40 border border-emerald-500/20' : car.status === 'Reserved' ? 'text-amber-300 bg-amber-950/40 border border-amber-500/20' : 'text-slate-400 bg-slate-800 border border-slate-700'}`}>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 uppercase tracking-wider">{car.brand}</span>
+            <span className="text-slate-400">•</span>
+            <span className="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded">
               {car.status}
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">{car.title}</h1>
-          <p className="text-xs text-slate-400 font-medium">{DEALERSHIP_INFO.address}, Kalaburagi</p>
+
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 font-serif tracking-tight">{car.title}</h1>
+          <p className="text-xs text-slate-600 font-medium">
+            Showroom Location: {DEALERSHIP_INFO.address}, Kalaburagi
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 space-y-4">
-            <div className="relative aspect-[16/10] rounded-3xl overflow-hidden border border-slate-700/50 shadow-xl bg-slate-900">
+            <div className="relative aspect-[16/10] bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeImageIndex}
@@ -126,69 +147,118 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                     onClick={() => setActiveImageIndex(idx)}
                     className={`relative w-24 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
                       activeImageIndex === idx
-                        ? 'border-amber-500 scale-105 shadow-lg shadow-amber-500/20'
-                        : 'border-slate-700 opacity-60 hover:opacity-100'
+                        ? 'border-slate-900 scale-105 shadow-md'
+                        : 'border-slate-200 opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" loading="lazy" />
+                    <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   </button>
                 ))}
               </div>
             )}
 
-            <div className="pt-4 border-t border-slate-700/50">
-              <h3 className="text-sm font-black text-white uppercase tracking-wider mb-4">Vehicle Details</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-                {[
-                  { label: 'Model', value: car.model },
-                  { label: 'Year', value: car.year },
-                  { label: 'Transmission', value: car.transmission },
-                  { label: 'Body Type', value: car.bodyType },
-                  { label: 'Fuel Type', value: car.fuelType },
-                  { label: 'Owner', value: car.ownerCount },
-                  { label: 'RTO', value: car.specs.rto?.split(' ')[0] || '—' },
-                ].map(d => (
-                  <div key={d.label} className="glass-panel p-3 rounded-xl">
-                    <span className="text-slate-400 block text-[9px] uppercase font-black">{d.label}</span>
-                    <span className="text-sm font-extrabold text-white mt-0.5 block">{d.value}</span>
-                  </div>
-                ))}
+            <div className="pt-4 border-t border-slate-200">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4 font-serif">Vehicle Details</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Model</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.model}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Year</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.year}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Transmission</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.transmission}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Body Type</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.bodyType}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Fuel Type</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.fuelType}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Owner</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.ownerCount}</span>
+                </div>
+              </div>
+              <div className="mt-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-xs flex items-center justify-between">
+                <span className="text-slate-500 font-black uppercase text-[10px]">RTO Registration:</span>
+                <span className="font-extrabold text-slate-900">{car.specs.rto}</span>
               </div>
             </div>
           </div>
 
           <div className="lg:col-span-4 space-y-6">
-            <div className="glass-panel rounded-3xl p-6 space-y-6 shadow-xl sticky top-32">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-xl sticky top-32">
               <div className="space-y-4">
-                <h4 className="text-xs font-black text-white uppercase tracking-wider">Inquire / Book Test Drive</h4>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider font-serif">Inquire / Book Test Drive</h4>
 
                 {submitted ? (
-                  <div className="p-4 bg-emerald-950/50 border border-emerald-500/30 text-emerald-300 rounded-2xl text-xs font-bold flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                    <span>Inquiry submitted! Our team will contact you shortly.</span>
+                  <div className="p-4 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span>Inquiry submitted! Our showroom team will contact you shortly.</span>
                   </div>
                 ) : (
                   <form onSubmit={handleInquirySubmit} className="space-y-3">
-                    <input type="text" placeholder="Your Full Name" required value={buyerName} onChange={e => setBuyerName(e.target.value)} className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none" />
-                    <input type="tel" placeholder="Mobile Phone Number (+91)" required value={buyerPhone} onChange={e => setBuyerPhone(e.target.value)} className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none" />
-                    <button type="submit" disabled={submitting} className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl transition-all shadow-md">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Your Full Name"
+                        required
+                        value={buyerName}
+                        onChange={e => setBuyerName(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+
+                    <div>
+                      <input
+                        type="tel"
+                        placeholder="Mobile Phone Number (+91)"
+                        required
+                        value={buyerPhone}
+                        onChange={e => setBuyerPhone(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl transition-all shadow-md"
+                    >
                       {submitting ? 'Submitting...' : 'Request Callback'}
                     </button>
                   </form>
                 )}
 
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-md block text-center">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-md block text-center"
+                >
                   <MessageCircle className="w-4 h-4 fill-white text-white" />
                   <span>Chat on WhatsApp Directly</span>
                 </a>
 
-                <a href="tel:+918123991847" className="w-full py-3 bg-slate-700/80 hover:bg-slate-600 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-600 block text-center">
+                <a
+                  href="tel:+918123991847"
+                  className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-700 block text-center"
+                >
                   <Phone className="w-4 h-4 text-amber-400" />
                   <span>Call +91 81239 91847</span>
                 </a>
 
-                <a href="tel:+918088050599" className="w-full py-3 bg-slate-800/60 hover:bg-slate-700 text-slate-200 font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-700 block text-center">
-                  <Phone className="w-4 h-4 text-slate-400" />
+                <a
+                  href="tel:+918088050599"
+                  className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-300 block text-center"
+                >
+                  <Phone className="w-4 h-4 text-slate-700" />
                   <span>Call +91 80880 50599</span>
                 </a>
               </div>
@@ -198,19 +268,28 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       </div>
 
       {relatedCars && relatedCars.length > 0 && (
-        <div className="max-w-7xl mx-auto mt-12 space-y-4">
+        <div className="max-w-7xl mx-auto space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-black text-white">Similar {car.brand} Cars</h2>
-              <p className="text-xs text-slate-400 font-medium mt-0.5">Other {car.brand} vehicles available at KM Car Deals</p>
+              <h2 className="text-xl font-black text-slate-900 font-serif">Similar {car.brand} Cars</h2>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">Other {car.brand} vehicles available at KM Car Deals</p>
             </div>
-            <button onClick={onBack} className="flex items-center gap-1 text-xs font-bold text-amber-400 hover:text-amber-300">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1 text-xs font-bold text-amber-700 hover:text-amber-800"
+            >
               View All <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedCars.slice(0, 3).map(rc => (
-              <CarCard key={rc.id} car={rc} onSelectCar={onSelectCar} onQuickView={onSelectCar} onExchangeSelect={onOpenExchangeModal} />
+              <CarCard
+                key={rc.id}
+                car={rc}
+                onSelectCar={onSelectCar}
+                onQuickView={onSelectCar}
+                onExchangeSelect={onOpenExchangeModal}
+              />
             ))}
           </div>
         </div>

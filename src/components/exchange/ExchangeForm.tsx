@@ -63,40 +63,40 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
   };
 
   return (
-    <div className="py-24 px-4 lg:px-8 min-h-screen">
+    <div className="py-24 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-800">
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Header */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-400 uppercase tracking-widest bg-amber-950/40 px-4 py-1.5 rounded-full border border-amber-500/20">
-            <RefreshCw className="w-3.5 h-3.5 text-amber-400" /> Instant Vehicle Exchange Program
+          <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
+            <RefreshCw className="w-3.5 h-3.5 text-amber-600 animate-spin-slow" /> Instant Vehicle Exchange Program
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
             EXCHANGE YOUR CAR AT KM CAR DEALS
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto leading-relaxed font-medium">
             Upgrade your existing car easily. Get high market valuation, doorstep physical evaluation in Kalaburagi, and hassle-free instant paper transfer.
           </p>
         </div>
 
         {/* Selected Upgrade Vehicle Notification */}
         {targetCar && (
-          <div className="glass-panel border border-amber-500/30 p-4 rounded-2xl flex items-center justify-between gap-4">
+          <div className="bg-white border border-amber-300 p-4 rounded-2xl flex items-center justify-between gap-4 shadow-sm">
             <div>
-              <span className="text-[10px] text-amber-400 font-black uppercase tracking-wider block">Target Upgrade Vehicle</span>
-              <h4 className="text-sm font-black text-white">{targetCar.title} ({targetCar.year})</h4>
+              <span className="text-[10px] text-amber-800 font-black uppercase tracking-wider block">Target Upgrade Vehicle</span>
+              <h4 className="text-sm font-black text-slate-900 font-serif">{targetCar.title} ({targetCar.year})</h4>
             </div>
-            <img src={targetCar.images[0]} alt="" className="w-20 h-14 object-cover rounded-xl shrink-0 border border-slate-700/50" referrerPolicy="no-referrer" />
+            <img src={targetCar.images[0]} alt="" className="w-20 h-14 object-cover rounded-xl shrink-0 border border-slate-200" referrerPolicy="no-referrer" />
           </div>
         )}
 
         {/* Main Exchange Form */}
         {submitted ? (
-          <div className="glass-panel border border-emerald-500/30 p-10 rounded-3xl text-center space-y-4 shadow-md animate-in zoom-in-95 duration-300">
-            <div className="w-16 h-16 rounded-full bg-emerald-950/50 text-emerald-400 flex items-center justify-center mx-auto border border-emerald-500/20">
+          <div className="bg-white border border-emerald-300 p-10 rounded-3xl text-center space-y-4 shadow-md animate-in zoom-in-95 duration-300">
+            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h2 className="text-2xl font-black text-white">Exchange Details Received!</h2>
-            <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed font-medium">
+            <h2 className="text-2xl font-black text-slate-900 font-serif">Exchange Details Received!</h2>
+            <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed font-medium">
               We have opened WhatsApp with your details. Our sales manager at KM Car Deals will evaluate your vehicle and connect with you shortly for doorstep inspection.
             </p>
             <button
@@ -107,34 +107,34 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="glass-panel border border-slate-700/50 rounded-3xl p-6 sm:p-10 space-y-8">
+          <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 space-y-8 shadow-sm">
             {/* Step 1: Customer Contact */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-white uppercase tracking-wider border-l-2 border-amber-500 pl-3">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 font-serif">
                 1. Customer Contact Info
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Your Full Name *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Ramesh Patil"
                     value={customerName}
                     onChange={e => setCustomerName(e.target.value)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-medium focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Mobile / WhatsApp Number *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Mobile / WhatsApp Number *</label>
                   <input
                     type="tel"
                     required
                     placeholder="e.g. +91 98450 12345"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-medium focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
                 </div>
               </div>
@@ -142,17 +142,17 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
             {/* Step 2: Vehicle Specs */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-white uppercase tracking-wider border-l-2 border-amber-500 pl-3">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 font-serif">
                 2. Details of Your Existing Car
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Car Brand *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Car Brand *</label>
                   <select
                     value={currentBrand}
                     onChange={e => setCurrentBrand(e.target.value)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                   >
                     {['Hyundai', 'Maruti Suzuki', 'Mahindra', 'Tata', 'Toyota', 'Honda', 'Kia', 'Volkswagen', 'Ford', 'Renault', 'BMW', 'Mercedes-Benz', 'Other'].map(b => (
                       <option key={b} value={b}>{b}</option>
@@ -161,23 +161,23 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Model &amp; Variant *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Model &amp; Variant *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Swift ZXI / Creta SX"
                     value={currentModel}
                     onChange={e => setCurrentModel(e.target.value)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-medium focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Registration Year</label>
+                  <label className="block text-slate-700 font-bold mb-1">Registration Year</label>
                   <select
                     value={currentYear}
                     onChange={e => setCurrentYear(parseInt(e.target.value))}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                   >
                     {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010].map(y => (
                       <option key={y} value={y}>{y}</option>
@@ -188,11 +188,11 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Fuel Type</label>
+                  <label className="block text-slate-700 font-bold mb-1">Fuel Type</label>
                   <select
                     value={fuelType}
                     onChange={e => setFuelType(e.target.value as FuelType)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                   >
                     <option value="Petrol">Petrol</option>
                     <option value="Diesel">Diesel</option>
@@ -202,11 +202,11 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Transmission</label>
+                  <label className="block text-slate-700 font-bold mb-1">Transmission</label>
                   <select
                     value={transmission}
                     onChange={e => setTransmission(e.target.value as Transmission)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
                   >
                     <option value="Manual">Manual</option>
                     <option value="Automatic">Automatic</option>
@@ -214,23 +214,23 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Kilometers Driven</label>
+                  <label className="block text-slate-700 font-bold mb-1">Kilometers Driven</label>
                   <input
                     type="number"
                     value={currentKilometers}
                     onChange={e => setCurrentKilometers(parseInt(e.target.value) || 0)}
-                    className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-bold focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-bold mb-1">Expected Price (in ₹ Lakhs)</label>
+                  <label className="block text-slate-700 font-bold mb-1">Expected Price (in ₹ Lakhs)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={expectedPrice}
                     onChange={e => setExpectedPrice(parseFloat(e.target.value) || 0)}
-                    className="w-full glass-input rounded-xl p-3 text-amber-400 font-black focus:outline-none"
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-amber-800 font-black focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
                 </div>
               </div>
@@ -238,7 +238,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
             {/* Step 3: Photos & Remarks */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-white uppercase tracking-wider border-l-2 border-amber-500 pl-3">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 font-serif">
                 3. Vehicle Photos &amp; Comments
               </h3>
 
@@ -251,13 +251,13 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                   placeholder="e.g. Non-accidental, single owner, insurance valid till 2026..."
                   value={comments}
                   onChange={e => setComments(e.target.value)}
-                  className="w-full glass-input rounded-xl p-3 text-xs font-bold focus:outline-none"
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-900 font-medium focus:outline-none focus:border-amber-500 focus:bg-white"
                 ></textarea>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div className="pt-4 border-t border-slate-700/50">
+            <div className="pt-4 border-t border-slate-200">
               <button
                 type="submit"
                 disabled={loading}

@@ -32,17 +32,17 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
   };
 
   return (
-    <div className="py-28 px-4 lg:px-8 min-h-screen">
+    <div className="py-28 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-800">
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <span className="text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
             Buy, Sell, Exchange &amp; Brokerage
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
             BUY &amp; SELL PRE-OWNED CARS WITH CONFIDENCE
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
             Whether you want to purchase a certified car with bank loan assistance, sell your existing vehicle for same-day cash, or exchange for an upgrade in Kalaburagi, we guarantee transparent deals.
           </p>
         </div>
@@ -50,13 +50,13 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
         {/* 2-Column Grid: Buy vs Sell */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Buy Card */}
-          <div className="glass-panel border border-slate-700/50 rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
                 <ShoppingBag className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-black text-white">Buy a Certified Pre-Owned Car</h2>
-              <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              <h2 className="text-2xl font-black text-slate-900 font-serif">Buy a Certified Pre-Owned Car</h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
                 Browse our multi-brand inventory featuring Hyundai, Maruti, Mahindra, Toyota, Tata, Kia, and Luxury cars.
               </p>
 
@@ -89,13 +89,13 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
           </div>
 
           {/* Sell / Brokerage Card */}
-          <div className="glass-panel border border-slate-700/50 rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+          <div className="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
                 <Tag className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-black text-white">Sell / Commission Brokerage</h2>
-              <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              <h2 className="text-2xl font-black text-slate-900 font-serif">Sell / Commission Brokerage</h2>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
                 Get maximum market value for your vehicle with direct showroom display or instant cash sale.
               </p>
 
@@ -128,7 +128,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                     placeholder="Your Name"
                     value={sellerName}
                     onChange={e => setSellerName(e.target.value)}
-                    className="p-2.5 glass-input rounded-xl font-bold focus:outline-none"
+                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                   <input
                     type="tel"
@@ -136,7 +136,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                     placeholder="Phone Number"
                     value={sellerPhone}
                     onChange={e => setSellerPhone(e.target.value)}
-                    className="p-2.5 glass-input rounded-xl font-bold focus:outline-none"
+                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -145,14 +145,14 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                     placeholder="Car Brand & Model (e.g. Swift 2021)"
                     value={carDetails}
                     onChange={e => setCarDetails(e.target.value)}
-                    className="p-2.5 glass-input rounded-xl font-medium focus:outline-none"
+                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-amber-500"
                   />
                   <input
                     type="number"
                     placeholder="Asking Price (Lakhs)"
                     value={askingPrice}
                     onChange={e => setAskingPrice(e.target.value)}
-                    className="p-2.5 glass-input rounded-xl font-bold focus:outline-none"
+                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-amber-800 focus:outline-none focus:border-amber-500"
                   />
                 </div>
                 <button
