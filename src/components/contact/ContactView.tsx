@@ -39,31 +39,31 @@ export const ContactView: React.FC = () => {
   };
 
   return (
-    <div className="py-28 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900">
+    <div className="py-28 px-4 lg:px-8 min-h-screen">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Title */}
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
+          <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-amber-950/40 px-4 py-1.5 rounded-full border border-amber-500/20 shadow-sm">
             Showroom Location &amp; Direct Contact
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
             CONTACT KM CAR DEALS
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          <p className="text-xs sm:text-sm text-slate-400 font-medium">
             Have questions about buying, selling, or exchanging a vehicle in Kalaburagi? We are here to help!
           </p>
         </div>
 
         {/* Card Template Showcase Banner */}
-        <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-xl max-w-4xl mx-auto relative overflow-hidden">
+        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-700/50 shadow-xl max-w-4xl mx-auto relative overflow-hidden">
           <div className="relative z-10 space-y-6">
             {/* Top Row: Owner & Phone */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700/50 pb-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center shrink-0">
-                  <User className="w-4 h-4 text-amber-600" />
+                <div className="w-8 h-8 rounded-full bg-amber-950/40 border border-amber-500/20 flex items-center justify-center shrink-0">
+                  <User className="w-4 h-4 text-amber-400" />
                 </div>
-                <span className="font-black text-slate-900 text-base font-serif">Md Nadeem Khan</span>
+                <span className="font-black text-white text-base">Md Nadeem Khan</span>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -76,7 +76,7 @@ export const ContactView: React.FC = () => {
                 </a>
                 <a
                   href="tel:+918088050599"
-                  className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 px-4 py-1.5 rounded-full font-bold text-sm border border-slate-300"
+                  className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-1.5 rounded-full font-bold text-sm border border-slate-600"
                 >
                   <Phone className="w-4 h-4 text-slate-600" />
                   <span>+91 80880 50599</span>
@@ -89,15 +89,15 @@ export const ContactView: React.FC = () => {
               <KmLogo variant="amber" size="xl" />
 
               <div className="pt-2 flex items-center justify-center gap-2 text-xs font-black">
-                <span className="text-slate-900 bg-slate-100 border border-slate-300 px-3 py-1 rounded-md">
+                <span className="text-amber-400 bg-amber-950/40 border border-amber-500/20 px-3 py-1 rounded-md">
                   SALE
                 </span>
-                <span className="text-slate-400">•</span>
-                <span className="text-slate-900 bg-slate-100 border border-slate-300 px-3 py-1 rounded-md">
+                <span className="text-slate-500">•</span>
+                <span className="text-amber-400 bg-amber-950/40 border border-amber-500/20 px-3 py-1 rounded-md">
                   PURCHASE
                 </span>
-                <span className="text-slate-400">•</span>
-                <span className="text-slate-900 bg-slate-100 border border-slate-300 px-3 py-1 rounded-md">
+                <span className="text-slate-500">•</span>
+                <span className="text-amber-400 bg-amber-950/40 border border-amber-500/20 px-3 py-1 rounded-md">
                   EXCHANGE
                 </span>
               </div>
@@ -110,9 +110,9 @@ export const ContactView: React.FC = () => {
             </div>
 
             {/* Address Row */}
-            <div className="pt-4 border-t border-slate-200 text-center text-xs space-y-1">
-              <p className="font-black text-slate-900 flex items-center justify-center gap-1.5">
-                <MapPin className="w-4 h-4 text-amber-600 shrink-0" />
+            <div className="pt-4 border-t border-slate-700/50 text-center text-xs space-y-1">
+              <p className="font-black text-white flex items-center justify-center gap-1.5">
+                <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104</span>
               </p>
             </div>
@@ -122,59 +122,59 @@ export const ContactView: React.FC = () => {
         {/* 2-Column: Form vs Map */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Contact Form */}
-          <div className="lg:col-span-6 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-            <h3 className="text-xl font-black text-slate-900 font-serif">Send Us a Direct Message</h3>
+          <div className="lg:col-span-6 glass-panel border border-slate-700/50 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
+            <h3 className="text-xl font-black text-white">Send Us a Direct Message</h3>
 
             {submitted ? (
-              <div className="p-6 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2">
-                <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
+              <div className="p-6 bg-emerald-950/40 border border-emerald-500/20 text-emerald-400 rounded-2xl text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
                 <span>Thank you! Your message has been received. Our team will contact you shortly.</span>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Your Full Name *</label>
+                  <label className="block text-slate-300 font-bold mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="Enter your name"
                     value={name}
                     onChange={e => setName(e.target.value)}
-                    className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full p-3 glass-input rounded-xl font-bold focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Phone Number *</label>
+                  <label className="block text-slate-300 font-bold mb-1">Phone Number *</label>
                   <input
                     type="tel"
                     required
                     placeholder="Enter mobile number"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full p-3 glass-input rounded-xl font-bold focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Email Address (Optional)</label>
+                  <label className="block text-slate-300 font-bold mb-1">Email Address (Optional)</label>
                   <input
                     type="email"
                     placeholder="Enter email"
                     value={email}
                     onChange={e => setEmail(e.target.value)}
-                    className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-bold focus:outline-none focus:border-amber-500"
+                    className="w-full p-3 glass-input rounded-xl font-bold focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Message / Inquiry Details</label>
+                  <label className="block text-slate-300 font-bold mb-1">Message / Inquiry Details</label>
                   <textarea
                     rows={4}
                     placeholder="How can we help you? (e.g. Car inquiry, price estimate, test drive)"
                     value={message}
                     onChange={e => setMessage(e.target.value)}
-                    className="w-full p-3 bg-slate-50 border border-slate-300 rounded-xl text-slate-900 font-medium focus:outline-none focus:border-amber-500"
+                    className="w-full p-3 glass-input rounded-xl font-medium focus:outline-none"
                   ></textarea>
                 </div>
 
@@ -189,7 +189,7 @@ export const ContactView: React.FC = () => {
               </form>
             )}
 
-            <div className="pt-4 border-t border-slate-200 flex items-center justify-between gap-3 text-xs">
+            <div className="pt-4 border-t border-slate-700/50 flex items-center justify-between gap-3 text-xs">
               <a
                 href={whatsappUrl}
                 target="_blank"
@@ -210,7 +210,7 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918088050599"
-                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-900 font-extrabold rounded-xl flex items-center justify-center gap-1.5 border border-slate-300"
+                className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white font-extrabold rounded-xl flex items-center justify-center gap-1.5 border border-slate-600"
               >
                 <Phone className="w-4 h-4 text-slate-700" />
                 <span>+91 80880 50599</span>
@@ -220,7 +220,7 @@ export const ContactView: React.FC = () => {
 
           {/* Map Preview */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl min-h-[420px] relative flex flex-col">
+            <div className="glass-panel border border-slate-700/50 rounded-3xl overflow-hidden shadow-xl min-h-[420px] relative flex flex-col">
               <div className="p-4 bg-slate-900 text-white flex items-center justify-between text-xs font-bold">
                 <span className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-amber-400" />
@@ -250,10 +250,10 @@ export const ContactView: React.FC = () => {
               ></iframe>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-3 shadow-md text-xs">
-              <h4 className="font-black text-slate-900 uppercase tracking-wider font-serif">Showroom Working Hours</h4>
-              <div className="flex items-center gap-2 text-slate-700 font-bold">
-                <Clock className="w-4 h-4 text-amber-600" />
+            <div className="glass-panel border border-slate-700/50 rounded-3xl p-6 space-y-3 shadow-md text-xs">
+              <h4 className="font-black text-white uppercase tracking-wider">Showroom Working Hours</h4>
+              <div className="flex items-center gap-2 text-slate-300 font-bold">
+                <Clock className="w-4 h-4 text-amber-400" />
                 <span>{DEALERSHIP_INFO.workingHours}</span>
               </div>
             </div>

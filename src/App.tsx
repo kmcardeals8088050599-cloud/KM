@@ -61,12 +61,9 @@ function CarDetailsRoute({
   if (!car) {
     return (
       <div className="py-32 px-4 text-center space-y-4 max-w-md mx-auto">
-        <h2 className="text-2xl font-black text-slate-900">Vehicle Not Found</h2>
-        <p className="text-xs text-slate-500 font-medium">The pre-owned car you are looking for may have been sold or removed from inventory.</p>
-        <button
-          onClick={() => navigate('/inventory')}
-          className="px-5 py-2.5 bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-xs"
-        >
+        <h2 className="text-2xl font-black text-white">Vehicle Not Found</h2>
+        <p className="text-xs text-slate-400 font-medium">The pre-owned car you are looking for may have been sold or removed from inventory.</p>
+        <button onClick={() => navigate('/inventory')} className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl shadow-md transition-all">
           Browse Active Inventory
         </button>
       </div>
@@ -256,24 +253,9 @@ function MainAppContent() {
                 {/* Cars Results Grid / List */}
                 {filteredCars.length === 0 ? (
                   <div className="text-center py-16 glass-panel rounded-3xl space-y-3">
-                    <p className="text-base font-extrabold text-white">No vehicles match your search filters.</p>
-                    <p className="text-xs text-slate-400">Try adjusting your brand, budget, or body type criteria.</p>
-                    <button
-                      onClick={() =>
-                        setFilters({
-                          search: '',
-                          brand: 'All',
-                          model: 'All',
-                          rto: 'All',
-                          ownerCount: 'All',
-                          bodyType: 'All',
-                          fuelType: 'All',
-                          transmission: 'All',
-                          status: 'All'
-                        })
-                      }
-                      className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.4)] border border-red-400/30 transition-all"
-                    >
+                    <p className="text-base font-extrabold text-white">No vehicles match your filters</p>
+                    <p className="text-xs text-slate-400">Try adjusting your brand, model, or body type criteria.</p>
+                    <button onClick={() => setFilters({ search: '', brand: 'All', model: 'All', rto: 'All', ownerCount: 'All', bodyType: 'All', fuelType: 'All', transmission: 'All', status: 'All' })} className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl shadow-md border border-amber-400/30 transition-all">
                       Clear All Filters
                     </button>
                   </div>
@@ -294,34 +276,26 @@ function MainAppContent() {
                 ) : (
                   <div className="space-y-4">
                     {filteredCars.map(car => (
-                      <div
-                        key={car.id}
-                        onClick={() => handleSelectCar(car)}
-                        className="glass-card rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center"
-                      >
-                        <img
-                          src={car.images[0]}
-                          alt={car.title}
-                          referrerPolicy="no-referrer"
-                          className="w-full md:w-56 h-36 object-cover rounded-xl shrink-0 border border-white/10"
-                        />
+                      <div key={car.id} onClick={() => handleSelectCar(car)} className="glass-panel rounded-2xl p-4 cursor-pointer transition-all hover:border-amber-500/30 flex flex-col md:flex-row gap-6 items-center">
+                        <img src={car.images[0]} alt={car.title} referrerPolicy="no-referrer" loading="lazy" className="w-full md:w-56 h-36 object-cover rounded-xl shrink-0 border border-slate-700/50" />
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">
-                            <span className="text-red-400 uppercase tracking-wide">{car.brand}</span>
-                            <span>•</span>
+                            <span className="text-amber-400 uppercase tracking-wide">{car.brand}</span>
+                            <span className="text-slate-600">•</span>
                             <span>{car.year}</span>
-                            <span>•</span>
+                            <span className="text-slate-600">•</span>
                             <span>{car.ownerCount}</span>
                           </div>
                           <h3 className="text-lg font-black text-white">{car.title}</h3>
-                          <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-bold text-slate-200">
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.fuelType}</span>
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.transmission}</span>
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.bodyType}</span>
+                          <div className="flex flex-wrap gap-1.5 pt-1 text-[11px] font-bold text-slate-200">
+                            <span className="px-2 py-0.5 rounded-lg bg-slate-800/60 border border-slate-700/50">{car.fuelType}</span>
+                            <span className="px-2 py-0.5 rounded-lg bg-slate-800/60 border border-slate-700/50">{car.transmission}</span>
+                            <span className="px-2 py-0.5 rounded-lg bg-slate-800/60 border border-slate-700/50">{car.bodyType}</span>
+                            <span className="px-2 py-0.5 rounded-lg bg-slate-800/60 border border-slate-700/50">{car.specs.rto?.split(' ')[0] || '—'}</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <button className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl block w-full text-center shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-red-400/30">
+                          <button className="mt-3 px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl block w-full text-center shadow-md border border-amber-400/30 transition-all">
                             View Details
                           </button>
                         </div>

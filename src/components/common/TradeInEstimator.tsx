@@ -30,7 +30,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
   const estimatedPriceLakhs = (base * yearFactor * kmFactor).toFixed(2);
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+    <div className="glass-panel border border-slate-700/50 rounded-2xl p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200">
         <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
           <RefreshCw className="w-5 h-5" />
@@ -94,7 +94,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
         </div>
 
         {/* Valuation Result */}
-        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 flex flex-col justify-between">
+        <div className="glass-panel p-6 rounded-xl border border-slate-700/50 flex flex-col justify-between">
           <div className="space-y-3">
             <span className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider block">Estimated Trade-In Range</span>
             <div>
