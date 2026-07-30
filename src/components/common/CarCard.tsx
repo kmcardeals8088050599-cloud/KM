@@ -103,7 +103,6 @@ export const CarCard: React.FC<CarCardProps> = ({
             <span className="uppercase tracking-wider font-extrabold text-slate-800 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
               {car.brand}
             </span>
-            <span className="font-bold text-slate-500 text-[11px]">{car.ownerCount}</span>
           </div>
 
           {/* Car Title */}
@@ -131,28 +130,8 @@ export const CarCard: React.FC<CarCardProps> = ({
           </div>
         </div>
 
-        {/* Pricing & Call-to-Actions */}
+        {/* Call-to-Actions */}
         <div className="pt-3 border-t border-slate-200 space-y-3">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-bold">Showroom Price</span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-xl font-black text-slate-900 tracking-tight font-serif">
-                  ₹ {car.price.toFixed(2)} Lakh
-                </span>
-                {car.originalPrice && car.originalPrice > car.price && (
-                  <span className="text-xs text-slate-400 line-through font-medium">
-                    ₹ {car.originalPrice.toFixed(2)} L
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <span className="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
-              EMI ~ ₹ {Math.round((car.price * 100000 * 0.018)).toLocaleString('en-IN')}/mo
-            </span>
-          </div>
-
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2 pt-1">
             <button

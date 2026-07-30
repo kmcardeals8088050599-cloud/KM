@@ -143,8 +143,6 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           <div className="flex items-center gap-2">
             <span className="text-xs font-black text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 uppercase tracking-wider">{car.brand}</span>
             <span className="text-slate-400">•</span>
-            <span className="text-xs font-extrabold text-slate-600">{car.ownerCount}</span>
-            <span className="text-slate-400">•</span>
             <span className="text-xs font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded">
               {car.status}
             </span>
@@ -209,8 +207,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                 {[
                   { id: 'overview', label: 'Overview & Specs' },
                   { id: 'features', label: 'Features & Amenities' },
-                  { id: 'inspection', label: '150-Point Inspection' },
-                  { id: 'emi', label: 'EMI Calculator' }
+                  { id: 'inspection', label: '150-Point Inspection' }
                 ].map(tab => (
                   <button
                     key={tab.id}
@@ -327,37 +324,15 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                     </div>
                   </div>
                 )}
-
-                {activeTab === 'emi' && (
-                  <EmiCalculator carPriceLakhs={car.price} />
-                )}
               </div>
             </div>
           </div>
 
-          {/* Sidebar Pricing & Inquiry Card */}
+          {/* Sidebar Inquiry Card */}
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-xl sticky top-32">
-              {/* Showroom Price */}
-              <div>
-                <span className="text-[10px] text-slate-500 uppercase tracking-wider font-black block">Showroom Price</span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-3xl font-black text-slate-900 font-serif tracking-tight">
-                    ₹ {car.price.toFixed(2)} Lakh
-                  </span>
-                  {car.originalPrice && car.originalPrice > car.price && (
-                    <span className="text-xs text-slate-400 line-through font-semibold">
-                      ₹ {car.originalPrice.toFixed(2)} L
-                    </span>
-                  )}
-                </div>
-                <p className="text-[10px] font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg mt-2 inline-block">
-                  Estimated EMI starting at ₹ {Math.round(car.price * 100000 * 0.018).toLocaleString('en-IN')}/month
-                </p>
-              </div>
-
               {/* Inquiry Form */}
-              <div className="space-y-4 pt-4 border-t border-slate-200">
+              <div className="space-y-4">
                 <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider font-serif">Inquire / Book Test Drive</h4>
 
                 {submitted ? (

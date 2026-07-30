@@ -603,7 +603,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <th className="p-4">Car Details</th>
                     <th className="p-4">Year &amp; KM</th>
                     <th className="p-4">RTO</th>
-                    <th className="p-4">Price</th>
                     <th className="p-4">Status</th>
                     <th className="p-4">Featured</th>
                     <th className="p-4 text-right">Actions</th>
@@ -616,7 +615,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <img src={car.images[0]} alt="" className="w-14 h-10 object-cover rounded-lg shrink-0 border border-slate-200" referrerPolicy="no-referrer" />
                         <div>
                           <p className="font-extrabold text-slate-900 line-clamp-1">{car.title}</p>
-                          <p className="text-[10px] text-slate-500 font-semibold">{car.brand} • {car.fuelType} • {car.transmission}</p>
+                          <p className="text-[10px] text-slate-500 font-semibold">{car.brand} • {car.year} • {car.fuelType} • {car.transmission}</p>
                         </div>
                       </td>
                       <td className="p-4">
@@ -625,9 +624,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </td>
                       <td className="p-4">
                         <span className="font-bold text-slate-800 text-[11px]">{car.specs?.rto || '—'}</span>
-                      </td>
-                      <td className="p-4 font-black text-amber-800 text-sm">
-                        ₹ {car.price.toFixed(2)} Lakh
                       </td>
                       <td className="p-4">
                         <select
@@ -979,18 +975,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Price (in ₹ Lakhs) *</label>
-                  <input
-                    type="number"
-                    step="0.05"
-                    required
-                    value={price}
-                    onChange={e => setPrice(parseFloat(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-amber-900 font-extrabold focus:outline-none focus:border-red-600 focus:bg-white"
-                  />
-                </div>
-
-                <div>
                   <label className="block text-slate-700 font-bold mb-1">Kilometers Driven</label>
                   <input
                     type="number"
@@ -1104,25 +1088,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       onChange={e => setVariantStr(e.target.value)}
                       className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Owner Count</label>
-                    <select
-                      value={ownerCountStr}
-                      onChange={e => setOwnerCountStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    >
-                      <option>1st Owner</option>
-                      <option>2nd Owner</option>
-                      <option>3rd Owner</option>
-                      <option>4th Owner</option>
-                      <option>5th Owner</option>
-                      <option>6th Owner</option>
-                      <option>7th Owner</option>
-                      <option>8th Owner</option>
-                      <option>9th Owner</option>
-                      <option>10th Owner</option>
-                    </select>
                   </div>
                   <div>
                     <label className="block text-slate-700 font-bold mb-1">Color</label>
