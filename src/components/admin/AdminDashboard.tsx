@@ -18,7 +18,6 @@ import {
   TrendingUp,
   Sparkles,
   Bell,
-  ShieldAlert,
   Send
 } from 'lucide-react';
 import {
@@ -93,34 +92,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [title, setTitle] = useState('');
   const [brand, setBrand] = useState('Hyundai');
   const [model, setModel] = useState('');
-  const [variant, setVariant] = useState('');
   const [year, setYear] = useState<number>(2022);
-  const [price, setPrice] = useState<number>(10.5);
-  const [kilometers, setKilometers] = useState<number>(30000);
   const [fuelType, setFuelType] = useState<FuelType>('Petrol');
   const [transmission, setTransmission] = useState<Transmission>('Manual');
   const [bodyType, setBodyType] = useState<BodyType>('SUV');
   const [ownerCount, setOwnerCount] = useState('1st Owner');
-  const [color, setColor] = useState('Black');
   const [status, setStatus] = useState<CarStatus>('Available');
-  const [isFeatured, setIsFeatured] = useState(true);
-  const [isCertified, setIsCertified] = useState(true);
   const [images, setImages] = useState<string[]>(['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200']);
-  const [description, setDescription] = useState('');
-  const [featuresStr, setFeaturesStr] = useState('Sunroof, Touchscreen Infotainment, Reverse Camera, Push Start');
-  const [saveError, setSaveError] = useState('');
-
-  // Extra spec fields
-  const [variantStr, setVariantStr] = useState('');
-  const [ownerCountStr, setOwnerCountStr] = useState('1st Owner');
-  const [colorStr, setColorStr] = useState('Black');
-  const [insuranceTypeStr, setInsuranceTypeStr] = useState('Comprehensive');
-  const [registrationYearNum, setRegistrationYearNum] = useState<number>(2022);
-  const [engineCapacityStr, setEngineCapacityStr] = useState('');
   const [rtoStr, setRtoStr] = useState('KA-32 (Kalaburagi)');
-  const [mileageStr, setMileageStr] = useState('');
-  const [powerStr, setPowerStr] = useState('');
-  const [seatingCapacityNum, setSeatingCapacityNum] = useState<number>(5);
+  const [saveError, setSaveError] = useState('');
 
   // Open Modal for Create or Edit
   const handleOpenCarModal = (car?: Car) => {
@@ -130,63 +110,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setTitle(car.title);
       setBrand(car.brand);
       setModel(car.model);
-      setVariant(car.variant || '');
       setYear(car.year);
-      setPrice(car.price);
-      setKilometers(car.kilometers);
       setFuelType(car.fuelType);
       setTransmission(car.transmission);
       setBodyType(car.bodyType);
       setOwnerCount(car.ownerCount);
-      setColor(car.color);
       setStatus(car.status);
-      setIsFeatured(car.isFeatured);
-      setIsCertified(car.isCertified);
       setImages(car.images.length > 0 ? car.images : []);
-      setDescription(car.description);
-      setFeaturesStr(car.features.join(', '));
-      // extra fields
-      setVariantStr(car.variant || '');
-      setOwnerCountStr(car.ownerCount);
-      setColorStr(car.color);
-      setInsuranceTypeStr(car.insuranceType || 'Comprehensive');
-      setRegistrationYearNum(car.registrationYear || car.year);
-      setEngineCapacityStr(car.engineCapacity || '');
       setRtoStr(car.specs?.rto || 'KA-32 (Kalaburagi)');
-      setMileageStr(car.specs?.mileage || '');
-      setPowerStr(car.specs?.power || '');
-      setSeatingCapacityNum(car.specs?.seatingCapacity || 5);
     } else {
       setEditingCarId(null);
       setTitle('');
       setBrand('Hyundai');
       setModel('');
-      setVariant('');
       setYear(2022);
-      setPrice(10.5);
-      setKilometers(30000);
       setFuelType('Petrol');
       setTransmission('Manual');
       setBodyType('SUV');
       setOwnerCount('1st Owner');
-      setColor('Black');
       setStatus('Available');
-      setIsFeatured(true);
-      setIsCertified(true);
       setImages(['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200']);
-      setDescription('Pristine condition pre-owned vehicle verified by KM Car Deals 150-point technical check.');
-      setFeaturesStr('Sunroof, Touchscreen Infotainment, Reverse Camera, Alloy Wheels');
-      // extra fields
-      setVariantStr('');
-      setOwnerCountStr('1st Owner');
-      setColorStr('Black');
-      setInsuranceTypeStr('Comprehensive');
-      setRegistrationYearNum(2022);
-      setEngineCapacityStr('');
       setRtoStr('KA-32 (Kalaburagi)');
-      setMileageStr('');
-      setPowerStr('');
-      setSeatingCapacityNum(5);
     }
     setCarModalOpen(true);
   };
@@ -196,49 +140,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (!title || !brand || !model) return;
     setSaveError('');
 
-    const featuresList = featuresStr.split(',').map(s => s.trim()).filter(Boolean);
-    const specs = {
-      rto: rtoStr,
-      mileage: mileageStr,
-      power: powerStr,
-      seatingCapacity: seatingCapacityNum
-    };
+    const specs = { rto: rtoStr };
 
     try {
       if (editingCarId) {
         const updatedData = {
           title, brand, model,
-          variant: variantStr,
-          year, price, kilometers,
-          fuelType, transmission, bodyType,
-          ownerCount: ownerCountStr,
-          color: colorStr,
-          status, isFeatured, isCertified,
-          insuranceType: insuranceTypeStr,
-          registrationYear: registrationYearNum,
-          engineCapacity: engineCapacityStr || undefined,
-          images, description,
-          features: featuresList,
-          specs
+          year, fuelType, transmission, bodyType,
+          ownerCount, status, images, specs
         };
         const updatedCar = await updateCarApi(editingCarId, updatedData);
         setCars(prev => prev.map(c => (c.id === editingCarId ? updatedCar : c)));
       } else {
         const newCarData = {
           title, brand, model,
-          variant: variantStr,
-          year, price, kilometers,
-          fuelType, transmission, bodyType,
-          ownerCount: ownerCountStr,
-          color: colorStr,
-          location: 'Kalaburagi',
-          status, isFeatured, isCertified,
-          insuranceType: insuranceTypeStr,
-          registrationYear: registrationYearNum,
-          engineCapacity: engineCapacityStr || undefined,
-          images, description,
-          features: featuresList,
-          specs
+          year, fuelType, transmission, bodyType,
+          ownerCount, status, images, specs
         };
         const created = await createCarApi(newCarData);
         setCars(prev => [created, ...prev]);
@@ -253,15 +170,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const handleToggleCarStatus = async (carId: string, newStatus: CarStatus) => {
     setCars(prev => prev.map(c => (c.id === carId ? { ...c, status: newStatus } : c)));
     await updateCarApi(carId, { status: newStatus });
-  };
-
-  // Toggle Featured
-  const handleToggleCarFeatured = async (carId: string) => {
-    const car = cars.find(c => c.id === carId);
-    if (!car) return;
-    const newFeatured = !car.isFeatured;
-    setCars(prev => prev.map(c => (c.id === carId ? { ...c, isFeatured: newFeatured } : c)));
-    await updateCarApi(carId, { isFeatured: newFeatured });
   };
 
   // Delete Car
@@ -293,10 +201,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const res = await fetch('/api/admin/generate-description', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ brand, model, variant: variantStr, year, kilometers, fuelType, transmission, bodyType, color: colorStr, features: featuresStr.split(',').map(s => s.trim()), ownerCount: ownerCountStr })
+        body: JSON.stringify({ brand, model, year, fuelType, transmission, bodyType, ownerCount })
       });
       const data = await res.json();
-      if (data.description) setDescription(data.description);
     } catch { /* silent */ } finally {
       setAiGenerating(false);
     }
@@ -323,23 +230,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     return rtoMatch && statusMatch;
   });
 
-  // Insurance alerts state
-  const [insuranceAlerts, setInsuranceAlerts] = useState<any[]>([]);
-  const [insuranceLoading, setInsuranceLoading] = useState(false);
   const [activeTab2, setActiveTab2] = useState<'overview' | 'cars' | 'leads' | 'exchanges' | 'alerts'>('overview');
-
-  const loadInsuranceAlerts = async () => {
-    setInsuranceLoading(true);
-    try {
-      const token = getAuthToken();
-      const res = await fetch('/api/admin/insurance-alerts', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.ok) setInsuranceAlerts(await res.json());
-    } catch { /* silent */ } finally {
-      setInsuranceLoading(false);
-    }
-  };
 
   // Daily report
   const [reportLoading, setReportLoading] = useState(false);
@@ -465,7 +356,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </button>
 
           <button
-            onClick={() => { setActiveTab2('alerts'); loadInsuranceAlerts(); }}
+            onClick={() => setActiveTab2('alerts')}
             className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
               activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges'
                 ? 'bg-red-600 text-white shadow-xs'
@@ -601,10 +492,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <thead className="bg-slate-100 text-slate-600 font-extrabold uppercase text-[10px] tracking-wider border-b border-slate-200">
                   <tr>
                     <th className="p-4">Car Details</th>
-                    <th className="p-4">Year &amp; KM</th>
+                    <th className="p-4">Year</th>
                     <th className="p-4">RTO</th>
                     <th className="p-4">Status</th>
-                    <th className="p-4">Featured</th>
                     <th className="p-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -620,7 +510,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </td>
                       <td className="p-4">
                         <span className="font-extrabold text-slate-900">{car.year}</span>
-                        <p className="text-[10px] text-slate-500 font-medium">{car.kilometers.toLocaleString('en-IN')} km</p>
                       </td>
                       <td className="p-4">
                         <span className="font-bold text-slate-800 text-[11px]">{car.specs?.rto || '—'}</span>
@@ -641,18 +530,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <option value="Reserved">Reserved</option>
                           <option value="Sold">Sold</option>
                         </select>
-                      </td>
-                      <td className="p-4">
-                        <button
-                          onClick={() => handleToggleCarFeatured(car.id)}
-                          className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold border transition-colors ${
-                            car.isFeatured
-                              ? 'bg-amber-100 text-amber-900 border-amber-300'
-                              : 'bg-slate-100 text-slate-500 border-slate-300'
-                          }`}
-                        >
-                          {car.isFeatured ? '★ Featured' : 'Normal'}
-                        </button>
                       </td>
                       <td className="p-4 text-right space-x-2">
                         <button
@@ -861,49 +738,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             )}
           </div>
 
-          {/* Insurance Alerts */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <ShieldAlert className="w-5 h-5 text-red-600" />
-                <div>
-                  <h3 className="text-sm font-black text-slate-900">Insurance Expiry Alerts</h3>
-                  <p className="text-[11px] text-slate-500 font-medium">Cars with insurance expiring within 60 days</p>
-                </div>
-              </div>
-              <button
-                onClick={loadInsuranceAlerts}
-                disabled={insuranceLoading}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-300"
-              >
-                {insuranceLoading ? 'Loading...' : 'Refresh'}
-              </button>
-            </div>
 
-            {insuranceAlerts.length === 0 ? (
-              <p className="text-xs text-slate-500 font-medium py-4 text-center">
-                {insuranceLoading ? 'Loading...' : '✅ No insurance expiring within 60 days'}
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {insuranceAlerts.map((alert: any) => (
-                  <div key={alert.carId} className={`flex items-center justify-between p-3 rounded-xl border text-xs ${
-                    alert.isExpired ? 'bg-red-50 border-red-200' : alert.daysUntilExpiry <= 14 ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200'
-                  }`}>
-                    <div>
-                      <p className="font-extrabold text-slate-900">{alert.title}</p>
-                      <p className="text-[10px] text-slate-500 font-medium mt-0.5">{alert.insuranceType}</p>
-                    </div>
-                    <span className={`font-black px-2.5 py-1 rounded-lg text-[10px] ${
-                      alert.isExpired ? 'bg-red-600 text-white' : alert.daysUntilExpiry <= 14 ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700'
-                    }`}>
-                      {alert.isExpired ? 'EXPIRED' : `${alert.daysUntilExpiry}d left`}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
       )}
 
@@ -975,16 +810,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-700 font-bold mb-1">Kilometers Driven</label>
-                  <input
-                    type="number"
-                    value={kilometers}
-                    onChange={e => setKilometers(parseInt(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                  />
-                </div>
-
-                <div>
                   <label className="block text-slate-700 font-bold mb-1">Fuel Type</label>
                   <select
                     value={fuelType}
@@ -1044,161 +869,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <ImageUploader images={images} onChange={setImages} kind="car" maxImages={10} label="Vehicle Photos (first photo is the cover image)" />
 
-              <div>
-                <label className="block text-slate-700 font-bold mb-1">Features (Comma separated)</label>
-                <input
-                  type="text"
-                  value={featuresStr}
-                  onChange={e => setFeaturesStr(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                />
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-slate-700 font-bold">Vehicle Description</label>
-                  <button
-                    type="button"
-                    onClick={handleGenerateDescription}
-                    disabled={aiGenerating || !brand || !model}
-                    className="flex items-center gap-1.5 px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-800 font-extrabold text-[10px] rounded-lg border border-amber-300 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">RTO</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. KA-32 (Kalaburagi)"
+                    value={rtoStr}
+                    onChange={e => setRtoStr(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Owner Count</label>
+                  <select
+                    value={ownerCount}
+                    onChange={e => setOwnerCount(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
                   >
-                    <Sparkles className="w-3 h-3" />
-                    {aiGenerating ? 'Generating...' : '✨ AI Generate'}
-                  </button>
+                    <option value="1st Owner">1st Owner</option>
+                    <option value="2nd Owner">2nd Owner</option>
+                    <option value="3rd Owner">3rd Owner</option>
+                  </select>
                 </div>
-                <textarea
-                  rows={3}
-                  value={description}
-                  onChange={e => setDescription(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white resize-none"
-                ></textarea>
-              </div>
-
-              {/* --- Extra Details Section --- */}
-              <div className="pt-2 border-t border-slate-200">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Additional Details</p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Variant / Trim</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. SX(O) Diesel Auto"
-                      value={variantStr}
-                      onChange={e => setVariantStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Color</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Phantom Black"
-                      value={colorStr}
-                      onChange={e => setColorStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Insurance Type</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Comprehensive (Valid till Dec 2026)"
-                      value={insuranceTypeStr}
-                      onChange={e => setInsuranceTypeStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Registration Year</label>
-                    <input
-                      type="number"
-                      value={registrationYearNum}
-                      onChange={e => setRegistrationYearNum(parseInt(e.target.value) || year)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Engine Capacity</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 1493 cc"
-                      value={engineCapacityStr}
-                      onChange={e => setEngineCapacityStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* --- Specs Section --- */}
-              <div className="pt-2 border-t border-slate-200">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Technical Specs</p>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">RTO</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. KA-32 (Kalaburagi)"
-                      value={rtoStr}
-                      onChange={e => setRtoStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Mileage</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 18.5 kmpl"
-                      value={mileageStr}
-                      onChange={e => setMileageStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Power</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 115 bhp"
-                      value={powerStr}
-                      onChange={e => setPowerStr(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-slate-700 font-bold mb-1">Seating Capacity</label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={12}
-                      value={seatingCapacityNum}
-                      onChange={e => setSeatingCapacityNum(parseInt(e.target.value) || 5)}
-                      className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-6 pt-2 font-bold text-slate-800">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isFeatured}
-                    onChange={e => setIsFeatured(e.target.checked)}
-                    className="accent-red-600 rounded"
-                  />
-                  <span>Featured Listing</span>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={isCertified}
-                    onChange={e => setIsCertified(e.target.checked)}
-                    className="accent-amber-600 rounded"
-                  />
-                  <span>150-Point Certified</span>
-                </label>
               </div>
 
               <div className="pt-4 border-t border-slate-200 flex flex-col gap-3">

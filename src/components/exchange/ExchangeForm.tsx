@@ -84,7 +84,6 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             <div>
               <span className="text-[10px] text-amber-800 font-black uppercase tracking-wider block">Target Upgrade Vehicle</span>
               <h4 className="text-sm font-black text-slate-900 font-serif">{targetCar.title} ({targetCar.year})</h4>
-              <p className="text-xs text-slate-600 font-medium">Price: ₹ {targetCar.price.toFixed(2)} Lakh</p>
             </div>
             <img src={targetCar.images[0]} alt="" className="w-20 h-14 object-cover rounded-xl shrink-0 border border-slate-200" referrerPolicy="no-referrer" />
           </div>

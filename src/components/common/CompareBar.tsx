@@ -30,8 +30,7 @@ export const CompareBar: React.FC<CompareBarProps> = ({
           {compareCars.map(car => (
             <div key={car.id} className="flex items-center gap-2 bg-slate-800 border border-slate-600 rounded-xl px-3 py-1.5 shrink-0">
               <img src={car.images[0]} alt="" className="w-8 h-6 object-cover rounded-lg" referrerPolicy="no-referrer" />
-              <span className="text-[11px] font-bold text-white truncate max-w-[120px]">{car.title}</span>
-              <span className="text-[10px] text-amber-400 font-bold shrink-0">₹{car.price.toFixed(1)}L</span>
+              <span className="text-[11px] font-bold text-white truncate max-w-[160px]">{car.title}</span>
               <button
                 onClick={() => onRemove(car.id)}
                 className="text-slate-400 hover:text-white ml-1 shrink-0"

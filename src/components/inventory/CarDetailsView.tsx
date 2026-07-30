@@ -3,20 +3,15 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Car } from '../../types';
 import {
   ArrowLeft,
-  ShieldCheck,
   Share2,
   RefreshCw,
   Phone,
   MessageCircle,
   CheckCircle2,
-  Check,
-  Award,
-  Bell,
   ChevronRight
 } from 'lucide-react';
 import { createWhatsAppLink, submitLeadApi } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
-import { EmiCalculator } from '../common/EmiCalculator';
 import { CarCard } from '../common/CarCard';
 
 interface CarDetailsViewProps {
@@ -35,21 +30,13 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
   onSelectCar
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState<'overview' | 'features' | 'inspection' | 'emi'>('overview');
 
-  // Inquiry Form State
   const [buyerName, setBuyerName] = useState('');
   const [buyerPhone, setBuyerPhone] = useState('');
-  const [buyerMessage] = useState(`Hi, I'm interested in the ${car.year} ${car.title} (₹ ${car.price.toFixed(2)} Lakh).`);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // Price drop alert state
-  const [alertPhone, setAlertPhone] = useState('');
-  const [alertSubmitting, setAlertSubmitting] = useState(false);
-  const [alertSubmitted, setAlertSubmitted] = useState(false);
-
-  const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title} (₹ ${car.price.toFixed(2)} Lakhs) at Kalaburagi showroom. Phone: ${buyerPhone || 'Not specified'}`;
+  const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title} at Kalaburagi showroom. Phone: ${buyerPhone || 'Not specified'}`;
   const whatsappUrl = createWhatsAppLink(DEALERSHIP_INFO.whatsappNumber, whatsappMsg);
 
   const handleInquirySubmit = async (e: React.FormEvent) => {
@@ -63,29 +50,11 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       carId: car.id,
       carTitle: car.title,
       type: 'Inquiry',
-      message: buyerMessage
+      message: `Hi, I'm interested in the ${car.year} ${car.title}.`
     });
     setSubmitting(false);
     setSubmitted(true);
     setTimeout(() => setSubmitted(false), 5000);
-  };
-
-  const handlePriceAlertSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!alertPhone) return;
-    setAlertSubmitting(true);
-    try {
-      await fetch('/api/price-alerts/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ carId: car.id, phone: alertPhone })
-      });
-      setAlertSubmitted(true);
-    } catch {
-      // silent
-    } finally {
-      setAlertSubmitting(false);
-    }
   };
 
   const handleShare = () => {
@@ -109,7 +78,6 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       className="py-28 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900"
     >
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Back Button & Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
           <button
             onClick={onBack}
@@ -138,7 +106,6 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           </div>
         </div>
 
-        {/* Title & Badge Summary */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span className="text-xs font-black text-slate-800 bg-slate-100 px-2.5 py-0.5 rounded border border-slate-200 uppercase tracking-wider">{car.brand}</span>
@@ -154,11 +121,8 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           </p>
         </div>
 
-        {/* Gallery & Sidebar Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Main Gallery Column */}
           <div className="lg:col-span-8 space-y-4">
-            {/* Main Stage Image */}
             <div className="relative aspect-[16/10] bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
               <AnimatePresence mode="wait">
                 <motion.img
@@ -173,16 +137,8 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   className="w-full h-full object-cover"
                 />
               </AnimatePresence>
-
-              {car.isCertified && (
-                <div className="absolute top-4 left-4 bg-slate-950/90 border border-slate-800 text-amber-300 px-3 py-1.5 rounded-xl backdrop-blur-md text-xs font-extrabold flex items-center gap-1.5 shadow-lg">
-                  <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span>Certified 150-Point Inspected</span>
-                </div>
-              )}
             </div>
 
-            {/* Thumbnail Navigation */}
             {car.images.length > 1 && (
               <div className="flex items-center gap-3 overflow-x-auto pb-2">
                 {car.images.map((img, idx) => (
@@ -201,137 +157,43 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
               </div>
             )}
 
-            {/* View Details Navigation Tabs */}
             <div className="pt-4 border-t border-slate-200">
-              <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-bold">
-                {[
-                  { id: 'overview', label: 'Overview & Specs' },
-                  { id: 'features', label: 'Features & Amenities' },
-                  { id: 'inspection', label: '150-Point Inspection' }
-                ].map(tab => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
-                    className={`px-4 py-2 rounded-xl transition-all font-extrabold ${
-                      activeTab === tab.id
-                        ? 'bg-slate-900 text-white shadow-sm'
-                        : 'bg-white text-slate-700 hover:text-slate-950 border border-slate-200'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4 font-serif">Vehicle Details</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Model</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.model}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Year</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.year}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Transmission</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.transmission}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Body Type</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.bodyType}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Fuel Type</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.fuelType}</span>
+                </div>
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 block text-[10px] uppercase font-black">Owner</span>
+                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.ownerCount}</span>
+                </div>
               </div>
-
-              {/* Tab Contents */}
-              <div className="pt-6">
-                {activeTab === 'overview' && (
-                  <div className="space-y-6">
-                    {/* Specifications Grid */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
-                      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <span className="text-slate-500 block text-[10px] uppercase font-black">Year</span>
-                        <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.year}</span>
-                      </div>
-                      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <span className="text-slate-500 block text-[10px] uppercase font-black">Kilometers</span>
-                        <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.kilometers.toLocaleString('en-IN')} km</span>
-                      </div>
-                      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <span className="text-slate-500 block text-[10px] uppercase font-black">Fuel Type</span>
-                        <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.fuelType}</span>
-                      </div>
-                      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                        <span className="text-slate-500 block text-[10px] uppercase font-black">Transmission</span>
-                        <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.transmission}</span>
-                      </div>
-                    </div>
-
-                    {/* Detailed Specs Table */}
-                    <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
-                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-2 font-serif">
-                        Technical Specifications
-                      </h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-xs">
-                        <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
-                          <span>RTO Registration:</span>
-                          <span className="font-extrabold text-slate-900">{car.specs.rto}</span>
-                        </div>
-                        <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
-                          <span>Insurance Validity:</span>
-                          <span className="font-extrabold text-emerald-700">{car.insuranceType}</span>
-                        </div>
-                        <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
-                          <span>Engine Displacement:</span>
-                          <span className="font-extrabold text-slate-900">{car.engineCapacity || 'Standard'}</span>
-                        </div>
-                        <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
-                          <span>Seating Capacity:</span>
-                          <span className="font-extrabold text-slate-900">{car.specs.seatingCapacity} Persons</span>
-                        </div>
-                        <div className="flex justify-between py-1.5 border-b border-slate-100 text-slate-600 font-medium">
-                          <span>Ground Clearance:</span>
-                          <span className="font-extrabold text-slate-900">{car.specs.groundClearance || 'Standard'}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Description */}
-                    <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-2 shadow-sm">
-                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider font-serif">Vehicle Overview &amp; Condition</h3>
-                      <p className="text-xs text-slate-700 leading-relaxed font-medium">{car.description}</p>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'features' && (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider font-serif">Key Features &amp; Equipment</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      {car.features.map((feat, idx) => (
-                        <div key={idx} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 font-bold text-slate-800">
-                          <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
-                          <span>{feat}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'inspection' && (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
-                    <div className="flex items-center gap-2 text-amber-800">
-                      <Award className="w-5 h-5 text-amber-600" />
-                      <h3 className="text-sm font-black uppercase tracking-wider font-serif">150-Point Inspection Certification</h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                      {[
-                        'Engine & Gearbox Diagnostics',
-                        'Structural Frame & Chassis Check',
-                        'Suspension & Brake Systems',
-                        'Air Conditioning & Electronics',
-                        'Verified Meter Reading Log',
-                        'RC & RTO Document Validation'
-                      ].map((item, idx) => (
-                        <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between font-bold text-slate-900">
-                          <span>{item}</span>
-                          <span className="text-[10px] uppercase font-black text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded flex items-center gap-1">
-                            <Check className="w-3 h-3 text-emerald-600" /> Passed
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              <div className="mt-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-xs flex items-center justify-between">
+                <span className="text-slate-500 font-black uppercase text-[10px]">RTO Registration:</span>
+                <span className="font-extrabold text-slate-900">{car.specs.rto}</span>
               </div>
             </div>
           </div>
 
-          {/* Sidebar Inquiry Card */}
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-xl sticky top-32">
-              {/* Inquiry Form */}
               <div className="space-y-4">
                 <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider font-serif">Inquire / Book Test Drive</h4>
 
@@ -405,46 +267,6 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         </div>
       </div>
 
-      {/* ── PRICE DROP ALERT SUBSCRIPTION ─────────────────────── */}
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-amber-700" />
-            </div>
-            <div>
-              <p className="text-xs font-black text-slate-900">Price Drop Alert</p>
-              <p className="text-[10px] text-slate-500 font-medium">Get WhatsApp notification if price drops</p>
-            </div>
-          </div>
-          {alertSubmitted ? (
-            <div className="flex items-center gap-2 text-emerald-700 text-xs font-bold">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>You're subscribed! We'll WhatsApp you if price drops.</span>
-            </div>
-          ) : (
-            <form onSubmit={handlePriceAlertSubmit} className="flex flex-1 gap-2">
-              <input
-                type="tel"
-                placeholder="Your WhatsApp number (+91...)"
-                value={alertPhone}
-                onChange={e => setAlertPhone(e.target.value)}
-                required
-                className="flex-1 bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs text-slate-900 font-bold focus:outline-none focus:border-amber-500 min-w-0"
-              />
-              <button
-                type="submit"
-                disabled={alertSubmitting}
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl shrink-0"
-              >
-                {alertSubmitting ? '...' : 'Notify Me'}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
-
-      {/* ── SIMILAR CARS ──────────────────────────────────────── */}
       {relatedCars && relatedCars.length > 0 && (
         <div className="max-w-7xl mx-auto space-y-4">
           <div className="flex items-center justify-between">

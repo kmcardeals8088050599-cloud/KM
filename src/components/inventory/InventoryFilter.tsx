@@ -162,12 +162,7 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
       bodyType: 'All',
       fuelType: 'All',
       transmission: 'All',
-      minPrice: 0,
-      maxPrice: 50,
-      minYear: 2010,
-      maxYear: 2026,
-      status: 'All',
-      sort: 'newest'
+      status: 'All'
     });
   };
 
@@ -330,17 +325,18 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* Sort */}
+        {/* Owner Count filter */}
         <div>
-          <label className="block text-[10px] font-black text-slate-500 uppercase mb-1">Sort By</label>
+          <label className="block text-[10px] font-black text-slate-500 uppercase mb-1">Owner</label>
           <select
-            value={filters.sort}
-            onChange={e => setFilters(prev => ({ ...prev, sort: e.target.value as FilterState['sort'] }))}
+            value={filters.ownerCount}
+            onChange={e => setFilters(prev => ({ ...prev, ownerCount: e.target.value }))}
             className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500"
           >
-            <option value="newest">Newest Arrivals</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
+            <option value="All">All Owners</option>
+            <option value="1st Owner">1st Owner</option>
+            <option value="2nd Owner">2nd Owner</option>
+            <option value="3rd Owner">3rd Owner</option>
           </select>
         </div>
 

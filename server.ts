@@ -38,16 +38,8 @@ import {
   sendWhatsAppAlert,
   buildNewLeadMessage,
   buildNewExchangeMessage,
-  buildDailySummaryMessage,
-  buildPriceDropMessage
+  buildDailySummaryMessage
 } from './server/whatsapp.js';
-import { getInsuranceAlerts } from './server/insurance.js';
-import {
-  subscribePriceAlert,
-  getAlertsForCar,
-  markAlertNotified,
-  getAllActiveAlerts
-} from './server/priceAlerts.js';
 
 const LOGIN_RATE_LIMIT = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -146,17 +138,13 @@ export async function createApp() {
       if (status && typeof status === 'string' && status !== 'All') {
         filtered = filtered.filter(c => c.status.toLowerCase() === status.toLowerCase());
       }
-      if (featured === 'true') {
-        filtered = filtered.filter(c => c.isFeatured);
-      }
       if (search && typeof search === 'string') {
         const q = search.toLowerCase();
         filtered = filtered.filter(
           c =>
             c.title.toLowerCase().includes(q) ||
             c.brand.toLowerCase().includes(q) ||
-            c.model.toLowerCase().includes(q) ||
-            c.color.toLowerCase().includes(q)
+            c.model.toLowerCase().includes(q)
         );
       }
 
@@ -389,30 +377,14 @@ export async function createApp() {
         title: data.title,
         brand: data.brand,
         model: data.model,
-        variant: data.variant || '',
         year: data.year,
-        price: Number(data.price) || 10,
-        kilometers: data.kilometers || 0,
         fuelType: data.fuelType,
         transmission: data.transmission,
         bodyType: data.bodyType,
         ownerCount: data.ownerCount || '1st Owner',
-        color: data.color || 'Black',
-        location: data.location || 'Kalaburagi',
         status: data.status || 'Available',
-        isFeatured: data.isFeatured ?? true,
-        isCertified: data.isCertified ?? true,
-        registrationYear: data.registrationYear || data.year,
-        insuranceType: data.insuranceType || 'Comprehensive',
         images: data.images || [],
-        features: data.features || [],
-        description: data.description || '',
-        specs: data.specs || {
-          rto: 'KA-32 (Kalaburagi)',
-          mileage: '16.5 kmpl',
-          power: '115 bhp',
-          seatingCapacity: 5
-        }
+        specs: data.specs || { rto: 'KA-32 (Kalaburagi)' }
       });
       res.status(201).json(newCar);
     } catch (err: any) {
@@ -430,21 +402,6 @@ export async function createApp() {
       const data = sanitizeObject(validation.data);
       const existing = await getCarById(req.params.id);
       const updated = await dbUpdateCar(req.params.id, data);
-
-      // FEATURE 7: Trigger price drop alerts if price decreased
-      if (existing && data.price !== undefined && Number(data.price) < existing.price) {
-        const subscribers = await getAlertsForCar(req.params.id);
-        for (const sub of subscribers) {
-          sendWhatsAppAlert({
-            to: sub.phone.replace(/[^0-9]/g, ''),
-            text: buildPriceDropMessage(
-              { title: existing.title, oldPrice: existing.price, newPrice: Number(data.price) },
-              sub.phone
-            )
-          }).catch(() => {});
-          markAlertNotified(sub.id).catch(() => {});
-        }
-      }
 
       if (existing && Array.isArray(data.images)) {
         const removedImages = existing.images.filter(url => !data.images.includes(url));
@@ -487,7 +444,7 @@ export async function createApp() {
   // FEATURE 2: AI Car Description Generator
   app.post('/api/admin/generate-description', authenticateAdmin, async (req, res) => {
     try {
-      const { brand, model, variant, year, kilometers, fuelType, transmission, bodyType, color, features, ownerCount } = req.body;
+      const { brand, model, year, fuelType, transmission, bodyType, ownerCount } = req.body;
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
         res.status(400).json({ error: 'GEMINI_API_KEY not configured' });
@@ -499,15 +456,11 @@ export async function createApp() {
 Car Details:
 - Brand: ${brand}
 - Model: ${model}
-- Variant: ${variant || 'Standard'}
 - Year: ${year}
-- Kilometers: ${kilometers?.toLocaleString('en-IN')} km
 - Fuel: ${fuelType}
 - Transmission: ${transmission}
 - Body Type: ${bodyType}
-- Color: ${color}
 - Owner: ${ownerCount || '1st Owner'}
-- Key Features: ${Array.isArray(features) ? features.slice(0, 5).join(', ') : features || 'Standard'}
 
 Rules: Keep it under 60 words. Mention condition positively but honestly. Include KM Car Deals 150-point inspection certified. No made-up specs. Professional tone for Indian used car market.`;
 
@@ -527,7 +480,6 @@ Rules: Keep it under 60 words. Mention condition positively but honestly. Includ
   app.post('/api/admin/daily-report', authenticateAdmin, async (req, res) => {
     try {
       const [cars, leads, exchanges] = await Promise.all([getAllCars(), getAllLeads(), getAllExchanges()]);
-      const insuranceAlerts = getInsuranceAlerts(cars, 60);
       const stats = {
         totalCars: cars.length,
         availableCars: cars.filter(c => c.status === 'Available').length,
@@ -536,11 +488,7 @@ Rules: Keep it under 60 words. Mention condition positively but honestly. Includ
         totalLeads: leads.length,
         newLeads: leads.filter(l => l.status === 'New').length,
         totalExchanges: exchanges.length,
-        newExchanges: exchanges.filter(e => e.status === 'New').length,
-        insuranceExpiring: insuranceAlerts.slice(0, 5).map(a => ({
-          title: a.title,
-          date: a.expiryDate.toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })
-        }))
+        newExchanges: exchanges.filter(e => e.status === 'New').length
       };
       const message = buildDailySummaryMessage(stats);
       const adminPhone = process.env.WHATSAPP_ADMIN_PHONE || '918123991847';
@@ -548,55 +496,6 @@ Rules: Keep it under 60 words. Mention condition positively but honestly. Includ
       res.json({ success: true, stats, message });
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to generate report', details: err.message });
-    }
-  });
-
-  // -------------------------------------------------------
-  // FEATURE 6: Insurance Expiry Alerts
-  app.get('/api/admin/insurance-alerts', authenticateAdmin, async (_req, res) => {
-    try {
-      const cars = await getAllCars();
-      const alerts = getInsuranceAlerts(cars, 60);
-      res.json(alerts.map(a => ({
-        carId: a.carId,
-        title: a.title,
-        insuranceType: a.insuranceType,
-        expiryDate: a.expiryDate.toISOString(),
-        daysUntilExpiry: a.daysUntilExpiry,
-        isExpired: a.isExpired
-      })));
-    } catch (err: any) {
-      res.status(500).json({ error: 'Failed to fetch insurance alerts', details: err.message });
-    }
-  });
-
-  // -------------------------------------------------------
-  // FEATURE 7: Price Drop Alerts — subscribe (public) + list/trigger (admin)
-  app.post('/api/price-alerts/subscribe', async (req, res) => {
-    try {
-      const { carId, phone } = req.body;
-      if (!carId || !phone) {
-        res.status(400).json({ error: 'carId and phone are required' });
-        return;
-      }
-      const car = await getCarById(carId);
-      if (!car) {
-        res.status(404).json({ error: 'Car not found' });
-        return;
-      }
-      const alert = await subscribePriceAlert(carId, car.title, phone);
-      res.status(201).json({ success: true, alert });
-    } catch (err: any) {
-      res.status(500).json({ error: 'Failed to subscribe', details: err.message });
-    }
-  });
-
-  app.get('/api/admin/price-alerts', authenticateAdmin, async (_req, res) => {
-    try {
-      const alerts = await getAllActiveAlerts();
-      res.json(alerts);
-    } catch (err: any) {
-      res.status(500).json({ error: 'Failed to fetch price alerts', details: err.message });
     }
   });
 

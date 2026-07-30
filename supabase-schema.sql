@@ -10,27 +10,13 @@ CREATE TABLE IF NOT EXISTS cars (
   title TEXT NOT NULL,
   brand TEXT NOT NULL,
   model TEXT NOT NULL,
-  variant TEXT DEFAULT '',
   year INTEGER NOT NULL DEFAULT 2022,
-  price NUMERIC(10,2) NOT NULL DEFAULT 10,
-  raw_price BIGINT NOT NULL DEFAULT 1000000,
-  original_price NUMERIC(10,2),
-  kilometers INTEGER NOT NULL DEFAULT 0,
   fuel_type TEXT NOT NULL DEFAULT 'Petrol',
   transmission TEXT NOT NULL DEFAULT 'Manual',
   body_type TEXT NOT NULL DEFAULT 'SUV',
   owner_count TEXT DEFAULT '1st Owner',
-  color TEXT DEFAULT 'Black',
-  location TEXT DEFAULT 'Kalaburagi',
   status TEXT NOT NULL DEFAULT 'Available',
-  is_featured BOOLEAN DEFAULT true,
-  is_certified BOOLEAN DEFAULT true,
-  registration_year INTEGER,
-  insurance_type TEXT DEFAULT 'Comprehensive',
-  engine_capacity TEXT,
   images JSONB DEFAULT '[]'::jsonb,
-  features JSONB DEFAULT '[]'::jsonb,
-  description TEXT DEFAULT '',
   specs JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT now()
 );
@@ -85,7 +71,6 @@ CREATE INDEX IF NOT EXISTS idx_cars_brand ON cars(brand);
 CREATE INDEX IF NOT EXISTS idx_cars_status ON cars(status);
 CREATE INDEX IF NOT EXISTS idx_cars_body_type ON cars(body_type);
 CREATE INDEX IF NOT EXISTS idx_cars_fuel_type ON cars(fuel_type);
-CREATE INDEX IF NOT EXISTS idx_cars_is_featured ON cars(is_featured);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
 CREATE INDEX IF NOT EXISTS idx_exchange_requests_status ON exchange_requests(status);
 
@@ -113,18 +98,3 @@ CREATE POLICY "Admin full access on exchanges" ON exchange_requests FOR ALL USIN
 
 -- Users table - no public access
 CREATE POLICY "No public user access" ON users FOR ALL USING (false) WITH CHECK (false);
-
--- ── PRICE DROP ALERTS TABLE (Feature 7) ──────────────────────────────────
-CREATE TABLE IF NOT EXISTS price_alerts (
-  id TEXT PRIMARY KEY,
-  car_id TEXT NOT NULL,
-  car_title TEXT NOT NULL,
-  phone TEXT NOT NULL,
-  subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  notified_at TIMESTAMP WITH TIME ZONE,
-  is_active BOOLEAN DEFAULT true
-);
-
-CREATE INDEX IF NOT EXISTS idx_price_alerts_car ON price_alerts(car_id);
-CREATE INDEX IF NOT EXISTS idx_price_alerts_phone ON price_alerts(phone);
-CREATE INDEX IF NOT EXISTS idx_price_alerts_active ON price_alerts(is_active);

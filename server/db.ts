@@ -11,28 +11,14 @@ function rowToCar(row: any): Car {
     title: row.title,
     brand: row.brand,
     model: row.model,
-    variant: row.variant || '',
     year: row.year,
-    price: Number(row.price),
-    rawPrice: Number(row.raw_price),
-    originalPrice: row.original_price ? Number(row.original_price) : undefined,
-    kilometers: row.kilometers,
     fuelType: row.fuel_type,
     transmission: row.transmission,
     bodyType: row.body_type,
     ownerCount: row.owner_count || '1st Owner',
-    color: row.color || 'Black',
-    location: row.location || 'Kalaburagi',
     status: row.status,
-    isFeatured: row.is_featured,
-    isCertified: row.is_certified,
-    registrationYear: row.registration_year,
-    insuranceType: row.insurance_type || 'Comprehensive',
-    engineCapacity: row.engine_capacity,
     images: row.images || [],
-    features: row.features || [],
-    description: row.description || '',
-    specs: row.specs || { rto: '', mileage: '', power: '', seatingCapacity: 5 },
+    specs: { rto: (row.specs?.rto) || '' },
     createdAt: row.created_at
   };
 }
@@ -79,28 +65,13 @@ function carToRow(car: Partial<Car>): Record<string, any> {
   if (car.title !== undefined) row.title = car.title;
   if (car.brand !== undefined) row.brand = car.brand;
   if (car.model !== undefined) row.model = car.model;
-  if (car.variant !== undefined) row.variant = car.variant;
   if (car.year !== undefined) row.year = car.year;
-  if (car.price !== undefined) {
-    row.price = car.price;
-    row.raw_price = Math.round(car.price * 100000);
-  }
-  if (car.kilometers !== undefined) row.kilometers = car.kilometers;
   if (car.fuelType !== undefined) row.fuel_type = car.fuelType;
   if (car.transmission !== undefined) row.transmission = car.transmission;
   if (car.bodyType !== undefined) row.body_type = car.bodyType;
   if (car.ownerCount !== undefined) row.owner_count = car.ownerCount;
-  if (car.color !== undefined) row.color = car.color;
-  if (car.location !== undefined) row.location = car.location;
   if (car.status !== undefined) row.status = car.status;
-  if (car.isFeatured !== undefined) row.is_featured = car.isFeatured;
-  if (car.isCertified !== undefined) row.is_certified = car.isCertified;
-  if (car.registrationYear !== undefined) row.registration_year = car.registrationYear;
-  if (car.insuranceType !== undefined) row.insurance_type = car.insuranceType;
-  if (car.engineCapacity !== undefined) row.engine_capacity = car.engineCapacity;
   if (car.images !== undefined) row.images = car.images;
-  if (car.features !== undefined) row.features = car.features;
-  if (car.description !== undefined) row.description = car.description;
   if (car.specs !== undefined) row.specs = car.specs;
   return row;
 }
@@ -126,7 +97,7 @@ export async function getCarById(id: string): Promise<Car | null> {
   return rowToCar(data);
 }
 
-export async function createCar(car: Omit<Car, 'id' | 'createdAt' | 'rawPrice'>): Promise<Car> {
+export async function createCar(car: Omit<Car, 'id' | 'createdAt'>): Promise<Car> {
   const id = generateId('car');
   const row = {
     id,

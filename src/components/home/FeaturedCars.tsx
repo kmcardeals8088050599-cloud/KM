@@ -26,7 +26,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   const categories = ['All', 'SUV', 'Sedan', 'Hatchback', 'Luxury'];
 
   const featuredList = cars.filter(c => {
-    if (activeCategory === 'All') return c.isFeatured || c.status === 'Available';
+    if (activeCategory === 'All') return c.status === 'Available';
     return c.bodyType.toLowerCase() === activeCategory.toLowerCase();
   });
 

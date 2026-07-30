@@ -107,7 +107,6 @@ export function buildDailySummaryMessage(stats: {
   newLeads: number;
   totalExchanges: number;
   newExchanges: number;
-  insuranceExpiring: { title: string; date: string }[];
 }): string {
   const lines = [
     `📊 *KM Car Deals — Daily Summary*`,
@@ -128,32 +127,6 @@ export function buildDailySummaryMessage(stats: {
     `  • 🔴 New (Pending): ${stats.newExchanges}`,
   ];
 
-  if (stats.insuranceExpiring.length > 0) {
-    lines.push(``, `⚠️ *Insurance Expiring Soon*`);
-    stats.insuranceExpiring.slice(0, 5).forEach(c => {
-      lines.push(`  • ${c.title} — ${c.date}`);
-    });
-  }
-
   lines.push(``, `🏪 KM Car Deals, Kalaburagi | +91 81239 91847`);
   return lines.join('\n');
-}
-
-export function buildPriceDropMessage(car: {
-  title: string;
-  oldPrice: number;
-  newPrice: number;
-}, customerPhone: string): string {
-  const saving = (car.oldPrice - car.newPrice).toFixed(2);
-  return [
-    `📉 *Price Drop Alert — KM Car Deals*`,
-    ``,
-    `🚗 ${car.title}`,
-    `💰 Old Price: ₹${car.oldPrice.toFixed(2)} Lakh`,
-    `✅ New Price: ₹${car.newPrice.toFixed(2)} Lakh`,
-    `💵 You Save: ₹${saving} Lakh!`,
-    ``,
-    `Call us: +91 81239 91847`,
-    `Visit: Opposite Hyundai Showroom, Kalaburagi`
-  ].join('\n');
 }

@@ -9,31 +9,15 @@ export const createCarSchema = z.object({
   title: z.string().min(1).max(200),
   brand: z.string().min(1).max(50),
   model: z.string().min(1).max(100),
-  variant: z.string().max(100).optional(),
   year: z.number().int().min(1990).max(2030),
-  price: z.number().positive().max(500),
-  kilometers: z.number().int().min(0).max(999999),
   fuelType: z.enum(['Petrol', 'Diesel', 'CNG', 'Electric', 'Hybrid']),
   transmission: z.enum(['Manual', 'Automatic']),
   bodyType: z.enum(['SUV', 'Sedan', 'Hatchback', 'Luxury', 'MUV']),
   ownerCount: z.string().max(20).optional(),
-  color: z.string().max(50).optional(),
-  location: z.string().max(100).optional(),
   status: z.enum(['Available', 'Reserved', 'Sold']).optional(),
-  isFeatured: z.boolean().optional(),
-  isCertified: z.boolean().optional(),
-  registrationYear: z.number().int().optional(),
-  insuranceType: z.string().max(100).optional(),
   images: z.array(z.string().url().or(z.string().startsWith('/'))).max(10).optional(),
-  features: z.array(z.string().max(100)).max(20).optional(),
-  description: z.string().max(2000).optional(),
   specs: z.object({
-    rto: z.string().optional(),
-    mileage: z.string().optional(),
-    power: z.string().optional(),
-    seatingCapacity: z.number().int().min(1).max(12).optional(),
-    bootSpace: z.string().optional(),
-    groundClearance: z.string().optional()
+    rto: z.string().optional()
   }).optional()
 });
 

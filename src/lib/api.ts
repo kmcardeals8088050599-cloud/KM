@@ -33,8 +33,7 @@ export function filterCarsLocal(cars: Car[], filters: Partial<FilterState>): Car
       c =>
         c.title.toLowerCase().includes(q) ||
         c.brand.toLowerCase().includes(q) ||
-        c.model.toLowerCase().includes(q) ||
-        c.color.toLowerCase().includes(q)
+        c.model.toLowerCase().includes(q)
     );
   }
 
@@ -47,9 +46,7 @@ export function filterCarsLocal(cars: Car[], filters: Partial<FilterState>): Car
   }
 
   if (filters.rto && filters.rto !== 'All') {
-    // Match by KA code prefix (e.g. "KA-32") so it works regardless of
-    // how the district name is formatted in the stored rto field
-    const rtoCode = filters.rto.split(' ')[0].toLowerCase(); // "KA-32"
+    const rtoCode = filters.rto.split(' ')[0].toLowerCase();
     result = result.filter(c => c.specs.rto.toLowerCase().startsWith(rtoCode));
   }
 
@@ -73,31 +70,7 @@ export function filterCarsLocal(cars: Car[], filters: Partial<FilterState>): Car
     result = result.filter(c => c.status === filters.status);
   }
 
-  if (filters.minPrice !== undefined) {
-    result = result.filter(c => c.price >= (filters.minPrice || 0));
-  }
-
-  if (filters.maxPrice !== undefined && filters.maxPrice > 0) {
-    result = result.filter(c => c.price <= (filters.maxPrice || 100));
-  }
-
-  if (filters.minYear !== undefined) {
-    result = result.filter(c => c.year >= (filters.minYear || 2010));
-  }
-
-  if (filters.maxYear !== undefined) {
-    result = result.filter(c => c.year <= (filters.maxYear || 2026));
-  }
-
-  if (filters.sort === 'price-asc') {
-    result.sort((a, b) => a.price - b.price);
-  } else if (filters.sort === 'price-desc') {
-    result.sort((a, b) => b.price - a.price);
-  } else if (filters.sort === 'km-asc') {
-    result.sort((a, b) => a.kilometers - b.kilometers);
-  } else {
-    result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }
+  result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return result;
 }

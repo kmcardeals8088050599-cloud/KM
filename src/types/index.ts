@@ -8,34 +8,15 @@ export interface Car {
   title: string;
   brand: string;
   model: string;
-  variant?: string;
   year: number;
-  price: number; // in Lakhs (e.g., 14.5 for ₹ 14.50 Lakh)
-  rawPrice: number; // in Rupees (e.g. 1450000)
-  originalPrice?: number; // for discount display in Lakhs
-  kilometers: number;
-  fuelType: FuelType;
   transmission: Transmission;
   bodyType: BodyType;
-  ownerCount: string; // e.g. "1st Owner", "2nd Owner"
-  color: string;
-  location: string;
+  fuelType: FuelType;
+  ownerCount: string;
   status: CarStatus;
-  isFeatured: boolean;
-  isCertified: boolean; // 150+ point inspected
-  registrationYear: number;
-  insuranceType: string; // e.g. "Comprehensive (Valid till Dec 2026)"
-  engineCapacity?: string; // e.g. "1493 cc"
   images: string[];
-  features: string[];
-  description: string;
   specs: {
-    rto: string; // e.g. "KA-32 Kalaburagi"
-    mileage: string; // e.g. "18.5 kmpl"
-    power: string; // e.g. "113 bhp"
-    seatingCapacity: number;
-    bootSpace?: string;
-    groundClearance?: string;
+    rto: string;
   };
   createdAt: string;
 }
@@ -105,10 +86,5 @@ export interface FilterState {
   bodyType: string;
   fuelType: string;
   transmission: string;
-  minPrice: number;
-  maxPrice: number;
-  minYear: number;
-  maxYear: number;
   status: string;
-  sort: 'newest' | 'price-asc' | 'price-desc' | 'km-asc';
 }

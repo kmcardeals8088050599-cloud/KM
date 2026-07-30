@@ -120,12 +120,7 @@ function MainAppContent() {
     bodyType: 'All',
     fuelType: 'All',
     transmission: 'All',
-    minPrice: 0,
-    maxPrice: 50,
-    minYear: 2010,
-    maxYear: 2026,
-    status: 'All',
-    sort: 'newest'
+    status: 'All'
   });
 
   // Fetch initial cars from server API
@@ -274,12 +269,7 @@ function MainAppContent() {
                           bodyType: 'All',
                           fuelType: 'All',
                           transmission: 'All',
-                          minPrice: 0,
-                          maxPrice: 50,
-                          minYear: 2010,
-                          maxYear: 2026,
-                          status: 'All',
-                          sort: 'newest'
+                          status: 'All'
                         })
                       }
                       className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.4)] border border-red-400/30 transition-all"
@@ -324,16 +314,13 @@ function MainAppContent() {
                             <span>{car.ownerCount}</span>
                           </div>
                           <h3 className="text-lg font-black text-white">{car.title}</h3>
-                          <p className="text-xs text-slate-300 font-medium line-clamp-2">{car.description}</p>
                           <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-bold text-slate-200">
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.kilometers.toLocaleString('en-IN')} km</span>
                             <span className="glass-pill px-2.5 py-1 rounded-lg">{car.fuelType}</span>
                             <span className="glass-pill px-2.5 py-1 rounded-lg">{car.transmission}</span>
+                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.bodyType}</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <span className="text-xs text-slate-400 block font-semibold">Offered Price</span>
-                          <span className="text-2xl font-black text-amber-400 text-glow-amber">₹ {car.price.toFixed(2)} Lakh</span>
                           <button className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl block w-full text-center shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-red-400/30">
                             View Details
                           </button>

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Car } from '../../types';
-import { ShieldCheck, Calendar, Gauge, Fuel, MessageCircle, ArrowRight, Eye, BarChart2 } from 'lucide-react';
+import { Calendar, Fuel, MessageCircle, ArrowRight, Eye } from 'lucide-react';
 import { createWhatsAppLink } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 
@@ -23,7 +23,7 @@ export const CarCard: React.FC<CarCardProps> = ({
   isInCompare,
 }) => {
   const navigate = useNavigate();
-  const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title} listed at ₹ ${car.price.toFixed(2)} Lakhs. Please contact me with details.`;
+  const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title}. Please contact me with details.`;
   const whatsappUrl = createWhatsAppLink(DEALERSHIP_INFO.whatsappNumber, whatsappMsg);
 
   const handleCardClick = () => {
@@ -44,7 +44,6 @@ export const CarCard: React.FC<CarCardProps> = ({
       whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
       className="group relative bg-white rounded-2xl flex flex-col overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-400 transition-shadow duration-300"
     >
-      {/* Top Image Container */}
       <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden cursor-pointer" onClick={handleCardClick}>
         <motion.img
           src={car.images[0] || 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200'}
@@ -56,7 +55,6 @@ export const CarCard: React.FC<CarCardProps> = ({
           loading="lazy"
         />
 
-        {/* Status & Certification Badges */}
         <div className="absolute top-3 left-3 flex items-center gap-2">
           {car.status === 'Available' ? (
             <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-600/90 text-white rounded-lg backdrop-blur-md flex items-center gap-1 shadow-xs border border-emerald-400/30">
@@ -72,16 +70,8 @@ export const CarCard: React.FC<CarCardProps> = ({
               Sold Out
             </span>
           )}
-
-          {car.isCertified && (
-            <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-slate-950/85 text-amber-300 border border-slate-800 rounded-lg backdrop-blur-md flex items-center gap-1 shadow-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-              150+ Certified
-            </span>
-          )}
         </div>
 
-        {/* Quick View Button */}
         <button
           onClick={e => {
             e.stopPropagation();
@@ -95,17 +85,14 @@ export const CarCard: React.FC<CarCardProps> = ({
         </button>
       </div>
 
-      {/* Card Content Body */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         <div>
-          {/* Brand & Year Header */}
           <div className="flex items-center justify-between text-xs mb-1">
             <span className="uppercase tracking-wider font-extrabold text-slate-800 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md">
               {car.brand}
             </span>
           </div>
 
-          {/* Car Title */}
           <h3
             onClick={handleCardClick}
             className="text-base font-extrabold text-slate-900 line-clamp-1 group-hover:text-amber-800 transition-colors cursor-pointer font-serif tracking-tight mt-1.5"
@@ -113,26 +100,23 @@ export const CarCard: React.FC<CarCardProps> = ({
             {car.title}
           </h3>
 
-          {/* Key Metrics */}
           <div className="grid grid-cols-3 gap-2 my-3 text-[11px] text-slate-700">
             <div className="bg-slate-50 p-2 rounded-xl flex flex-col items-center text-center border border-slate-200/80 shadow-xs">
               <Calendar className="w-3.5 h-3.5 text-slate-700 mb-0.5" />
               <span className="font-bold text-slate-900">{car.year}</span>
             </div>
             <div className="bg-slate-50 p-2 rounded-xl flex flex-col items-center text-center border border-slate-200/80 shadow-xs">
-              <Gauge className="w-3.5 h-3.5 text-slate-700 mb-0.5" />
-              <span className="font-bold text-slate-900">{car.kilometers.toLocaleString('en-IN')} km</span>
-            </div>
-            <div className="bg-slate-50 p-2 rounded-xl flex flex-col items-center text-center border border-slate-200/80 shadow-xs">
               <Fuel className="w-3.5 h-3.5 text-slate-700 mb-0.5" />
               <span className="font-bold text-slate-900">{car.fuelType}</span>
+            </div>
+            <div className="bg-slate-50 p-2 rounded-xl flex flex-col items-center text-center border border-slate-200/80 shadow-xs">
+              <span className="text-[10px] font-bold text-slate-500 uppercase">Owner</span>
+              <span className="font-bold text-slate-900">{car.ownerCount}</span>
             </div>
           </div>
         </div>
 
-        {/* Call-to-Actions */}
         <div className="pt-3 border-t border-slate-200 space-y-3">
-          {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2 pt-1">
             <button
               onClick={handleCardClick}
@@ -163,7 +147,6 @@ export const CarCard: React.FC<CarCardProps> = ({
                   : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900'
               }`}
             >
-              <BarChart2 className="w-3 h-3" />
               {isInCompare ? '✓ Added to Compare' : 'Add to Compare'}
             </button>
           )}
