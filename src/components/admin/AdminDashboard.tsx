@@ -3,7 +3,6 @@ import { KmLogo } from '../common/KmLogo';
 import { ImageUploader } from '../common/ImageUploader';
 import { Car, Lead, ExchangeRequest, CarStatus, LeadStatus, ExchangeStatus, FuelType, Transmission, BodyType } from '../../types';
 import { INDIAN_CAR_BRANDS } from '../inventory/InventoryFilter';
-import { KARNATAKA_RTO_CODES } from '../inventory/InventoryFilter';
 import {
   LogOut,
   Car as CarIcon,
@@ -211,16 +210,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const newExchangesCount = exchangeRequests.filter(ex => ex.status === 'New').length;
 
   // Admin car list filters
-  const [adminRtoFilter, setAdminRtoFilter] = useState('All');
+  const [adminRtoFilter, setAdminRtoFilter] = useState('');
   const [adminStatusFilter, setAdminStatusFilter] = useState('All');
 
-  const KARNATAKA_ADMIN_RTO = KARNATAKA_RTO_CODES.map(r => ({
-    code: r.split(' ')[0],
-    label: r
-  }));
-
   const filteredAdminCars = cars.filter(car => {
-    const rtoMatch = adminRtoFilter === 'All' || car.specs?.rto?.toLowerCase().startsWith(adminRtoFilter.toLowerCase());
+    const rtoMatch = adminRtoFilter === '' || car.specs?.rto?.toLowerCase().includes(adminRtoFilter.toLowerCase());
     const statusMatch = adminStatusFilter === 'All' || car.status === adminStatusFilter;
     return rtoMatch && statusMatch;
   });
@@ -442,16 +436,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-wrap gap-3 text-xs shadow-xs">
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Filter by RTO</label>
-                <select
+                <input
+                  type="text"
+                  placeholder="Search RTO code..."
                   value={adminRtoFilter}
                   onChange={e => setAdminRtoFilter(e.target.value)}
                   className="bg-slate-50 border border-slate-300 rounded-xl p-2 text-slate-900 font-bold focus:outline-none focus:border-red-500 min-w-[200px]"
-                >
-                  <option value="All">All RTOs</option>
-                  {KARNATAKA_ADMIN_RTO.map(r => (
-                    <option key={r.code} value={r.code}>{r.label}</option>
-                  ))}
-                </select>
+                />
               </div>
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-1">Filter by Status</label>
@@ -835,17 +826,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <div>
                   <label className="block text-slate-700 font-bold mb-1">Body Type</label>
-                  <select
+                  <input
+                    type="text"
+                    placeholder="e.g. SUV, Sedan, Hatchback, Luxury"
                     value={bodyType}
                     onChange={e => setBodyType(e.target.value as BodyType)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                  >
-                    <option value="SUV">SUV</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="Hatchback">Hatchback</option>
-                    <option value="MUV">MUV</option>
-                    <option value="Luxury">Luxury</option>
-                  </select>
+                  />
                 </div>
 
                 <div>
@@ -867,15 +854,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-slate-700 font-bold mb-1">RTO</label>
-                  <select
+                  <input
+                    type="text"
+                    placeholder="e.g. KA-32 (Kalaburagi)"
                     value={rtoStr}
                     onChange={e => setRtoStr(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                  >
-                    {KARNATAKA_RTO_CODES.map(r => (
-                      <option key={r.split(' ')[0]} value={r}>{r}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 
