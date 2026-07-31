@@ -40,7 +40,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   };
 
   return (
-    <section className="py-20 px-4 lg:px-8 relative z-10 bg-slate-50">
+    <section id="featured-cars" className="py-20 px-4 lg:px-8 relative z-10 bg-slate-50">
       <div className="max-w-7xl mx-auto space-y-10">
         {/* Section Title & Category Tabs */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-6">
