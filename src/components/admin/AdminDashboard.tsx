@@ -96,7 +96,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [fuelType, setFuelType] = useState<FuelType>('Petrol');
   const [transmission, setTransmission] = useState<Transmission>('Manual');
   const [bodyType, setBodyType] = useState<BodyType>('SUV');
-  const [ownerCount, setOwnerCount] = useState('1st Owner');
   const [status, setStatus] = useState<CarStatus>('Available');
   const [images, setImages] = useState<string[]>(['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200']);
   const [rtoStr, setRtoStr] = useState('KA-32 (Kalaburagi)');
@@ -114,7 +113,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setFuelType(car.fuelType);
       setTransmission(car.transmission);
       setBodyType(car.bodyType);
-      setOwnerCount(car.ownerCount);
       setStatus(car.status);
       setImages(car.images.length > 0 ? car.images : []);
       setRtoStr(car.specs?.rto || 'KA-32 (Kalaburagi)');
@@ -127,7 +125,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       setFuelType('Petrol');
       setTransmission('Manual');
       setBodyType('SUV');
-      setOwnerCount('1st Owner');
       setStatus('Available');
       setImages(['https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200']);
       setRtoStr('KA-32 (Kalaburagi)');
@@ -147,7 +144,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         const updatedData = {
           title, brand, model,
           year, fuelType, transmission, bodyType,
-          ownerCount, status, images, specs
+          status, images, specs
         };
         const updatedCar = await updateCarApi(editingCarId, updatedData);
         setCars(prev => prev.map(c => (c.id === editingCarId ? updatedCar : c)));
@@ -155,7 +152,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         const newCarData = {
           title, brand, model,
           year, fuelType, transmission, bodyType,
-          ownerCount, status, images, specs
+          status, images, specs
         };
         const created = await createCarApi(newCarData);
         setCars(prev => [created, ...prev]);
@@ -201,7 +198,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       const res = await fetch('/api/admin/generate-description', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ brand, model, year, fuelType, transmission, bodyType, ownerCount })
+        body: JSON.stringify({ brand, model, year, fuelType, transmission, bodyType })
       });
       const data = await res.json();
     } catch { /* silent */ } finally {
@@ -872,24 +869,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-slate-700 font-bold mb-1">RTO</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. KA-32 (Kalaburagi)"
+                  <select
                     value={rtoStr}
                     onChange={e => setRtoStr(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-slate-700 font-bold mb-1">Owner Count</label>
-                  <select
-                    value={ownerCount}
-                    onChange={e => setOwnerCount(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
                   >
-                    <option value="1st Owner">1st Owner</option>
-                    <option value="2nd Owner">2nd Owner</option>
-                    <option value="3rd Owner">3rd Owner</option>
+                    {KARNATAKA_RTO_CODES.map(r => (
+                      <option key={r.split(' ')[0]} value={r}>{r}</option>
+                    ))}
                   </select>
                 </div>
               </div>

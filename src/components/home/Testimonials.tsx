@@ -11,7 +11,7 @@ export const Testimonials: React.FC = () => {
             <span className="text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
               Verified Buyer Feedback
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif mt-2">
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mt-2">
               WHAT OUR CUSTOMERS SAY
             </h2>
             <p className="text-xs text-slate-600 font-medium mt-1">
@@ -20,7 +20,7 @@ export const Testimonials: React.FC = () => {
           </div>
 
           <div className="bg-white border border-slate-200 px-6 py-4 rounded-3xl flex items-center gap-4 shadow-md">
-            <div className="text-3xl font-black text-slate-900 font-serif">{DEALERSHIP_INFO.googleRating}.0</div>
+            <div className="text-3xl font-black text-slate-900">{DEALERSHIP_INFO.googleRating}.0</div>
             <div>
               <div className="flex items-center gap-1 text-amber-500">
                 {[...Array(5)].map((_, i) => (
@@ -57,7 +57,7 @@ export const Testimonials: React.FC = () => {
 
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                 <div>
-                  <h4 className="font-black text-slate-900 font-serif">{item.name}</h4>
+                  <h4 className="font-black text-slate-900">{item.name}</h4>
                   <p className="text-[10px] text-slate-500 font-medium">{item.location}</p>
                 </div>
                 <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1">

@@ -25,7 +25,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const whatsappUrl = createWhatsAppLink(DEALERSHIP_INFO.whatsappNumber, whatsappMsg);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/60 animate-in fade-in duration-200">
       <div className="relative w-full max-w-4xl bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row">
         <button
           onClick={onClose}
@@ -51,7 +51,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   key={idx}
                   onClick={() => setActiveImgIndex(idx)}
                   className={`relative w-16 h-12 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
-                    activeImgIndex === idx ? 'border-red-600 scale-105 shadow-xs' : 'border-slate-300 opacity-60 hover:opacity-100'
+                    activeImgIndex === idx ? 'border-amber-500 scale-105 shadow-xs' : 'border-slate-300 opacity-60 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -64,39 +64,26 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         <div className="w-full md:w-1/2 p-6 flex flex-col justify-between overflow-y-auto bg-white">
           <div className="space-y-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-red-600">{car.brand}</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-600">{car.brand}</span>
               <h2 className="text-xl font-black text-slate-900">{car.title}</h2>
               <p className="text-xs text-slate-500 font-medium mt-1">{car.model}</p>
             </div>
 
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-              <div className="text-right">
-                <span className="text-[10px] text-slate-500 uppercase font-bold">RTO</span>
-                <p className="text-xs font-bold text-amber-700">{car.specs.rto}</p>
-              </div>
-              <div className="text-right">
-                <span className="text-[10px] text-slate-500 uppercase font-bold">Owner</span>
-                <p className="text-xs font-bold text-slate-900">{car.ownerCount}</p>
-              </div>
+            <div className="grid grid-cols-3 gap-1.5 text-[11px]">
+              {[
+                { label: 'Model', value: car.model },
+                { label: 'Year', value: car.year },
+                { label: 'Transmission', value: car.transmission },
+                { label: 'Body Type', value: car.bodyType },
+                { label: 'Fuel', value: car.fuelType },
+                { label: 'RTO', value: car.specs.rto?.split(' ')[0] || '—' },
+              ].map(d => (
+                <div key={d.label} className="bg-slate-50 p-1.5 rounded-lg border border-slate-200 text-center">
+                  <span className="text-slate-500 block text-[9px] uppercase font-bold">{d.label}</span>
+                  <span className="font-bold text-slate-900 text-[11px]">{d.value}</span>
+                </div>
+              ))}
             </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                <span className="text-slate-500 block text-[10px] uppercase font-bold">Year</span>
-                <span className="font-bold text-slate-900">{car.year}</span>
-              </div>
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                <span className="text-slate-500 block text-[10px] uppercase font-bold">Body Type</span>
-                <span className="font-bold text-slate-900">{car.bodyType}</span>
-              </div>
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                <span className="text-slate-500 block text-[10px] uppercase font-bold">Fuel</span>
-                <span className="font-bold text-slate-900">{car.fuelType}</span>
-              </div>
-              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                <span className="text-slate-500 block text-[10px] uppercase font-bold">Transmission</span>
-                <span className="font-bold text-slate-900">{car.transmission}</span>
-              </div>
             </div>
           </div>
 
@@ -128,7 +115,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 onClose();
                 onFullDetails(car);
               }}
-              className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 transition-colors shadow-xs"
+              className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 transition-colors shadow-xs"
             >
               <span>Full Specifications & Gallery</span>
               <ArrowRight className="w-4 h-4" />

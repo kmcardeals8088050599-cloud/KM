@@ -39,7 +39,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
           <span className="text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
             Buy, Sell, Exchange &amp; Brokerage
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
             BUY &amp; SELL PRE-OWNED CARS WITH CONFIDENCE
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
@@ -55,7 +55,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
               <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
                 <ShoppingBag className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 font-serif">Buy a Certified Pre-Owned Car</h2>
+              <h2 className="text-2xl font-black text-slate-900">Buy a Certified Pre-Owned Car</h2>
               <p className="text-xs text-slate-600 leading-relaxed font-medium">
                 Browse our multi-brand inventory featuring Hyundai, Maruti, Mahindra, Toyota, Tata, Kia, and Luxury cars.
               </p>
@@ -81,10 +81,10 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                 setActiveTab('inventory');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-md"
+              className="w-full py-3.5 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"
             >
               <span>Explore Available Inventory</span>
-              <ArrowRight className="w-4 h-4 text-amber-400" />
+              <ArrowRight className="w-4 h-4 text-white" />
             </button>
           </div>
 
@@ -94,7 +94,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
               <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
                 <Tag className="w-6 h-6" />
               </div>
-              <h2 className="text-2xl font-black text-slate-900 font-serif">Sell / Commission Brokerage</h2>
+              <h2 className="text-2xl font-black text-slate-900">Sell / Commission Brokerage</h2>
               <p className="text-xs text-slate-600 leading-relaxed font-medium">
                 Get maximum market value for your vehicle with direct showroom display or instant cash sale.
               </p>
@@ -157,7 +157,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-md transition-colors"
+                  className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl shadow-sm transition-colors"
                 >
                   Submit Car for Valuation
                 </button>

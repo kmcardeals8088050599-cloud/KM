@@ -29,32 +29,32 @@ export const Navbar: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
       {/* Top Announcement Bar */}
-      <div className="bg-slate-950 text-slate-300 text-xs py-2 px-4 border-b border-slate-800 shadow-xs">
+      <div className="bg-white text-slate-700 text-xs py-2 px-4 border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5 text-slate-200 font-extrabold uppercase tracking-wider text-[10px] bg-slate-800/90 px-3 py-1 rounded-full border border-slate-700 shadow-xs">
+            <span className="flex items-center gap-1.5 text-slate-700 font-extrabold uppercase tracking-wider text-[10px] bg-slate-100 px-3 py-1 rounded-full border border-slate-200 shadow-xs">
               <ShieldCheck className="w-3.5 h-3.5 text-amber-500" /> 100% Non-Accidental Guarantee
             </span>
-            <span className="hidden md:inline text-slate-400 text-[11px] font-medium">
+            <span className="hidden md:inline text-slate-500 text-[11px] font-medium">
               Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104
             </span>
           </div>
 
           <div className="flex items-center gap-4 text-xs">
-            <div className="flex items-center gap-1 text-slate-300 font-extrabold">
+            <div className="flex items-center gap-1 text-slate-700 font-extrabold">
               <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
               <span>{DEALERSHIP_INFO.googleRating}.0 Google Rated</span>
             </div>
             <a
               href="tel:+918123991847"
-              className="flex items-center gap-1.5 text-slate-100 hover:text-amber-400 transition-colors font-extrabold bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-full border border-slate-700"
+              className="flex items-center gap-1.5 text-slate-700 hover:text-amber-600 transition-colors font-extrabold bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded-full border border-slate-200"
             >
-              <Phone className="w-3.5 h-3.5 fill-slate-100 text-slate-100" />
+              <Phone className="w-3.5 h-3.5 fill-slate-700 text-slate-700" />
               <span>+91 81239 91847</span>
             </a>
             <a
               href="tel:+918088050599"
-              className="hidden sm:flex items-center gap-1.5 text-slate-400 hover:text-amber-400 transition-colors font-bold px-2 py-1"
+              className="hidden sm:flex items-center gap-1.5 text-slate-500 hover:text-amber-600 transition-colors font-bold px-2 py-1"
             >
               <Phone className="w-3 h-3 text-slate-500" />
               <span>+91 80880 50599</span>
@@ -67,8 +67,8 @@ export const Navbar: React.FC = () => {
       <nav
         className={`transition-all duration-300 px-4 lg:px-8 py-3.5 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-sm'
-            : 'bg-white/85 backdrop-blur-md border-b border-slate-200/80'
+            ? 'bg-white/95 border-b border-slate-200 shadow-sm'
+            : 'bg-white/85 border-b border-slate-200/80'
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -123,7 +123,7 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-xl bg-slate-900 text-white border border-slate-800 focus:outline-none shadow-md"
+              className="p-2.5 rounded-xl bg-slate-900 text-white border border-slate-200 focus:outline-none shadow-md"
               aria-label="Toggle Navigation"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

@@ -22,7 +22,7 @@ const Row: React.FC<{ label: string; values: (string | number | undefined | null
       </td>
     ))}
     {Array.from({ length: 3 - values.length }).map((_, i) => (
-      <td key={`empty-${i}`} className="py-3 px-4 text-center text-slate-300 text-xs">—</td>
+      <td key={`empty-${i}`} className="py-3 px-4 text-center text-slate-500 text-xs">—</td>
     ))}
   </tr>
 );
@@ -39,7 +39,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
             <ArrowLeft className="w-4 h-4 text-amber-600" />
             Back to Inventory
           </button>
-          <h1 className="text-xl font-black text-slate-900 font-serif">Car Comparison</h1>
+          <h1 className="text-xl font-black text-slate-900">Car Comparison</h1>
         </div>
 
         <div className="grid gap-4" style={{ gridTemplateColumns: `180px repeat(${cars.length}, 1fr)` }}>
@@ -53,12 +53,12 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
                   <img src={car.images[0]} alt={car.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <div>
-                  <h3 className="text-xs font-black text-slate-900 line-clamp-2 font-serif">{car.title}</h3>
+                  <h3 className="text-xs font-black text-slate-900 line-clamp-2">{car.title}</h3>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => onSelectCar(car)}
-                    className="flex-1 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-[10px] rounded-lg"
+                    className="flex-1 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-[10px] rounded-lg"
                   >
                     View Details
                   </button>
@@ -94,7 +94,6 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
               <Row label="Body Type" values={cars.map(c => c.bodyType)} />
               <Row label="Fuel Type" values={cars.map(c => c.fuelType)} />
               <Row label="Transmission" values={cars.map(c => c.transmission)} />
-              <Row label="Owner" values={cars.map(c => c.ownerCount)} />
               <Row label="RTO" values={cars.map(c => c.specs.rto || '—')} />
               <Row label="Status" values={cars.map(c => c.status)} />
             </tbody>
@@ -106,7 +105,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
             <a
               key={car.id}
               href={`tel:+918123991847`}
-              className="flex-1 min-w-[200px] py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 border border-slate-700"
+              className="flex-1 min-w-[200px] py-3 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm"
             >
               <Phone className="w-4 h-4 text-amber-400" />
               <span>Inquire: {car.title.split(' ').slice(0, 2).join(' ')}</span>

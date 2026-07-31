@@ -98,7 +98,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
             <button
               onClick={() => onOpenExchangeModal(car)}
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-md"
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-sm"
             >
               <RefreshCw className="w-3.5 h-3.5 text-amber-400" />
               <span>Exchange Your Car</span>
@@ -115,7 +115,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 font-serif tracking-tight">{car.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">{car.title}</h1>
           <p className="text-xs text-slate-600 font-medium">
             Showroom Location: {DEALERSHIP_INFO.address}, Kalaburagi
           </p>
@@ -158,36 +158,21 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
             )}
 
             <div className="pt-4 border-t border-slate-200">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4 font-serif">Vehicle Details</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                  <span className="text-slate-500 block text-[10px] uppercase font-black">Model</span>
-                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.model}</span>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                  <span className="text-slate-500 block text-[10px] uppercase font-black">Year</span>
-                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.year}</span>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                  <span className="text-slate-500 block text-[10px] uppercase font-black">Transmission</span>
-                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.transmission}</span>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                  <span className="text-slate-500 block text-[10px] uppercase font-black">Body Type</span>
-                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.bodyType}</span>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                  <span className="text-slate-500 block text-[10px] uppercase font-black">Fuel Type</span>
-                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.fuelType}</span>
-                </div>
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                  <span className="text-slate-500 block text-[10px] uppercase font-black">Owner</span>
-                  <span className="text-base font-extrabold text-slate-900 mt-1 block">{car.ownerCount}</span>
-                </div>
-              </div>
-              <div className="mt-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-xs flex items-center justify-between">
-                <span className="text-slate-500 font-black uppercase text-[10px]">RTO Registration:</span>
-                <span className="font-extrabold text-slate-900">{car.specs.rto}</span>
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider mb-4">Vehicle Details</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                {[
+                  { label: 'Model', value: car.model },
+                  { label: 'Year', value: car.year },
+                  { label: 'Transmission', value: car.transmission },
+                  { label: 'Body Type', value: car.bodyType },
+                  { label: 'Fuel Type', value: car.fuelType },
+                  { label: 'RTO', value: car.specs.rto?.split(' ')[0] || '—' },
+                ].map(d => (
+                  <div key={d.label} className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                    <span className="text-slate-500 block text-[9px] uppercase font-black">{d.label}</span>
+                    <span className="text-sm font-extrabold text-slate-900 mt-0.5 block">{d.value}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -195,7 +180,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           <div className="lg:col-span-4 space-y-6">
             <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-xl sticky top-32">
               <div className="space-y-4">
-                <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider font-serif">Inquire / Book Test Drive</h4>
+                <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">Inquire / Book Test Drive</h4>
 
                 {submitted ? (
                   <div className="p-4 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2">
@@ -229,7 +214,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl transition-all shadow-md"
+                      className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl transition-all shadow-sm"
                     >
                       {submitting ? 'Submitting...' : 'Request Callback'}
                     </button>
@@ -248,7 +233,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
                 <a
                   href="tel:+918123991847"
-                  className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 border border-slate-700 block text-center"
+                  className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm block text-center"
                 >
                   <Phone className="w-4 h-4 text-amber-400" />
                   <span>Call +91 81239 91847</span>
@@ -271,7 +256,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         <div className="max-w-7xl mx-auto space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-black text-slate-900 font-serif">Similar {car.brand} Cars</h2>
+              <h2 className="text-xl font-black text-slate-900">Similar {car.brand} Cars</h2>
               <p className="text-xs text-slate-500 font-medium mt-0.5">Other {car.brand} vehicles available at KM Car Deals</p>
             </div>
             <button

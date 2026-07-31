@@ -12,7 +12,7 @@ export const BrandCarousel: React.FC<BrandCarouselProps> = ({ onBrandClick }) =>
   return (
     <section className="py-12 relative overflow-hidden bg-slate-100 border-y border-slate-200">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center mb-6">
-        <p className="text-xs font-black uppercase tracking-widest text-amber-700 font-serif">
+        <p className="text-xs font-black uppercase tracking-widest text-amber-700 ">
           Trusted Multi-Brand Selection Available at KM Car Deals
         </p>
       </div>
@@ -28,7 +28,7 @@ export const BrandCarousel: React.FC<BrandCarouselProps> = ({ onBrandClick }) =>
             }}
             className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-amber-500/60 hover:shadow-[0_8px_25px_rgba(245,158,11,0.25)] transition-all duration-300 shrink-0 group focus:outline-none hover:-translate-y-1"
           >
-            <span className="font-black text-xs text-slate-800 group-hover:text-amber-600 tracking-wide font-serif">
+            <span className="font-black text-xs text-slate-800 group-hover:text-amber-600 tracking-wide ">
               {brand.name}
             </span>
           </button>

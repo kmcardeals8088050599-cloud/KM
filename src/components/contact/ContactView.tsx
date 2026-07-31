@@ -46,7 +46,7 @@ export const ContactView: React.FC = () => {
           <span className="text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
             Showroom Location &amp; Direct Contact
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight ">
             CONTACT KM CAR DEALS
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
@@ -63,7 +63,7 @@ export const ContactView: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center shrink-0">
                   <User className="w-4 h-4 text-amber-600" />
                 </div>
-                <span className="font-black text-slate-900 text-base font-serif">Md Nadeem Khan</span>
+                <span className="font-black text-slate-900 text-base ">Md Nadeem Khan</span>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -103,7 +103,7 @@ export const ContactView: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <span className="inline-block bg-slate-900 text-white font-extrabold text-xs uppercase tracking-wider px-4 py-1.5 rounded-full shadow-md">
+                <span className="inline-block bg-amber-600 text-white font-extrabold text-xs uppercase tracking-wider px-4 py-1.5 rounded-full shadow-md">
                   BUSINESS ON COMMISSION BASIS
                 </span>
               </div>
@@ -123,7 +123,7 @@ export const ContactView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Contact Form */}
           <div className="lg:col-span-6 bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-            <h3 className="text-xl font-black text-slate-900 font-serif">Send Us a Direct Message</h3>
+            <h3 className="text-xl font-black text-slate-900 ">Send Us a Direct Message</h3>
 
             {submitted ? (
               <div className="p-6 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-2xl text-xs font-bold flex items-center gap-2">
@@ -181,9 +181,9 @@ export const ContactView: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
                 >
-                  <Send className="w-4 h-4 text-amber-400" />
+                  <Send className="w-4 h-4 text-white" />
                   <span>{submitting ? 'Sending Message...' : 'Send Message'}</span>
                 </button>
               </form>
@@ -202,10 +202,10 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918123991847"
-                className="flex-1 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-md"
               >
-                <Phone className="w-4 h-4 text-amber-400" />
-                <span>+91 81239 91847</span>
+                <Phone className="w-4 h-4 fill-white" />
+                Call Now
               </a>
 
               <a
@@ -221,7 +221,7 @@ export const ContactView: React.FC = () => {
           {/* Map Preview */}
           <div className="lg:col-span-6 space-y-6">
             <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl min-h-[420px] relative flex flex-col">
-              <div className="p-4 bg-slate-900 text-white flex items-center justify-between text-xs font-bold">
+              <div className="p-4 bg-slate-800 text-white flex items-center justify-between text-xs font-bold">
                 <span className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-amber-400" />
                   Opposite Hyundai Showroom, Kalaburagi
@@ -251,7 +251,7 @@ export const ContactView: React.FC = () => {
             </div>
 
             <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-3 shadow-md text-xs">
-              <h4 className="font-black text-slate-900 uppercase tracking-wider font-serif">Showroom Working Hours</h4>
+              <h4 className="font-black text-slate-900 uppercase tracking-wider ">Showroom Working Hours</h4>
               <div className="flex items-center gap-2 text-slate-700 font-bold">
                 <Clock className="w-4 h-4 text-amber-600" />
                 <span>{DEALERSHIP_INFO.workingHours}</span>

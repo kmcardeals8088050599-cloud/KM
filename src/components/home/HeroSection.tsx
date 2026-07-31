@@ -182,7 +182,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                 navigate('/inventory');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="px-7 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl transition-shadow shadow-md hover:shadow-xl flex items-center gap-2 cursor-pointer"
+              className="px-7 py-3.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
               <span>Explore Inventory</span>
               <ArrowRight className="w-4 h-4 text-amber-400" />
@@ -224,7 +224,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
             style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
             className="relative rounded-2xl p-2 bg-white shadow-xl border border-slate-200 transition-shadow hover:shadow-2xl"
           >
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-900 group">
+            <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-900 group">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activePhotoIndex}
@@ -259,7 +259,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
 
                 <a
                   href="tel:+918123991847"
-                  className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-lg flex items-center gap-1 shrink-0 shadow-xs"
+                  className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-lg flex items-center gap-1 shrink-0 shadow-xs"
                 >
                   <Phone className="w-3.5 h-3.5" />
                   <span>Call Us</span>
@@ -352,7 +352,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                 <div>
                   <button
                     type="submit"
-                    className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                    className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm"
                   >
                     <Search className="w-4 h-4 text-amber-400" />
                     <span>Search</span>

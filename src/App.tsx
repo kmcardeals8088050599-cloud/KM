@@ -65,7 +65,7 @@ function CarDetailsRoute({
         <p className="text-xs text-slate-500 font-medium">The pre-owned car you are looking for may have been sold or removed from inventory.</p>
         <button
           onClick={() => navigate('/inventory')}
-          className="px-5 py-2.5 bg-red-600 text-white font-extrabold text-xs rounded-xl shadow-xs"
+          className="px-5 py-2.5 bg-amber-600 text-white font-extrabold text-xs rounded-xl shadow-xs"
         >
           Browse Active Inventory
         </button>
@@ -165,13 +165,7 @@ function MainAppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#06080d] text-slate-100 flex flex-col font-sans selection:bg-red-600 selection:text-white relative overflow-hidden">
-      {/* Background 4D Ambient Light Orbs */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-red-600/20 blur-[120px] animate-orb-1 pointer-events-none" />
-        <div className="absolute top-[40%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/15 blur-[150px] animate-orb-2 pointer-events-none" />
-        <div className="absolute bottom-[-10%] left-[20%] w-[550px] h-[550px] rounded-full bg-amber-600/15 blur-[130px] animate-orb-3 pointer-events-none" />
-      </div>
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-amber-600 selection:text-white">
 
       <ScrollToTop />
       {/* Navigation Header - hidden on admin pages */}
@@ -233,13 +227,13 @@ function MainAppContent() {
             element={
               <div className="py-12 px-4 lg:px-8 max-w-7xl mx-auto space-y-8 min-h-screen">
                 <div className="space-y-2 text-center max-w-2xl mx-auto">
-                  <span className="text-[11px] font-black text-red-400 uppercase tracking-widest bg-red-950/60 px-4 py-1.5 rounded-full border border-red-500/30 backdrop-blur-md shadow-[0_0_15px_rgba(239,68,68,0.25)]">
+                  <span className="text-[11px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-4 py-1.5 rounded-full border border-amber-200 shadow-sm">
                     Multi-Brand Pre-Owned Showroom
                   </span>
-                  <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight text-glow-red mt-2">
+                  <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mt-2">
                     EXPLORE ALL PRE-OWNED CARS
                   </h1>
-                  <p className="text-xs text-slate-300 font-medium">
+                  <p className="text-xs text-slate-500 font-medium">
                     Search &amp; filter among 150-point inspected multi-brand cars available for immediate delivery in Kalaburagi
                   </p>
                 </div>
@@ -256,7 +250,7 @@ function MainAppContent() {
                 {/* Cars Results Grid / List */}
                 {filteredCars.length === 0 ? (
                   <div className="text-center py-16 glass-panel rounded-3xl space-y-3">
-                    <p className="text-base font-extrabold text-white">No vehicles match your search filters.</p>
+                    <p className="text-base font-extrabold text-slate-700">No vehicles match your search filters.</p>
                     <p className="text-xs text-slate-400">Try adjusting your brand, budget, or body type criteria.</p>
                     <button
                       onClick={() =>
@@ -272,7 +266,7 @@ function MainAppContent() {
                           status: 'All'
                         })
                       }
-                      className="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl shadow-[0_0_20px_rgba(239,68,68,0.4)] border border-red-400/30 transition-all"
+                      className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-sm"
                     >
                       Clear All Filters
                     </button>
@@ -303,25 +297,24 @@ function MainAppContent() {
                           src={car.images[0]}
                           alt={car.title}
                           referrerPolicy="no-referrer"
-                          className="w-full md:w-56 h-36 object-cover rounded-xl shrink-0 border border-white/10"
+                          className="w-full md:w-56 h-36 object-cover rounded-xl shrink-0 border border-slate-200"
                         />
                         <div className="flex-1 space-y-2">
-                          <div className="flex items-center gap-2 text-xs text-slate-400 font-bold">
-                            <span className="text-red-400 uppercase tracking-wide">{car.brand}</span>
+                          <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
+                            <span className="text-amber-600 uppercase tracking-wide">{car.brand}</span>
                             <span>•</span>
                             <span>{car.year}</span>
-                            <span>•</span>
-                            <span>{car.ownerCount}</span>
                           </div>
-                          <h3 className="text-lg font-black text-white">{car.title}</h3>
-                          <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-bold text-slate-200">
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.fuelType}</span>
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.transmission}</span>
-                            <span className="glass-pill px-2.5 py-1 rounded-lg">{car.bodyType}</span>
+                          <h3 className="text-lg font-black text-slate-900">{car.title}</h3>
+                          <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-bold text-slate-600">
+                            <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.fuelType}</span>
+                            <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.transmission}</span>
+                            <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.bodyType}</span>
+                            <span className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg border border-amber-200 font-extrabold">{car.specs?.rto}</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
-                          <button className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl block w-full text-center shadow-[0_0_15px_rgba(239,68,68,0.4)] border border-red-400/30">
+                          <button className="mt-3 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl block w-full text-center shadow-sm">
                             View Details
                           </button>
                         </div>

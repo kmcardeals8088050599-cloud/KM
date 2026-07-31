@@ -32,7 +32,7 @@ export const AboutView: React.FC = () => {
           <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
             About KM Car Deals Kalaburagi
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight ">
             YOUR TRUSTED MULTI-BRAND PRE-OWNED CAR DESTINATION
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
@@ -65,7 +65,7 @@ export const AboutView: React.FC = () => {
           </div>
 
           <div className="lg:col-span-6 space-y-6">
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-serif">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight ">
               THE KM CAR DEALS PROMISE
             </h2>
 
@@ -73,7 +73,7 @@ export const AboutView: React.FC = () => {
               <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-sm">
                 <ShieldCheck className="w-6 h-6 text-amber-600 shrink-0 mt-1" />
                 <div>
-                  <h3 className="text-sm font-black text-slate-900 font-serif">100% Non-Accidental Certificate</h3>
+                  <h3 className="text-sm font-black text-slate-900 ">100% Non-Accidental Certificate</h3>
                   <p className="text-xs text-slate-600 font-medium mt-1">We refuse cars with structural damage, frame repairs, or flooded engines. Every car is certified safe.</p>
                 </div>
               </div>
@@ -81,7 +81,7 @@ export const AboutView: React.FC = () => {
               <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-sm">
                 <Award className="w-6 h-6 text-amber-600 shrink-0 mt-1" />
                 <div>
-                  <h3 className="text-sm font-black text-slate-900 font-serif">Verified Kilometer Meter Reading</h3>
+                  <h3 className="text-sm font-black text-slate-900 ">Verified Kilometer Meter Reading</h3>
                   <p className="text-xs text-slate-600 font-medium mt-1">No meter tampering or odometer manipulation. All readings match official service network logs.</p>
                 </div>
               </div>
@@ -89,7 +89,7 @@ export const AboutView: React.FC = () => {
               <div className="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-sm">
                 <HeartHandshake className="w-6 h-6 text-amber-600 shrink-0 mt-1" />
                 <div>
-                  <h3 className="text-sm font-black text-slate-900 font-serif">Fair Commission &amp; Trade-In Value</h3>
+                  <h3 className="text-sm font-black text-slate-900 ">Fair Commission &amp; Trade-In Value</h3>
                   <p className="text-xs text-slate-600 font-medium mt-1">Transparent evaluation without hidden deductions or last-minute price cuts.</p>
                 </div>
               </div>
@@ -103,7 +103,7 @@ export const AboutView: React.FC = () => {
             <span className="text-xs font-black uppercase text-amber-800 tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300">
               Leadership &amp; Management
             </span>
-            <h2 className="text-3xl font-black text-slate-900 font-serif">MEET OUR DIRECTORS &amp; TEAM</h2>
+            <h2 className="text-3xl font-black text-slate-900 ">MEET OUR DIRECTORS &amp; TEAM</h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -113,7 +113,7 @@ export const AboutView: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md">Managing Director</span>
-                <h3 className="text-lg font-black text-slate-900 font-serif mt-2">Md Nadeem Khan</h3>
+                <h3 className="text-lg font-black text-slate-900  mt-2">Md Nadeem Khan</h3>
                 <p className="text-xs text-slate-600 mt-1 font-medium">Founder &amp; Managing Director leading operations, client relations, and vehicle certification at KM Car Deals.</p>
               </div>
             </div>
@@ -124,7 +124,7 @@ export const AboutView: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md">Executive Director</span>
-                <h3 className="text-lg font-black text-slate-900 font-serif mt-2">Md Nawaz Khan</h3>
+                <h3 className="text-lg font-black text-slate-900  mt-2">Md Nawaz Khan</h3>
                 <p className="text-xs text-slate-600 mt-1 font-medium">Oversees sales evaluation, trade-in exchange appraisals, and customer experience management.</p>
               </div>
             </div>
@@ -135,7 +135,7 @@ export const AboutView: React.FC = () => {
               </div>
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md">Core Team</span>
-                <h3 className="text-lg font-black text-slate-900 font-serif mt-2">5-Member Executive Team</h3>
+                <h3 className="text-lg font-black text-slate-900  mt-2">5-Member Executive Team</h3>
                 <p className="text-xs text-slate-600 mt-1 font-medium">Dedicated professionals handling technical inspections, RTO documentation, and bank finance facilitation.</p>
               </div>
             </div>

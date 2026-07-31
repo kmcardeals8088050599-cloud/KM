@@ -68,7 +68,7 @@ export const WhyChooseUs: React.FC = () => {
           <span className="text-xs font-bold text-slate-800 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full border border-slate-300">
             Unmatched Quality Standards
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
             WHY BUY &amp; EXCHANGE AT KM CAR DEALS?
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
@@ -93,7 +93,7 @@ export const WhyChooseUs: React.FC = () => {
               <div className="w-12 h-12 rounded-2xl bg-white border border-slate-300 flex items-center justify-center mb-4 shadow-xs">
                 {item.icon}
               </div>
-              <h3 className="text-lg font-black text-slate-900 font-serif mb-2">{item.title}</h3>
+              <h3 className="text-lg font-black text-slate-900 mb-2">{item.title}</h3>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}

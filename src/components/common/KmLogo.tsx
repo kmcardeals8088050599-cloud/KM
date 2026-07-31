@@ -92,7 +92,7 @@ export const KmLogo: React.FC<KmLogoProps> = ({
       {!iconOnly && (
         <div className="flex flex-col text-left justify-center">
           <span
-            className={`font-black tracking-tight leading-none font-serif ${titleSizes}`}
+            className={`font-black tracking-tight leading-none  ${titleSizes}`}
             style={{ color: textPrimary }}
           >
             KM CAR DEALS

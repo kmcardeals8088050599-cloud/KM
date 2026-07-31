@@ -62,7 +62,7 @@ export const HowItWorks: React.FC = () => {
           <span className="text-xs font-bold text-slate-800 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full border border-slate-300">
             Simple &amp; Transparent Process
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
             HOW BUYING &amp; EXCHANGE WORKS
           </h2>
           <p className="text-xs text-slate-600 font-medium">
@@ -84,7 +84,7 @@ export const HowItWorks: React.FC = () => {
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
               className="bg-slate-50 p-6 rounded-3xl relative overflow-hidden group border border-slate-200 hover:border-slate-400 transition-shadow duration-300 hover:shadow-lg"
             >
-              <div className="text-5xl font-black text-slate-300/40 group-hover:text-slate-400/30 transition-colors absolute top-2 right-3 select-none font-serif">
+              <div className="text-5xl font-black text-slate-400/30 group-hover:text-slate-600/20 transition-colors absolute top-2 right-3 select-none">
                 {step.num}
               </div>
 
@@ -92,7 +92,7 @@ export const HowItWorks: React.FC = () => {
                 {step.icon}
               </div>
 
-              <h3 className="text-base font-black text-slate-900 font-serif mb-2 relative z-10">{step.title}</h3>
+              <h3 className="text-base font-black text-slate-900 mb-2 relative z-10">{step.title}</h3>
               <p className="text-xs text-slate-600 leading-relaxed relative z-10 font-medium">{step.desc}</p>
             </motion.div>
           ))}

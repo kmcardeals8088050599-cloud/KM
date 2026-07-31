@@ -70,7 +70,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
           <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
             <RefreshCw className="w-3.5 h-3.5 text-amber-600 animate-spin-slow" /> Instant Vehicle Exchange Program
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight ">
             EXCHANGE YOUR CAR AT KM CAR DEALS
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto leading-relaxed font-medium">
@@ -83,7 +83,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
           <div className="bg-white border border-amber-300 p-4 rounded-2xl flex items-center justify-between gap-4 shadow-sm">
             <div>
               <span className="text-[10px] text-amber-800 font-black uppercase tracking-wider block">Target Upgrade Vehicle</span>
-              <h4 className="text-sm font-black text-slate-900 font-serif">{targetCar.title} ({targetCar.year})</h4>
+              <h4 className="text-sm font-black text-slate-900 ">{targetCar.title} ({targetCar.year})</h4>
             </div>
             <img src={targetCar.images[0]} alt="" className="w-20 h-14 object-cover rounded-xl shrink-0 border border-slate-200" referrerPolicy="no-referrer" />
           </div>
@@ -95,13 +95,13 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
               <CheckCircle2 className="w-10 h-10" />
             </div>
-            <h2 className="text-2xl font-black text-slate-900 font-serif">Exchange Details Received!</h2>
+            <h2 className="text-2xl font-black text-slate-900 ">Exchange Details Received!</h2>
             <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed font-medium">
               We have opened WhatsApp with your details. Our sales manager at KM Car Deals will evaluate your vehicle and connect with you shortly for doorstep inspection.
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl transition-colors shadow-sm"
+              className="px-6 py-2.5 bg-red-600 hover:bg-red-500 text-white font-black text-xs rounded-xl transition-colors shadow-sm"
             >
               Submit Another Exchange Request
             </button>
@@ -110,7 +110,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
           <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 space-y-8 shadow-sm">
             {/* Step 1: Customer Contact */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 font-serif">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 ">
                 1. Customer Contact Info
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -142,7 +142,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
             {/* Step 2: Vehicle Specs */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 font-serif">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 ">
                 2. Details of Your Existing Car
               </h3>
 
@@ -238,7 +238,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
             {/* Step 3: Photos & Remarks */}
             <div className="space-y-4">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 font-serif">
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider border-l-2 border-amber-500 pl-3 ">
                 3. Vehicle Photos &amp; Comments
               </h3>
 
@@ -261,9 +261,9 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm rounded-2xl transition-all shadow-md flex items-center justify-center gap-2"
+                className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-2xl transition-all shadow-md flex items-center justify-center gap-2"
               >
-                <MessageCircle className="w-4 h-4 fill-white text-white" />
+                <MessageCircle className="w-4 h-4 fill-white" />
                 <span>{loading ? 'Processing...' : 'Submit Request & Open WhatsApp Evaluation'}</span>
               </button>
             </div>

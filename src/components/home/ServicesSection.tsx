@@ -60,7 +60,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
           <span className="text-xs font-black text-amber-800 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
             Our Core Automotive Services
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
             SALE • PURCHASE • EXCHANGE • BROKERAGE
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
@@ -73,7 +73,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white rounded-3xl p-6 flex flex-col justify-between border border-slate-200 shadow-[0_10px_30px_rgba(15,23,42,0.05)] hover:border-amber-500/60 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(245,158,11,0.2)] hover:-translate-y-2 group"
+              className="bg-white rounded-3xl p-6 flex flex-col justify-between border border-slate-200 shadow-sm hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:-translate-y-2 group"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -85,7 +85,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
                   </span>
                 </div>
 
-                <h3 className="text-xl font-black text-slate-900 font-serif group-hover:text-amber-600 transition-colors">
+                <h3 className="text-xl font-black text-slate-900 group-hover:text-amber-600 transition-colors">
                   {service.title}
                 </h3>
 

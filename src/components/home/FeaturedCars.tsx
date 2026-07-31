@@ -48,7 +48,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
             <div className="inline-flex items-center gap-1.5 text-xs font-black text-slate-800 uppercase tracking-widest bg-slate-200 px-3.5 py-1 rounded-full border border-slate-300">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Handpicked Collection
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight font-serif">
+            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
               FEATURED PRE-OWNED INVENTORY
             </h2>
             <p className="text-xs text-slate-600 font-medium">
@@ -98,7 +98,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleViewAll}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-lg border border-slate-800"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-sm"
           >
             <span>View Full Inventory ({cars.length} Vehicles)</span>
             <ArrowRight className="w-4 h-4 text-amber-400" />
