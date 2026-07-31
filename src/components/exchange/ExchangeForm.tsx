@@ -71,7 +71,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             <RefreshCw className="w-3.5 h-3.5 text-amber-600 animate-spin-slow" /> Instant Vehicle Exchange Program
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight ">
-            EXCHANGE YOUR CAR AT KM CAR DEALS
+            EXCHANGE YOUR CAR AT <span className="text-gradient-amber">KM CAR DEALS</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto leading-relaxed font-medium">
             Upgrade your existing car easily. Get high market valuation, doorstep physical evaluation in Kalaburagi, and hassle-free instant paper transfer.

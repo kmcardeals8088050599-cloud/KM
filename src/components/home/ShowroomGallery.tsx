@@ -38,7 +38,7 @@ export const ShowroomGallery: React.FC = () => {
             <span>Showroom &amp; Leadership Showcase</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            INSIDE KM CAR DEALS KALABURAGI
+            INSIDE <span className="text-gradient-amber">KM CAR DEALS</span> KALABURAGI
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl mx-auto">
             Explore our real multi-brand showroom, our extensive inventory yard on Humnabad Road, and meet Managing Director <strong className="text-slate-900 font-extrabold">Md Nadeem Khan</strong>, Executive Director <strong className="text-slate-900 font-extrabold">Md Nawaz Khan</strong>, and our executive leadership team in Kalaburagi.

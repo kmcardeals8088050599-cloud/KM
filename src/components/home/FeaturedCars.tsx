@@ -49,7 +49,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Handpicked Collection
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-              FEATURED PRE-OWNED INVENTORY
+              FEATURED <span className="text-gradient-amber">PRE-OWNED</span> INVENTORY
             </h2>
             <p className="text-xs text-slate-600 font-medium">
               Rigorously inspected 150-point certified cars ready for immediate delivery in Kalaburagi

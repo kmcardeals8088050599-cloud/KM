@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { Images } from 'lucide-react';
 import { Car, Lead, ExchangeRequest, FilterState } from './types';
 import { INITIAL_CARS, INITIAL_LEADS, INITIAL_EXCHANGES } from './data/mockData';
 import { fetchCars, filterCarsLocal, clearAuthToken } from './lib/api';
@@ -231,7 +232,7 @@ function MainAppContent() {
                     Multi-Brand Pre-Owned Showroom
                   </span>
                   <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mt-2">
-                    EXPLORE ALL PRE-OWNED CARS
+                    EXPLORE ALL <span className="text-gradient-amber">PRE-OWNED CARS</span>
                   </h1>
                   <p className="text-xs text-slate-500 font-medium">
                     Search &amp; filter among 150-point inspected multi-brand cars available for immediate delivery in Kalaburagi
@@ -291,14 +292,22 @@ function MainAppContent() {
                       <div
                         key={car.id}
                         onClick={() => handleSelectCar(car)}
-                        className="glass-card rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center"
+                        className="glass-card rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center hover:shadow-premium hover:border-amber-300/70"
                       >
-                        <img
-                          src={car.images[0]}
-                          alt={car.title}
-                          referrerPolicy="no-referrer"
-                          className="w-full md:w-56 h-36 object-cover rounded-xl shrink-0 border border-slate-200"
-                        />
+                        <div className="relative w-full md:w-56 h-36 shrink-0 overflow-hidden rounded-xl border border-slate-200 group/img">
+                          <img
+                            src={car.images[0]}
+                            alt={car.title}
+                            referrerPolicy="no-referrer"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                          />
+                          {car.images.length > 1 && (
+                            <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-slate-950/70 text-white text-[10px] font-bold rounded-full border border-white/20 flex items-center gap-1">
+                              <Images className="w-3 h-3 text-amber-400" />
+                              {car.images.length} Photos
+                            </span>
+                          )}
+                        </div>
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center gap-2 text-xs text-slate-500 font-bold">
                             <span className="text-amber-600 uppercase tracking-wide">{car.brand}</span>

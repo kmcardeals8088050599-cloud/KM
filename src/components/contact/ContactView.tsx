@@ -47,7 +47,7 @@ export const ContactView: React.FC = () => {
             Showroom Location &amp; Direct Contact
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight ">
-            CONTACT KM CAR DEALS
+            CONTACT <span className="text-gradient-amber">KM CAR DEALS</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Have questions about buying, selling, or exchanging a vehicle in Kalaburagi? We are here to help!

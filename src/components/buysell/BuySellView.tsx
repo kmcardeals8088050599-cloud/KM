@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Tag, CheckCircle2, ArrowRight } from 'lucide-react';
-import { DEALERSHIP_INFO } from '../../data/mockData';
-import { createWhatsAppLink, submitLeadApi } from '../../lib/api';
+import { submitLeadApi } from '../../lib/api';
 import { TradeInEstimator } from '../common/TradeInEstimator';
 
 interface BuySellViewProps {
@@ -40,7 +39,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
             Buy, Sell, Exchange &amp; Brokerage
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            BUY &amp; SELL PRE-OWNED CARS WITH CONFIDENCE
+            BUY &amp; SELL <span className="text-gradient-amber">PRE-OWNED CARS</span> WITH CONFIDENCE
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
             Whether you want to purchase a certified car with bank loan assistance, sell your existing vehicle for same-day cash, or exchange for an upgrade in Kalaburagi, we guarantee transparent deals.

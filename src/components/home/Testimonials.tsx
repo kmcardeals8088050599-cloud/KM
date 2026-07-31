@@ -12,7 +12,7 @@ export const Testimonials: React.FC = () => {
               Verified Buyer Feedback
             </span>
             <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight mt-2">
-              WHAT OUR CUSTOMERS SAY
+              WHAT OUR <span className="text-gradient-amber">CUSTOMERS</span> SAY
             </h2>
             <p className="text-xs text-slate-600 font-medium mt-1">
               Read authentic reviews from happy car buyers across Kalaburagi

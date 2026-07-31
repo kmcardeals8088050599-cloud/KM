@@ -17,7 +17,7 @@ export const LocationSection: React.FC = () => {
             Verified Showroom Location
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            VISIT KM CAR DEALS SHOWROOM
+            VISIT <span className="text-gradient-amber">KM CAR DEALS</span> SHOWROOM
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Conveniently located on Humnabad Road, Kapnoor, opposite Hyundai Showroom in Kalaburagi

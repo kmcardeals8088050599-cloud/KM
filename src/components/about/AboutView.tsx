@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DEALERSHIP_INFO } from '../../data/mockData';
-import { ShieldCheck, Award, HeartHandshake, MapPin, Phone } from 'lucide-react';
+import { ShieldCheck, Award, HeartHandshake, MapPin } from 'lucide-react';
 import { ShowroomGallery } from '../home/ShowroomGallery';
 import { getResolvedPhotos } from '../../data/realImages';
 import { KmLogo } from '../common/KmLogo';
@@ -33,7 +33,7 @@ export const AboutView: React.FC = () => {
             About KM Car Deals Kalaburagi
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight ">
-            YOUR TRUSTED MULTI-BRAND PRE-OWNED CAR DESTINATION
+            YOUR TRUSTED MULTI-BRAND <span className="text-gradient-amber">PRE-OWNED</span> CAR DESTINATION
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
             Founded with a vision to eliminate opacity in the used-car market, <strong className="text-amber-700 font-extrabold">KM Car Deals</strong> brings enterprise-grade quality inspection, honest pricing, and instant ownership transfer to car lovers across Kalaburagi and Karnataka.

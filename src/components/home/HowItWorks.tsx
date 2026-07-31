@@ -62,9 +62,9 @@ export const HowItWorks: React.FC = () => {
           <span className="text-xs font-bold text-slate-800 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full border border-slate-300">
             Simple &amp; Transparent Process
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            HOW BUYING &amp; EXCHANGE WORKS
-          </h2>
+              <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
+                HOW BUYING &amp; EXCHANGE <span className="text-gradient-amber">WORKS</span>
+              </h2>
           <p className="text-xs text-slate-600 font-medium">
             4 easy steps to buy your pre-owned vehicle or upgrade through car exchange in Kalaburagi
           </p>

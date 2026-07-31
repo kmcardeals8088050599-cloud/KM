@@ -61,7 +61,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
             Our Core Automotive Services
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            SALE • PURCHASE • EXCHANGE • BROKERAGE
+            SALE • PURCHASE • <span className="text-gradient-amber">EXCHANGE</span> • BROKERAGE
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Whether you want to buy, sell, exchange, or place your car on brokerage in Kalaburagi, KM Car Deals provides complete transparency and peace of mind.

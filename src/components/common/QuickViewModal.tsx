@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Car } from '../../types';
-import { X, Calendar, Fuel, MessageCircle, ArrowRight } from 'lucide-react';
+import { X, MessageCircle, ArrowRight } from 'lucide-react';
 import { createWhatsAppLink } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 
@@ -17,9 +17,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   onFullDetails,
   onExchangeSelect
 }) => {
-  if (!car) return null;
-
   const [activeImgIndex, setActiveImgIndex] = useState(0);
+
+  if (!car) return null;
 
   const whatsappMsg = `Hi KM Car Deals, I am interested in inquiring about the ${car.year} ${car.title}. Please connect with me.`;
   const whatsappUrl = createWhatsAppLink(DEALERSHIP_INFO.whatsappNumber, whatsappMsg);
@@ -35,13 +35,19 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         </button>
 
         <div className="w-full md:w-1/2 bg-slate-100 p-4 flex flex-col justify-between">
-          <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 border border-slate-300">
+          <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 border border-slate-300 group">
             <img
               src={car.images[activeImgIndex] || car.images[0]}
               alt={car.title}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none"></div>
+            {car.images.length > 1 && (
+              <div className="absolute top-3 right-3 px-2 py-1 bg-slate-950/70 text-white text-[10px] font-bold rounded-full border border-white/20 backdrop-blur-sm">
+                {activeImgIndex + 1} / {car.images.length}
+              </div>
+            )}
           </div>
 
           {car.images.length > 1 && (
@@ -51,7 +57,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   key={idx}
                   onClick={() => setActiveImgIndex(idx)}
                   className={`relative w-16 h-12 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
-                    activeImgIndex === idx ? 'border-amber-500 scale-105 shadow-xs' : 'border-slate-300 opacity-60 hover:opacity-100'
+                    activeImgIndex === idx ? 'border-amber-500 scale-105 shadow-md' : 'border-slate-300 opacity-60 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />

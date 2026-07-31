@@ -69,7 +69,7 @@ export const WhyChooseUs: React.FC = () => {
             Unmatched Quality Standards
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            WHY BUY &amp; EXCHANGE AT KM CAR DEALS?
+            WHY BUY &amp; EXCHANGE AT <span className="text-gradient-amber">KM CAR DEALS?</span>
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             Building lifelong trust in Kalaburagi through honest vehicle condition reporting and transparent pricing.

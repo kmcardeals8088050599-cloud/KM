@@ -16,7 +16,6 @@ import {
   Phone,
   X,
   TrendingUp,
-  Sparkles,
   Bell,
   Send
 } from 'lucide-react';
@@ -30,7 +29,6 @@ import {
   fetchAdminCars,
   fetchAdminLeads,
   fetchAdminExchanges,
-  fetchAdminStats,
   clearAuthToken,
   getAuthToken
 } from '../../lib/api';
@@ -864,7 +862,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <ImageUploader images={images} onChange={setImages} kind="car" maxImages={10} label="Vehicle Photos (first photo is the cover image)" />
+              <ImageUploader images={images} onChange={setImages} kind="car" maxImages={15} label="Vehicle Photos (first photo is the cover image)" />
 
               <div className="grid grid-cols-2 gap-3">
                 <div>

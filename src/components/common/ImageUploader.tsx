@@ -14,7 +14,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
   images,
   onChange,
   kind,
-  maxImages = 10,
+  maxImages = 15,
   label = 'Photos'
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);

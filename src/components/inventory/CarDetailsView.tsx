@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Car } from '../../types';
 import {
   ArrowLeft,
+  ArrowRight,
   Share2,
   RefreshCw,
   Phone,
   MessageCircle,
   CheckCircle2,
-  ChevronRight
+  ChevronRight,
+  Images
 } from 'lucide-react';
 import { createWhatsAppLink, submitLeadApi } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
@@ -123,7 +125,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 space-y-4">
-            <div className="relative aspect-[16/10] bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 shadow-xl">
+            <div className="relative aspect-[16/10] bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 shadow-premium group">
               <AnimatePresence mode="wait">
                 <motion.img
                   key={activeImageIndex}
@@ -137,21 +139,52 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   className="w-full h-full object-cover"
                 />
               </AnimatePresence>
+              {/* Cinematic bottom gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none"></div>
+
+              {/* Image counter badge */}
+              <div className="absolute top-4 right-4 px-3 py-1.5 bg-slate-950/70 text-white text-[11px] font-bold rounded-full border border-white/20 backdrop-blur-sm flex items-center gap-1.5">
+                <Images className="w-3.5 h-3.5 text-amber-400" />
+                <span>{activeImageIndex + 1} / {car.images.length}</span>
+              </div>
+
+              {/* Prev / Next arrows */}
+              {car.images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImageIndex(prev => (prev - 1 + car.images.length) % car.images.length)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-lg border border-white/60 transition-all hover:scale-105"
+                    aria-label="Previous image"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setActiveImageIndex(prev => (prev + 1) % car.images.length)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-lg border border-white/60 transition-all hover:scale-105"
+                    aria-label="Next image"
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
             </div>
 
             {car.images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-2">
+              <div className="flex items-center gap-3 overflow-x-auto pb-2 pt-1">
                 {car.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-24 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
+                    className={`relative w-24 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 group/thumb ${
                       activeImageIndex === idx
-                        ? 'border-slate-900 scale-105 shadow-md'
+                        ? 'border-amber-500 scale-105 shadow-md'
                         : 'border-slate-200 opacity-70 hover:opacity-100'
                     }`}
                   >
                     <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                    {activeImageIndex === idx && (
+                      <div className="absolute inset-0 bg-amber-500/20 ring-1 ring-inset ring-amber-500"></div>
+                    )}
                   </button>
                 ))}
               </div>
