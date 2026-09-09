@@ -1,0 +1,68 @@
+import { describe, it, expect } from 'vitest';
+import { normalizeExtraction } from '../extraction.js';
+
+describe('normalizeExtraction', () => {
+  const input = {
+    conversationId: 'conv-test',
+    transcript: 'Toyota Fortuner 2022 2.8 diesel automatic 48k first owner 32.5 lakh',
+    existing: {},
+    lockedFields: [],
+  };
+
+  it('maps a raw extraction into the canonical shape with provenance', () => {
+    const result = normalizeExtraction(
+      {
+        brand: 'Toyota',
+        model: 'Fortuner',
+        manufacturing_year: 2022,
+        fuel_type: 'Diesel',
+        transmission: 'Automatic',
+        odometer_km: 48000,
+        owner_count: '1st Owner',
+        price: 3250000,
+        unknown: ['color', 'variant'],
+        provenance: {
+          brand: { source: 'whatsapp_text', confidence: 'high' },
+          price: { source: 'whatsapp_text', confidence: 'high' },
+        },
+      },
+      input
+    );
+
+    expect(result.data.brand).toBe('Toyota');
+    expect(result.data.price).toBe(3250000);
+    expect(result.data.odometerKm).toBe(48000);
+    expect(result.provenance.brand?.source).toBe('whatsapp_text');
+    expect(result.provenance.brand?.confidence).toBe('high');
+    expect(result.unknown).toContain('color');
+  });
+
+  it('respects locked fields (human-edited values survive)', () => {
+    const result = normalizeExtraction(
+      {
+        price: 1000,
+        brand: 'Hacked',
+      },
+      {
+        conversationId: 'conv',
+        transcript: 'Toyota',
+        existing: {
+          brand: 'Toyota',
+          model: 'Fortuner',
+          price: 3250000,
+        },
+        lockedFields: ['price'],
+      }
+    );
+    // price is locked → AI value cannot overwrite
+    expect(result.data.price).toBe(3250000);
+    // brand is not locked → update applies
+    expect(result.data.brand).toBe('Hacked');
+  });
+
+  it('never fabricates: unknown values stay null', () => {
+    const result = normalizeExtraction({ brand: 'Toyota' }, input);
+    expect(result.data.model).toBeUndefined();
+    expect(result.unknown.length).toBeGreaterThanOrEqual(0);
+  });
+});

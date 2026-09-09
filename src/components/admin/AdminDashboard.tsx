@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { KmLogo } from '../common/KmLogo';
 import { ImageUploader } from '../common/ImageUploader';
+import { AIOpsPanel } from './AIOpsPanel';
 import { Car, Lead, ExchangeRequest, CarStatus, LeadStatus, ExchangeStatus, FuelType, Transmission, BodyType } from '../../types';
 import { INDIAN_CAR_BRANDS } from '../inventory/InventoryFilter';
 import {
@@ -16,7 +17,8 @@ import {
   X,
   TrendingUp,
   Bell,
-  Send
+  Send,
+  Bot
 } from 'lucide-react';
 import {
   createCarApi,
@@ -51,7 +53,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   setExchangeRequests,
   onLogout
 }) => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'cars' | 'leads' | 'exchanges'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'cars' | 'leads' | 'exchanges' | 'aiops'>('overview');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -149,7 +151,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         const newCarData = {
           title, brand, model,
           year, fuelType, transmission, bodyType,
-          status, images, specs
+          status, images, specs,
+          ownerCount: '1st Owner'
         };
         const created = await createCarApi(newCarData);
         setCars(prev => [created, ...prev]);
@@ -355,7 +358,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <Bell className="w-4 h-4" />
             <span>Alerts &amp; Reports</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('aiops')}
+            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
+              activeTab === 'aiops' ? 'bg-red-600 text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+            }`}
+          >
+            <Bot className="w-4 h-4" />
+            <span>AI Operations</span>
+          </button>
         </div>
+
+        {/* Tab Content: AI OPERATIONS */}
+        {activeTab === 'aiops' && <AIOpsPanel />}
 
         {/* Tab Content: OVERVIEW */}
         {activeTab === 'overview' && (

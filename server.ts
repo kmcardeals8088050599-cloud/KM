@@ -6,7 +6,6 @@ import cors from 'cors';
 import rateLimit from 'express-rate-limit';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { GoogleGenAI } from '@google/genai';
 import {
   getAllCars,
   getCarById,
@@ -40,6 +39,8 @@ import {
   buildNewExchangeMessage,
   buildDailySummaryMessage
 } from './server/whatsapp.js';
+import aiRoutes from './server/ai/routes.js';
+import { assertProductionConfig } from './server/prod-guards.js';
 
 const LOGIN_RATE_LIMIT = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -91,7 +92,16 @@ function sanitizeObject(obj: Record<string, any>): Record<string, any> {
 }
 
 export async function createApp() {
+  // Refuse to boot with dev fallbacks / unreachable endpoints in production.
+  assertProductionConfig(process.env);
+
   const app = express();
+
+  // Behind a reverse proxy (Vercel/Render/VPS + nginx): respect X-Forwarded-For so
+  // rate limiters see the real client IP instead of the proxy.
+  if ((process.env.NODE_ENV || '').trim().toLowerCase() === 'production') {
+    app.set('trust proxy', 1);
+  }
 
   // Security middleware
   app.use(helmet({
@@ -441,34 +451,31 @@ export async function createApp() {
   // (see POST /api/leads and POST /api/exchange-requests modifications)
 
   // -------------------------------------------------------
-  // FEATURE 2: AI Car Description Generator
+  // FEATURE 2: AI Car Description Generator (provider-agnostic via local AI facade)
   app.post('/api/admin/generate-description', authenticateAdmin, async (req, res) => {
     try {
       const { brand, model, year, fuelType, transmission, bodyType, ownerCount } = req.body;
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        res.status(400).json({ error: 'GEMINI_API_KEY not configured' });
+      const system =
+        'Write a compelling, honest, and professional 2-3 sentence car description for a pre-owned car listing at KM Car Deals, a trusted multi-brand used car dealership in Kalaburagi, Karnataka, India.\n' +
+        'Rules: Keep it under 60 words. Mention condition positively but honestly. Include KM Car Deals 150-point inspection certified. No made-up specs. Professional tone for Indian used car market.';
+      const prompt = `Car Details:\n- Brand: ${brand}\n- Model: ${model}\n- Year: ${year}\n- Fuel: ${fuelType}\n- Transmission: ${transmission}\n- Body Type: ${bodyType}\n- Owner: ${ownerCount || '1st Owner'}`;
+
+      const [{ generateText }, { AiProviderError }] = await Promise.all([
+        import('./server/ai/ai.js'),
+        import('./server/ai/provider/types.js'),
+      ]);
+
+      let description: string;
+      try {
+        description = await generateText({ prompt, system, agent: 'description', event: 'generate_description' });
+      } catch (err: any) {
+        if (err instanceof AiProviderError && (err.code === 'not_configured' || err.code === 'config')) {
+          res.status(400).json({ error: 'AI provider is not configured' });
+        } else {
+          res.status(500).json({ error: 'AI generation failed', details: err.message });
+        }
         return;
       }
-      const ai = new GoogleGenAI({ apiKey });
-      const prompt = `Write a compelling, honest, and professional 2-3 sentence car description for a pre-owned car listing at KM Car Deals, a trusted multi-brand used car dealership in Kalaburagi, Karnataka, India.
-
-Car Details:
-- Brand: ${brand}
-- Model: ${model}
-- Year: ${year}
-- Fuel: ${fuelType}
-- Transmission: ${transmission}
-- Body Type: ${bodyType}
-- Owner: ${ownerCount || '1st Owner'}
-
-Rules: Keep it under 60 words. Mention condition positively but honestly. Include KM Car Deals 150-point inspection certified. No made-up specs. Professional tone for Indian used car market.`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: prompt
-      });
-      const description = response.text?.trim() || '';
       res.json({ description });
     } catch (err: any) {
       res.status(500).json({ error: 'AI generation failed', details: err.message });
@@ -498,6 +505,11 @@ Rules: Keep it under 60 words. Mention condition positively but honestly. Includ
       res.status(500).json({ error: 'Failed to generate report', details: err.message });
     }
   });
+
+  // -------------------------------------------------------
+  // AI VEHICLE SYSTEM — WhatsApp ingestion, admin AI-ops, publishing.
+  // WhatsApp webhook (public, verified) + /api/ai/* admin endpoints.
+  app.use('/api', aiRoutes);
 
   return app;
 }

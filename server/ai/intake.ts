@@ -1,0 +1,318 @@
+// AI Vehicle Intake Agent — the orchestrator that runs after a WhatsApp message is stored.
+//
+// Flow per message:
+//   conversation → draft (create if none) → RECEIVED → PROCESSING
+//   → build transcript → AI extraction (merge, respect locked fields)
+//   → run image pipeline for new image attachments
+//   → deterministic validation
+//   → if ready: generate content → READY_FOR_REVIEW → notify admin
+//   → else: send follow-up questions → INCOMPLETE
+//
+// This runs as a fire-and-forget job after the webhook returns 200 (strictly async).
+// It is observable: every failure marks the message with an error and the draft a failure state.
+
+import {
+  getOrCreateConversation,
+  updateConversation,
+  getVehicleDraftByConversation,
+  createVehicleDraft,
+  updateVehicleDraft,
+  getVehicleDraft,
+  listConversationMessages,
+  StoredMessage,
+} from './db.js';
+import { extractVehicleFromConversation } from './extraction.js';
+import { validateDraft } from './validation.js';
+import { generateVehicleContent } from './content.js';
+import { buildTranscript } from './transcript.js';
+import { classifyAndAnalyze } from './images.js';
+import { appendAudit, logAiUsage } from './audit.js';
+import { sendWhatsAppText, notifyAdmin } from './whatsapp-api.js';
+import { assertTransition } from './state-machine.js';
+import { getActiveModels } from './ai.js';
+import { VehicleExtractedData } from '../../src/types/ai.js';
+
+export interface IntakeContext {
+  requestId: string;
+  fromPhone: string;
+  participantType: 'seller' | 'dealer' | 'admin' | 'buyer';
+}
+
+export async function runIntake(conversationId: string, messageId: string, ctx: IntakeContext): Promise<void> {
+  const startedAt = Date.now();
+  try {
+    const conversation = await getOrCreateConversation(ctx.fromPhone, ctx.participantType);
+
+    let draft = await getVehicleDraftByConversation(conversationId);
+    if (!draft) {
+      draft = await createVehicleDraft({
+        conversationId,
+        state: 'RECEIVED',
+        sellerPhone: ctx.fromPhone,
+        sellerName: ctx.participantType === 'admin' ? 'Admin' : undefined,
+        source: 'whatsapp',
+      });
+      await updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' });
+    }
+
+    // RECEIVED → PROCESSING (system)
+    if (draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE') {
+      assertTransition(draft.state, 'PROCESSING', 'system');
+      draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
+    }
+
+    const messages = await listConversationMessages(conversationId);
+    const transcript = buildTranscript(messages);
+
+    // 1. AI structured extraction (merge with existing data, respect locked fields)
+    const extraction = await extractVehicleFromConversation({
+      conversationId,
+      transcript,
+      existing: draft.data,
+      lockedFields: draft.lockedFields,
+    });
+
+    const mergedData: VehicleExtractedData = extraction.data;
+    await updateVehicleDraft(draft.id, {
+      data: mergedData,
+      confidence: { ...draft.confidence, ...extraction.confidence },
+      provenance: { ...draft.provenance, ...extraction.provenance },
+    });
+
+    await appendAudit({
+      actor: 'ai-extraction-agent',
+      actorType: 'system',
+      action: 'extract_merge',
+      entity: 'vehicle_draft',
+      entityId: draft.id,
+      newValue: mergedData,
+      source: 'whatsapp',
+      conversationId,
+      requestId: ctx.requestId,
+    });
+
+    // 2. Image pipeline for image attachments
+    await processImagesForMessage(draft.id, conversationId, messages, ctx);
+
+    // 3. Validation
+    const validation = validateDraft(mergedData);
+
+    const targetState = validation.readyToReview ? 'READY_FOR_REVIEW' : 'INCOMPLETE';
+
+    // If the draft is already live/terminal, new seller info is handled as a note,
+    // never silently re-published.
+    if (['APPROVED', 'PUBLISHED', 'UPDATED', 'SOLD', 'ARCHIVED'].includes(draft.state)) {
+      await sendWhatsAppText(
+        ctx.fromPhone,
+        'Your vehicle is already processed. Send changes and our team will review updates.'
+      );
+      return;
+    }
+
+    // Move READY_FOR_REVIEW → PROCESSING first when new info makes it incomplete again.
+    if (draft.state === 'READY_FOR_REVIEW' && targetState !== 'READY_FOR_REVIEW') {
+      assertTransition(draft.state, 'PROCESSING', 'system');
+      draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
+    }
+
+    if (validation.readyToReview) {
+      // 4. Content generation (skip re-generating when already in review with content)
+      let content = draft.content;
+      if (!content) {
+        try {
+          content = await generateVehicleContent(conversationId, mergedData, draft.id);
+        } catch (err: any) {
+          await logAiUsage({
+            entity: 'vehicle_draft',
+            entityId: draft.id,
+            agent: 'content',
+            model: getActiveModels().text,
+            event: 'generate_content',
+            status: 'error',
+            durationMs: Date.now() - startedAt,
+            conversationId,
+          });
+          console.error('[Intake] Content generation failed:', err.message);
+        }
+      }
+      if (content) await updateVehicleDraft(draft.id, { content });
+
+      if (draft.state !== 'READY_FOR_REVIEW') {
+        assertTransition(draft.state, 'READY_FOR_REVIEW', 'system');
+        draft = await updateVehicleDraft(draft.id, { state: 'READY_FOR_REVIEW' });
+      } else {
+        draft = await updateVehicleDraft(draft.id, { error: null });
+      }
+      await updateConversation(conversationId, { state: 'ready_for_review' });
+
+      const title = mergedData.brand + ' ' + mergedData.model;
+      await notifyAdmin(
+        [ '🚘 *Draft Ready — KM Car Deals*',
+          '',
+          `${mergedData.manufacturingYear || ''} ${title} ${mergedData.variant || ''}`.trim(),
+          `${mergedData.fuelType || ''} | ${mergedData.transmission || ''} | ${mergedData.bodyType || ''}`,
+          `${mergedData.odometerKm ? mergedData.odometerKm.toLocaleString('en-IN') + ' KM' : ''}${mergedData.ownerCount ? ' | ' + mergedData.ownerCount : ''}`,
+          mergedData.price ? `💰 ₹${mergedData.price >= 100000 ? (mergedData.price / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' Lakh' : mergedData.price.toLocaleString('en-IN')}` : '',
+          `${imagesCount(draft.images)} images attached.`,
+          '',
+          `Draft: ${draft.id}`,
+        ].filter(Boolean).join('\n')
+      );
+      return;
+    }
+
+    // Not ready → send follow-up questions (idempotent transition)
+    if (draft.state !== 'INCOMPLETE') {
+      assertTransition(draft.state, 'INCOMPLETE', 'system');
+      draft = await updateVehicleDraft(draft.id, { state: 'INCOMPLETE' });
+    }
+    await updateConversation(conversationId, { state: 'waiting_answer' });
+
+    const req = validation.missingFieldRequest;
+    if (req) {
+      await sendWhatsAppText(ctx.fromPhone, req.message);
+    } else {
+      await sendWhatsAppText(ctx.fromPhone, 'Please send the remaining vehicle details so I can complete the listing.');
+    }
+  } catch (err: any) {
+    console.error('[Intake] Failed:', err.message);
+    await markProcessingFailure(conversationId, messageId, err, ctx);
+  }
+}
+
+async function processImagesForMessage(
+  draftId: string,
+  conversationId: string,
+  messages: StoredMessage[],
+  ctx: IntakeContext
+): Promise<void> {
+  const draft = await getVehicleDraft(draftId);
+  if (!draft) return;
+
+  const imageAttachments = collectImageAttachments(messages);
+  if (imageAttachments.length === 0) return;
+
+  const existingIds = new Set((draft.images || []).map((i: any) => i.id));
+  const newImages = imageAttachments.filter(img => !existingIds.has(img.id));
+  if (newImages.length === 0) return;
+
+  try {
+    const result = await classifyAndAnalyze(newImages, {}, conversationId, draftId);
+    const combined = [...(draft.images || []), ...result.images];
+    await updateVehicleDraft(draftId, { images: combined });
+    await appendAudit({
+      actor: 'ai-image-agent',
+      actorType: 'system',
+      action: 'images_analyzed',
+      entity: 'vehicle_draft',
+      entityId: draftId,
+      newValue: { added: newImages.length, total: combined.length, warnings: result.warnings },
+      source: 'whatsapp',
+      conversationId,
+      requestId: ctx.requestId,
+    });
+  } catch (err: any) {
+    await appendAudit({
+      actor: 'ai-image-agent',
+      actorType: 'system',
+      action: 'images_failed',
+      entity: 'vehicle_draft',
+      entityId: draftId,
+      newValue: { error: err.message },
+      source: 'whatsapp',
+      conversationId,
+      requestId: ctx.requestId,
+    });
+  }
+}
+
+function collectImageAttachments(messages: StoredMessage[]): { id: string; url: string; mimeType?: string; size?: number }[] {
+  const out: { id: string; url: string; mimeType?: string; size?: number }[] = [];
+  for (const m of messages) {
+    for (const att of m.media || []) {
+      if (att.kind === 'image' && att.url) {
+        out.push({ id: att.mediaId || `${m.id}-${out.length}`, url: att.url, mimeType: att.mimeType, size: att.size });
+      }
+    }
+  }
+  return out;
+}
+
+function imagesCount(images: any[]): number {
+  return Array.isArray(images) ? images.length : 0;
+}
+
+async function markProcessingFailure(
+  conversationId: string,
+  messageId: string,
+  err: Error,
+  ctx: IntakeContext
+): Promise<void> {
+  try {
+    const conversation = await getOrCreateConversation(ctx.fromPhone, 'seller');
+    const draft = await getVehicleDraftByConversation(conversationId);
+    if (draft && (draft.state === 'PROCESSING' || draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE')) {
+      await updateVehicleDraft(draft.id, {
+        state: 'PROCESSING_FAILED',
+        error: { message: err.message, at: new Date().toISOString() },
+      });
+    }
+    await appendAudit({
+      actor: 'ai-intake-agent',
+      actorType: 'system',
+      action: 'processing_failed',
+      entity: 'whatsapp_message',
+      entityId: messageId,
+      newValue: { error: err.message },
+      source: 'whatsapp',
+      conversationId,
+      requestId: ctx.requestId,
+    });
+  } catch (auditErr) {
+    console.error('[Intake] Failure audit failed:', auditErr);
+  }
+}
+
+// Reprocess a draft: re-run extraction with all messages + regenerate content.
+export async function reprocessDraft(draftId: string, ctx: IntakeContext): Promise<void> {
+  const draft = await getVehicleDraft(draftId);
+  if (!draft || !draft.conversationId) throw new Error('Draft not found or has no conversation');
+
+  const conversation = await getOrCreateConversation(ctx.fromPhone, 'admin');
+  if (draft.state === 'PUBLISHED' || draft.state === 'SOLD') {
+    throw new Error('Cannot reprocess a published/sold draft');
+  }
+  await updateVehicleDraft(draftId, { state: 'PROCESSING' });
+  try {
+    const messages = await listConversationMessages(conversation.id);
+    const transcript = buildTranscript(messages);
+    const extraction = await extractVehicleFromConversation({
+      conversationId: conversation.id,
+      transcript,
+      existing: draft.data,
+      lockedFields: draft.lockedFields,
+    });
+    const content = await generateVehicleContent(conversation.id, extraction.data, draftId);
+    await updateVehicleDraft(draftId, {
+      data: extraction.data,
+      confidence: extraction.confidence,
+      provenance: extraction.provenance,
+      content,
+      state: 'READY_FOR_REVIEW',
+      error: null,
+    });
+    await appendAudit({
+      actor: ctx.participantType === 'admin' ? 'admin' : 'system',
+      actorType: ctx.participantType,
+      action: 'reprocess',
+      entity: 'vehicle_draft',
+      entityId: draftId,
+      source: ctx.participantType,
+      conversationId: conversation.id,
+      requestId: ctx.requestId,
+    });
+  } catch (err: any) {
+    await updateVehicleDraft(draftId, { state: 'PROCESSING_FAILED', error: { message: err.message } });
+    throw err;
+  }
+}

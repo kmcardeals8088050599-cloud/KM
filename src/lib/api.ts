@@ -222,3 +222,108 @@ export async function updateExchangeStatusApi(id: string, status: string): Promi
   if (!res.ok) throw new Error('Failed to update exchange request');
   return res.json();
 }
+
+// --- AI VEHICLE SYSTEM API (admin) ---
+
+export interface AiDraft {
+  id: string;
+  conversationId?: string;
+  state: string;
+  data: Record<string, any>;
+  confidence: Record<string, number>;
+  provenance: Record<string, any>;
+  lockedFields: string[];
+  source?: string;
+  sellerName?: string;
+  sellerPhone?: string;
+  content?: {
+    websiteTitle: string;
+    websiteDescription: string;
+    instagramCaption: string;
+    whatsappSalesMessage: string;
+    seo: { title: string; metaDescription: string; keywords: string[]; slug: string };
+  };
+  images?: any[];
+  documents?: any[];
+  publishResult?: { entries: Array<{ channel: string; status: string; error?: string; retryCount: number }> };
+  publishedCarId?: string;
+  error?: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function fetchAiStatus(): Promise<any> {
+  const res = await fetch('/api/ai/status', { headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch AI status');
+  return res.json();
+}
+
+export async function fetchAiDrafts(state?: string): Promise<AiDraft[]> {
+  const q = state && state !== 'All' ? `?state=${encodeURIComponent(state)}` : '';
+  const res = await fetch(`/api/ai/drafts${q}`, { headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch AI drafts');
+  return res.json();
+}
+
+export async function fetchAiDraft(id: string): Promise<{ draft: AiDraft; messages: any[]; publishLog: any[] }> {
+  const res = await fetch(`/api/ai/drafts/${id}`, { headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to fetch AI draft');
+  return res.json();
+}
+
+export async function aiApproveDraft(id: string): Promise<any> {
+  const res = await fetch(`/api/ai/drafts/${id}/approve`, { method: 'POST', headers: authHeaders() });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Failed to approve draft');
+  }
+  return res.json();
+}
+
+export async function aiRejectDraft(id: string, reason?: string): Promise<any> {
+  const res = await fetch(`/api/ai/drafts/${id}/reject`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ reason })
+  });
+  if (!res.ok) throw new Error('Failed to reject draft');
+  return res.json();
+}
+
+export async function aiMarkSold(id: string): Promise<any> {
+  const res = await fetch(`/api/ai/drafts/${id}/sold`, { method: 'POST', headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to mark draft sold');
+  return res.json();
+}
+
+export async function aiUpdatePrice(id: string, price: number): Promise<any> {
+  const res = await fetch(`/api/ai/drafts/${id}/price`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ price })
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Failed to update price');
+  }
+  return res.json();
+}
+
+export async function aiRegenerate(id: string): Promise<any> {
+  const res = await fetch(`/api/ai/drafts/${id}/regenerate`, { method: 'POST', headers: authHeaders() });
+  if (!res.ok) throw new Error('Failed to regenerate draft');
+  return res.json();
+}
+
+export async function aiIntakeText(text: string): Promise<any> {
+  const res = await fetch('/api/ai/intake-text', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ text })
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Failed to run intake');
+  }
+  return res.json();
+}
