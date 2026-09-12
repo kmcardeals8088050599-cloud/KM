@@ -24,6 +24,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
   }, []);
 
   const storefrontImage = photos[0]?.imageUrl;
+  const isCustomStorefront = storefrontImage?.startsWith('data:') ?? false;
 
   const handleQuickSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,12 +60,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
     <section className="relative min-h-[88vh] flex items-center justify-center pt-32 pb-20 px-4 lg:px-8 overflow-hidden bg-slate-900">
       {/* Storefront Yard Background - Ken Burns cinematic zoom */}
       <div className="absolute inset-0">
-        <img
-          src={storefrontImage}
-          alt="KM Car Deals storefront yard in Kalaburagi"
-          referrerPolicy="no-referrer"
-          className="w-full h-full object-cover object-center animate-kenburns"
-        />
+        <picture>
+          {/* Portrait crop on mobile so the scene fits the tall phone viewport */}
+          {!isCustomStorefront && (
+            <source media="(max-width: 767px)" srcSet="/storeFront-portrait.jpeg" />
+          )}
+          <img
+            src={storefrontImage}
+            alt="KM Car Deals storefront yard in Kalaburagi"
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover object-center animate-kenburns"
+          />
+        </picture>
         {/* Soft directional scrim: dark on the left (text zone), clear on the right (image visible) */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-900/10"></div>
         {/* Subtle bottom fade into next section */}
