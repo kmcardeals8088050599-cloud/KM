@@ -14,6 +14,9 @@ import {
 } from './db.js';
 import { approveDraft, markDraftArchived, markDraftSold, updateDraftPrice } from './publisher.js';
 import { reprocessDraft } from './intake.js';
+import { listUnprocessedMessages } from './db.js';
+import { isAdminSender } from './admin-commands.js';
+import { runIntake } from './intake.js';
 import { extractVehicleFromConversation } from './extraction.js';
 import { generateVehicleContent } from './content.js';
 import { validateDraft } from './validation.js';
@@ -26,6 +29,53 @@ const ai = Router();
 // WhatsApp webhook ingestion
 // ---------------------------------------------------------------------------
 ai.get('/whatsapp/webhook', verifyWebhook);
+
+// ---------------------------------------------------------------------------
+// Cron worker: drain messages the webhook stored but couldn't process in-band
+// (webhook returns 200 and Vercel freezes fire-and-forget asyncs). A Vercel
+// cron hits this endpoint every minute; runIntake runs here inside a fresh
+// invocation with its own time budget. Guarded by CRON_SECRET when configured.
+// ---------------------------------------------------------------------------
+function cronAuthorized(req: import('express').Request): boolean {
+  const expected = process.env.CRON_SECRET || process.env.WORKQUEUE_SECRET || '';
+  if (!expected) return true; // local dev
+  const auth = req.get('authorization') || '';
+  return auth === `Bearer ${expected}`;
+}
+
+async function drainWorkQueue(limit: number) {
+  const pending = await listUnprocessedMessages(limit, 6);
+  const results: { messageId: string; conversationId: string; status: string; error?: string }[] = [];
+  for (const msg of pending) {
+    const requestId = `cron-${Date.now()}-${msg.id}`;
+    const ctx = {
+      requestId,
+      fromPhone: msg.fromPhone,
+      participantType: isAdminSender(msg.fromPhone) ? ('admin' as const) : ('seller' as const),
+    };
+    try {
+      await runIntake(msg.conversationId, msg.id, ctx);
+      results.push({ messageId: msg.id, conversationId: msg.conversationId, status: 'ok' });
+    } catch (err: any) {
+      results.push({ messageId: msg.id, conversationId: msg.conversationId, status: 'error', error: err.message });
+    }
+  }
+  return results;
+}
+
+ai.get('/ai/workqueue', async (req, res) => {
+  if (!cronAuthorized(req)) {
+    res.status(401).json({ error: 'unauthorized' });
+    return;
+  }
+  try {
+    const limit = Math.max(1, Math.min(Number(req.query.limit) || 10, 20));
+    const results = await drainWorkQueue(limit);
+    res.json({ processed: results.length, results });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 ai.post('/whatsapp/webhook', async (req, res) => {
   try {

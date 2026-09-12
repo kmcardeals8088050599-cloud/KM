@@ -28,6 +28,7 @@ import { buildTranscript } from './transcript.js';
 import { classifyAndAnalyze } from './images.js';
 import { appendAudit, logAiUsage } from './audit.js';
 import { sendWhatsAppText, notifyAdmin } from './whatsapp-api.js';
+import { markMessageProcessed, bumpProcessingAttempt } from './db.js';
 import { assertTransition } from './state-machine.js';
 import { getActiveModels } from './ai.js';
 import { VehicleExtractedData } from '../../src/types/ai.js';
@@ -106,6 +107,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
         ctx.fromPhone,
         'Your vehicle is already processed. Send changes and our team will review updates.'
       );
+      await markMessageProcessed(messageId);
       return;
     }
 
@@ -137,6 +139,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       }
       if (content) await updateVehicleDraft(draft.id, { content });
 
+      const firstNotify = draft.state !== 'READY_FOR_REVIEW';
       if (draft.state !== 'READY_FOR_REVIEW') {
         assertTransition(draft.state, 'READY_FOR_REVIEW', 'system');
         draft = await updateVehicleDraft(draft.id, { state: 'READY_FOR_REVIEW' });
@@ -145,19 +148,23 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       }
       await updateConversation(conversationId, { state: 'ready_for_review' });
 
-      const title = mergedData.brand + ' ' + mergedData.model;
-      await notifyAdmin(
-        [ '🚘 *Draft Ready — KM Car Deals*',
-          '',
-          `${mergedData.manufacturingYear || ''} ${title} ${mergedData.variant || ''}`.trim(),
-          `${mergedData.fuelType || ''} | ${mergedData.transmission || ''} | ${mergedData.bodyType || ''}`,
-          `${mergedData.odometerKm ? mergedData.odometerKm.toLocaleString('en-IN') + ' KM' : ''}${mergedData.ownerCount ? ' | ' + mergedData.ownerCount : ''}`,
-          mergedData.price ? `💰 ₹${mergedData.price >= 100000 ? (mergedData.price / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' Lakh' : mergedData.price.toLocaleString('en-IN')}` : '',
-          `${imagesCount(draft.images)} images attached.`,
-          '',
-          `Draft: ${draft.id}`,
-        ].filter(Boolean).join('\n')
-      );
+      await markMessageProcessed(messageId);
+
+      if (firstNotify) {
+        const title = mergedData.brand + ' ' + mergedData.model;
+        await notifyAdmin(
+          [ '🚘 *Draft Ready — KM Car Deals*',
+            '',
+            `${mergedData.manufacturingYear || ''} ${title} ${mergedData.variant || ''}`.trim(),
+            `${mergedData.fuelType || ''} | ${mergedData.transmission || ''} | ${mergedData.bodyType || ''}`,
+            `${mergedData.odometerKm ? mergedData.odometerKm.toLocaleString('en-IN') + ' KM' : ''}${mergedData.ownerCount ? ' | ' + mergedData.ownerCount : ''}`,
+            mergedData.price ? `💰 ₹${mergedData.price >= 100000 ? (mergedData.price / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 }) + ' Lakh' : mergedData.price.toLocaleString('en-IN')}` : '',
+            `${imagesCount(draft.images)} images attached.`,
+            '',
+            `Draft: ${draft.id}`,
+          ].filter(Boolean).join('\n')
+        );
+      }
       return;
     }
 
@@ -174,6 +181,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     } else {
       await sendWhatsAppText(ctx.fromPhone, 'Please send the remaining vehicle details so I can complete the listing.');
     }
+    await markMessageProcessed(messageId);
   } catch (err: any) {
     console.error('[Intake] Failed:', err.message);
     await markProcessingFailure(conversationId, messageId, err, ctx);
@@ -268,6 +276,7 @@ async function markProcessingFailure(
       conversationId,
       requestId: ctx.requestId,
     });
+    await bumpProcessingAttempt(messageId, err.message).catch(() => undefined);
   } catch (auditErr) {
     console.error('[Intake] Failure audit failed:', auditErr);
   }

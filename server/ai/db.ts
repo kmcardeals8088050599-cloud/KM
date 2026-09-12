@@ -339,6 +339,20 @@ export async function getMessageByExternalId(externalId: string): Promise<Stored
   return rowToMessage(data);
 }
 
+export async function listUnprocessedMessages(limit = 10, maxAttempts = 6): Promise<StoredMessage[]> {
+  const { data, error } = await supabase
+    .from('whatsapp_messages')
+    .select('*')
+    .eq('processed', false)
+    .lt('processing_attempts', maxAttempts)
+    .order('created_at', { ascending: true })
+    .limit(limit);
+  if (error) {
+    throw new Error(`Failed to list unprocessed messages: ${error.message}`);
+  }
+  return (data || []).map(rowToMessage);
+}
+
 export async function persistInboundMessage(input: {
   externalId: string;
   conversationId: string;
