@@ -1,15 +1,67 @@
 @import "tailwindcss";
 
+/* ===========================================================================
+   KM Car Deals — Premium Design System
+   Champagne gold accent on a refined warm-charcoal graphite scale.
+   Every amber / slate / emerald utility across the app re-maps to these
+   tokens, so the whole frontend inherits one coherent, professional palette.
+   =========================================================================== */
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --shadow-premium: 0 20px 50px -12px rgba(15, 23, 42, 0.22);
-  --shadow-card: 0 4px 24px -8px rgba(15, 23, 42, 0.12);
+  --shadow-premium: 0 24px 60px -18px rgba(24, 22, 20, 0.25);
+  --shadow-card: 0 4px 24px -8px rgba(24, 22, 20, 0.12);
+
+  /* Champagne gold accent (replaces amber) */
+  --color-amber-50: #fdf9ef;
+  --color-amber-100: #f8f0da;
+  --color-amber-200: #f0e0b4;
+  --color-amber-300: #e6cc86;
+  --color-amber-400: #d6b662;
+  --color-amber-500: #c9a96e;
+  --color-amber-600: #b08d4a;
+  --color-amber-700: #94733a;
+  --color-amber-800: #7b5f34;
+  --color-amber-900: #644e2e;
+  --color-amber-950: #372a16;
+
+  /* Warm charcoal graphite (replaces slate) */
+  --color-slate-50: #f7f6f3;
+  --color-slate-100: #edece9;
+  --color-slate-200: #dcdad5;
+  --color-slate-300: #bfbcb6;
+  --color-slate-400: #97948c;
+  --color-slate-500: #757169;
+  --color-slate-600: #5c584f;
+  --color-slate-700: #44403a;
+  --color-slate-800: #2b2824;
+  --color-slate-900: #1d1b18;
+  --color-slate-950: #100f0d;
+
+  /* Refined pine green (replaces emerald; used for calls-to-action/WhatsApp) */
+  --color-emerald-50: #f1faf5;
+  --color-emerald-100: #ddf3e6;
+  --color-emerald-200: #bce7cd;
+  --color-emerald-300: #8bd4a9;
+  --color-emerald-400: #54b882;
+  --color-emerald-500: #2f9a66;
+  --color-emerald-600: #237c53;
+  --color-emerald-700: #1f6346;
+  --color-emerald-800: #1c4f3a;
+  --color-emerald-900: #184030;
+  --color-emerald-950: #0b241b;
+
+  /* Optional pressing neutrals for accents (deep inks) */
+  --color-ink-500: #4d4a44;
+  --color-ink-600: #34312c;
+  --color-ink-700: #24211d;
+  --color-ink-800: #161412;
+  --color-ink-900: #0d0c0b;
 }
 
 @layer utilities {
   .text-gradient-amber {
-    background: linear-gradient(120deg, #92400e, #f59e0b, #fbbf24);
+    background: linear-gradient(120deg, #b08d4a, #d6b662, #eed9a0);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -18,8 +70,8 @@
 
 @layer base {
   body {
-    background-color: #f1f5f9;
-    color: #0f172a;
+    background-color: #f7f6f3;
+    color: #1d1b18;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -34,10 +86,10 @@
 
 /* Theme variables */
 :root {
-  --theme-accent: #f59e0b;
-  --theme-accent-hover: #d97706;
-  --theme-header-bg: #0f172a;
-  --theme-card-border: rgba(226, 232, 240, 0.9);
+  --theme-accent: #c9a96e;
+  --theme-accent-hover: #b08d4a;
+  --theme-header-bg: #100f0d;
+  --theme-card-border: rgba(220, 218, 213, 0.9);
 }
 
 @keyframes floatOrb1 {
@@ -62,26 +114,26 @@
 .executive-card {
   background: #ffffff;
   border: 1px solid var(--theme-card-border);
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 20px -4px rgba(24, 22, 20, 0.05);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .executive-card:hover {
-  border-color: rgba(15, 23, 42, 0.3);
-  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12);
+  border-color: rgba(201, 169, 110, 0.55);
+  box-shadow: 0 20px 44px -12px rgba(24, 22, 20, 0.16);
   transform: translateY(-4px);
 }
 
 .executive-badge {
-  background: #f1f5f9;
-  color: #0f172a;
-  border: 1px solid #cbd5e1;
+  background: #f7f6f3;
+  color: #1d1b18;
+  border: 1px solid #dcdad5;
 }
 
 .executive-badge-accent {
-  background: #fffbe3;
-  color: #78350f;
-  border: 1px solid #fde68a;
+  background: #f8f0da;
+  color: #644e2e;
+  border: 1px solid #e6cc86;
 }
 
 /* Ken Burns slow zoom for hero background */
@@ -98,7 +150,7 @@
 
 /* Soft text shadow for legibility over imagery */
 .text-shadow-hero {
-  text-shadow: 0 2px 12px rgba(2, 6, 23, 0.55), 0 1px 3px rgba(2, 6, 23, 0.4);
+  text-shadow: 0 2px 12px rgba(16, 15, 13, 0.55), 0 1px 3px rgba(16, 15, 13, 0.4);
 }
 
 /* Custom scrollbar */
@@ -108,40 +160,39 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f7f6f3;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #bfbcb6;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #97948c;
 }
 
-/* Glass utility classes for light theme */
+/* Glass utility classes */
 .glass-panel {
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(220, 218, 213, 0.9);
+  box-shadow: 0 4px 20px -4px rgba(24, 22, 20, 0.05);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-panel:hover {
-  border-color: rgba(15, 23, 42, 0.2);
-  box-shadow: 0 8px 30px -6px rgba(15, 23, 42, 0.1);
+  border-color: rgba(24, 22, 20, 0.2);
+  box-shadow: 0 8px 30px -6px rgba(24, 22, 20, 0.1);
 }
 
 .glass-card {
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(220, 218, 213, 0.9);
+  box-shadow: 0 4px 20px -4px rgba(24, 22, 20, 0.05);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 12px 40px -8px rgba(245, 158, 11, 0.12);
+  border-color: rgba(201, 169, 110, 0.5);
+  box-shadow: 0 12px 40px -8px rgba(201, 169, 110, 0.14);
 }
-

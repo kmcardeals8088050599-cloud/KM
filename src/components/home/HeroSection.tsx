@@ -69,11 +69,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
             src={storefrontImage}
             alt="KM Car Deals storefront yard in Kalaburagi"
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover object-center animate-kenburns"
+            className="w-full h-full object-contain object-center md:object-cover md:animate-kenburns"
           />
         </picture>
-        {/* Soft directional scrim: dark on the left (text zone), clear on the right (image visible) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-900/10"></div>
+        {/* Soft directional scrim: dark on the left (text zone), clear on the right (image visible) — desktop only */}
+        <div className="absolute inset-0 hidden lg:block bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-900/10"></div>
+        {/* Mobile: subtle vertical fades so the full storefront image stays visible */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-950/60 to-transparent lg:hidden"></div>
+        <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-slate-950/50 to-transparent lg:hidden"></div>
         {/* Subtle bottom fade into next section */}
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-50 via-slate-50/70 to-transparent"></div>
         {/* Vignette for cinematic depth */}
