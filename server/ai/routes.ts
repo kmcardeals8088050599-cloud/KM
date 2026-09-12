@@ -31,10 +31,11 @@ const ai = Router();
 ai.get('/whatsapp/webhook', verifyWebhook);
 
 // ---------------------------------------------------------------------------
-// Cron worker: drain messages the webhook stored but couldn't process in-band
-// (webhook returns 200 and Vercel freezes fire-and-forget asyncs). A Vercel
-// cron hits this endpoint every minute; runIntake runs here inside a fresh
-// invocation with its own time budget. Guarded by CRON_SECRET when configured.
+// Rescue worker: manually drain messages the webhook stored but couldn't process
+// in-band (e.g. an invocation that was killed before intake finished). The primary
+// mechanism is now waitUntil (webhook keeps the job alive); this endpoint is a
+// belt-and-suspenders manual/automated trigger. Guarded by CRON_SECRET or
+// WORKQUEUE_SECRET when configured.
 // ---------------------------------------------------------------------------
 function cronAuthorized(req: import('express').Request): boolean {
   const expected = process.env.CRON_SECRET || process.env.WORKQUEUE_SECRET || '';

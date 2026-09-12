@@ -2,9 +2,11 @@
 //
 // Idempotency: every inbound event keyed on external_id (Meta wamid.id). A message that
 // has already been stored is never processed twice. Webhook returns 200 after storing;
-// all AI processing is fire-and-forget (async job), keeping the webhook fast and safe.
+// AI processing runs as a background job kept alive via waitUntil (Vercel Fluid freezes
+// bare fire-and-forget promises once the handler returns), keeping the webhook fast.
 
 import type { Request, Response } from 'express';
+import { waitUntil } from '@vercel/functions';
 import {
   getMessageByExternalId,
   persistInboundMessage,
@@ -15,6 +17,13 @@ import { runIntake } from './intake.js';
 import { handleAdminMessage, isAdminSender } from './admin-commands.js';
 import { transcribeAudioUrl } from './audio.js';
 import type { InboundMessage, MessageAttachment } from '../../src/types/ai.js';
+
+// Schedule a background job that must outlive the webhook response. On Vercel Fluid
+// this keeps the promise alive past the 200; outside Vercel it falls back to immediate
+// execution (no-op scheduling) so local development behaves as before.
+function scheduleBackground(task: Promise<unknown>): void {
+  waitUntil(task.catch(err => console.error('[Webhook] Background job failed:', err)));
+}
 
 // --- Verification (GET) ---
 export function verifyWebhook(req: Request, res: Response): void {
@@ -93,14 +102,10 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
         };
 
         if (senderIsAdmin) {
-          // Admin control responses are processed eagerly (fast, deterministic).
-          void handleAdminMessage(conversation.id, fromPhone, inbound.text || '', requestId).catch(err =>
-            console.error('[Webhook] Admin handler failed:', err)
-          );
+          // Admin control responses processed in the background via waitUntil.
+          scheduleBackground(handleAdminMessage(conversation.id, fromPhone, inbound.text || '', requestId));
         } else {
-          void runIntake(conversation.id, externalId, ctx).catch(err =>
-            console.error('[Webhook] Intake job failed:', err)
-          );
+          scheduleBackground(runIntake(conversation.id, externalId, ctx));
         }
         stored++;
       }
