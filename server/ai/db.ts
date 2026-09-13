@@ -160,6 +160,50 @@ export async function createVehicleDraft(input: {
   return rowToDraft(data);
 }
 
+// Find-or-create a draft for a conversation. The id is deterministic on the
+// conversation so concurrent intakes converge on one draft row (PK conflicts
+// fall back to the already-created row instead of creating duplicates).
+export async function getOrCreateDraftForConversation(
+  conversationId: string,
+  input: Omit<Parameters<typeof createVehicleDraft>[0], 'id' | 'conversationId'>
+): Promise<VehicleDraft> {
+  const existing = await getVehicleDraftByConversation(conversationId);
+  if (existing) return existing;
+
+  const id = `vd-${conversationId}`;
+  const now = new Date().toISOString();
+  const row = {
+    id,
+    conversation_id: conversationId,
+    state: input.state,
+    data: input.data || {},
+    confidence: {},
+    provenance: {},
+    locked_fields: [],
+    source: input.source || 'whatsapp',
+    seller_name: input.sellerName || null,
+    seller_phone: input.sellerPhone || null,
+    seller_id: input.sellerId || null,
+    dealer_id: input.dealerId || null,
+    content: null,
+    images: [],
+    documents: [],
+    publish_result: null,
+    published_car_id: null,
+    error: null,
+    created_at: now,
+    updated_at: now,
+  };
+  const { data, error } = await supabase.from('vehicle_drafts').insert(row).select().single();
+  if (!error) return rowToDraft(data);
+
+  if (error.code === '23505' || /duplicate key/i.test(error.message || '')) {
+    const retry = await getVehicleDraftByConversation(conversationId);
+    if (retry) return retry;
+  }
+  throw new Error(`Failed to create vehicle draft: ${error.message}`);
+}
+
 export async function getVehicleDraft(id: string): Promise<VehicleDraft | null> {
   const { data, error } = await supabase
     .from('vehicle_drafts')
@@ -242,7 +286,23 @@ function rowToConversation(row: any): Conversation {
   };
 }
 
+// Deterministic id keyed on phone so concurrent webhook invocations for the same
+// sender converge on the SAME conversation row instead of racing to insert dupes.
+function conversationIdFor(phone: string): string {
+  return `conv-${phone}`;
+}
+
 export async function getOrCreateConversation(phone: string, senderType: ParticipantType = 'seller'): Promise<Conversation> {
+  const id = conversationIdFor(phone);
+
+  const { data: byId, error: byIdErr } = await supabase
+    .from('whatsapp_conversations')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (!byIdErr && byId) return rowToConversation(byId);
+
+  // Backfill for conversations created before deterministic ids (legacy rows).
   let { data, error } = await supabase
     .from('whatsapp_conversations')
     .select('*')
@@ -253,7 +313,7 @@ export async function getOrCreateConversation(phone: string, senderType: Partici
   if (data && data.length > 0) {
     return rowToConversation(data[0]);
   }
-  const id = generateId('conv');
+
   const now = new Date().toISOString();
   const { data: inserted, error: insertErr } = await supabase
     .from('whatsapp_conversations')
@@ -269,8 +329,19 @@ export async function getOrCreateConversation(phone: string, senderType: Partici
     })
     .select()
     .single();
-  if (insertErr) throw new Error(`Failed to create conversation: ${insertErr.message}`);
-  return rowToConversation(inserted);
+  if (!insertErr) return rowToConversation(inserted);
+
+  // Duplicate-key race (another invocation inserted first) → return theirs.
+  if (insertErr.code === '23505' || /duplicate key/i.test(insertErr.message || '')) {
+    const { data: retry } = await supabase
+      .from('whatsapp_conversations')
+      .select('*')
+      .eq('external_phone', phone)
+      .order('updated_at', { ascending: false })
+      .limit(1);
+    if (retry && retry.length > 0) return rowToConversation(retry[0]);
+  }
+  throw new Error(`Failed to create conversation: ${insertErr.message}`);
 }
 
 export async function updateConversation(id: string, patch: Partial<Conversation>): Promise<Conversation> {

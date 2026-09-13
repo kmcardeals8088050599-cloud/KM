@@ -15,7 +15,7 @@ import {
   getOrCreateConversation,
   updateConversation,
   getVehicleDraftByConversation,
-  createVehicleDraft,
+  getOrCreateDraftForConversation,
   updateVehicleDraft,
   getVehicleDraft,
   listConversationMessages,
@@ -27,10 +27,11 @@ import { generateVehicleContent } from './content.js';
 import { buildTranscript } from './transcript.js';
 import { classifyAndAnalyze } from './images.js';
 import { appendAudit, logAiUsage } from './audit.js';
-import { sendWhatsAppText, notifyAdmin } from './whatsapp-api.js';
+import { sendWhatsAppText, notifyAdmin, resolveMediaUrl, storeRemoteMedia } from './whatsapp-api.js';
 import { markMessageProcessed, bumpProcessingAttempt } from './db.js';
 import { assertTransition } from './state-machine.js';
 import { getActiveModels } from './ai.js';
+import { supabase } from '../supabase.js';
 import { VehicleExtractedData } from '../../src/types/ai.js';
 
 export interface IntakeContext {
@@ -44,17 +45,15 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
   try {
     const conversation = await getOrCreateConversation(ctx.fromPhone, ctx.participantType);
 
-    let draft = await getVehicleDraftByConversation(conversationId);
-    if (!draft) {
-      draft = await createVehicleDraft({
-        conversationId,
-        state: 'RECEIVED',
-        sellerPhone: ctx.fromPhone,
-        sellerName: ctx.participantType === 'admin' ? 'Admin' : undefined,
-        source: 'whatsapp',
-      });
-      await updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' });
-    }
+    // Deterministic find-or-create: concurrent webhook invocations for the same
+    // conversation converge on the SAME draft row, never duplicates.
+    let draft = await getOrCreateDraftForConversation(conversationId, {
+      state: 'RECEIVED',
+      sellerPhone: ctx.fromPhone,
+      sellerName: ctx.participantType === 'admin' ? 'Admin' : undefined,
+      source: 'whatsapp',
+    });
+    await updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' });
 
     // RECEIVED → PROCESSING (system)
     if (draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE') {
@@ -62,7 +61,8 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
     }
 
-    const messages = await listConversationMessages(conversationId);
+    const storedMessages = await listConversationMessages(conversationId);
+    const messages = await ensureMediaUrls(storedMessages);
     const transcript = buildTranscript(messages);
 
     // 1. AI structured extraction (merge with existing data, respect locked fields)
@@ -186,6 +186,34 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     console.error('[Intake] Failed:', err.message);
     await markProcessingFailure(conversationId, messageId, err, ctx);
   }
+}
+
+// Repair stored attachments whose ephemeral Media URL was lost at ingest time (e.g.
+// a transient blob-store failure). The mediaId is always kept, so we re-resolve a
+// fresh download URL and persist it back onto the message, making the attachment
+// usable by the image pipeline on reprocess.
+async function ensureMediaUrls(messages: StoredMessage[]): Promise<StoredMessage[]> {
+  const repaired: StoredMessage[] = [];
+  for (const m of messages) {
+    const media = (m.media || []).map(a => ({ ...a }));
+    let changed = false;
+    for (const a of media) {
+      if (a.kind === 'image' && !a.url && a.mediaId) {
+        const url = await resolveMediaUrl(a.mediaId);
+        if (url) {
+          a.url = (await storeRemoteMedia(url, `whatsapp/${m.externalId}`)) || url;
+          changed = true;
+        }
+      }
+    }
+    if (changed) {
+      await supabase.from('whatsapp_messages').update({ media }).eq('id', m.id);
+      repaired.push({ ...m, media });
+    } else {
+      repaired.push(m);
+    }
+  }
+  return repaired;
 }
 
 async function processImagesForMessage(

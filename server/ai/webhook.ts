@@ -6,7 +6,6 @@
 // bare fire-and-forget promises once the handler returns), keeping the webhook fast.
 
 import type { Request, Response } from 'express';
-import { waitUntil } from '@vercel/functions';
 import {
   getMessageByExternalId,
   persistInboundMessage,
@@ -18,11 +17,26 @@ import { handleAdminMessage, isAdminSender } from './admin-commands.js';
 import { transcribeAudioUrl } from './audio.js';
 import type { InboundMessage, MessageAttachment } from '../../src/types/ai.js';
 
-// Schedule a background job that must outlive the webhook response. On Vercel Fluid
-// this keeps the promise alive past the 200; outside Vercel it falls back to immediate
-// execution (no-op scheduling) so local development behaves as before.
-function scheduleBackground(task: Promise<unknown>): void {
-  waitUntil(task.catch(err => console.error('[Webhook] Background job failed:', err)));
+// Cap an intake run so the webhook always returns 200. If the AI work outlives the
+// budget the message stays unprocessed and the guarded /api/ai/workqueue rescues it.
+const INTAKE_TIMEOUT_MS = 90_000;
+
+async function runIntakeWithinTimeout(
+  conversationId: string,
+  messageId: string,
+  ctx: { requestId: string; fromPhone: string; participantType: 'seller' | 'dealer' | 'buyer' | 'admin' }
+): Promise<void> {
+  let timer: NodeJS.Timeout | undefined;
+  const guard = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`intake exceeded ${INTAKE_TIMEOUT_MS}ms`)), INTAKE_TIMEOUT_MS);
+  });
+  try {
+    await Promise.race([runIntake(conversationId, messageId, ctx), guard]);
+  } catch (err: any) {
+    console.error('[Webhook] Intake did not finish in-band:', err.message);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 // --- Verification (GET) ---
@@ -102,10 +116,13 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
         };
 
         if (senderIsAdmin) {
-          // Admin control responses processed in the background via waitUntil.
-          scheduleBackground(handleAdminMessage(conversation.id, fromPhone, inbound.text || '', requestId));
+          // Admin control responses processed in-band (fast, safe to await).
+          await handleAdminMessage(conversation.id, fromPhone, inbound.text || '', requestId);
         } else {
-          scheduleBackground(runIntake(conversation.id, externalId, ctx));
+          // Seller intake processed in-band. Vercel Fluid freezes bare fire-and-forget
+          // promises once the handler returns, so awaiting here is what actually gets
+          // the AI work done; the timeout guard keeps the 200 bounded.
+          await runIntakeWithinTimeout(conversation.id, externalId, ctx);
         }
         stored++;
       }
@@ -113,6 +130,15 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
   }
 
   return { stored, skipped };
+}
+
+// Keep a usable URL no matter what: prefer the durable blob copy, but fall back to
+// the (time-limited) Meta download URL when the blob store fails, so the image is
+// never silently rendered useless to the extraction/vision pipeline.
+async function durableMediaUrl(url: string | null, prefix: string): Promise<string | null> {
+  if (!url) return null;
+  const stored = await storeRemoteMedia(url, prefix);
+  return stored || url;
 }
 
 // Enrich the raw Meta message: copy text, resolve media URLs into durable blob copies.
@@ -131,7 +157,7 @@ async function enrichMessage(
     const mediaId = raw.image?.id;
     const mime = raw.image?.mime_type;
     const url = await resolveMediaUrl(mediaId);
-    const durable = url ? await storeRemoteMedia(url, `whatsapp/${inbound.externalId}`) : url;
+    const durable = await durableMediaUrl(url, `whatsapp/${inbound.externalId}`);
     attachments.push({ kind: 'image', mediaId, url: durable || undefined, mimeType: mime });
   }
 
@@ -139,7 +165,7 @@ async function enrichMessage(
     const mediaId = raw.audio?.id;
     const mime = raw.audio?.mime_type;
     const url = await resolveMediaUrl(mediaId);
-    const durable = url ? await storeRemoteMedia(url, `whatsapp/${inbound.externalId}`) : url;
+    const durable = await durableMediaUrl(url, `whatsapp/${inbound.externalId}`);
     const transcript = durable ? await transcribeAudioUrl(durable, undefined) : null;
     attachments.push({ kind: 'audio', mediaId, url: durable || undefined, mimeType: mime, text: transcript || undefined });
     if (transcript) inbound.text = `[Voice message] ${transcript}`;
@@ -148,14 +174,14 @@ async function enrichMessage(
   if (type === 'document') {
     const mediaId = raw.document?.id;
     const url = await resolveMediaUrl(mediaId);
-    const durable = url ? await storeRemoteMedia(url, `whatsapp/${inbound.externalId}`) : url;
+    const durable = await durableMediaUrl(url, `whatsapp/${inbound.externalId}`);
     attachments.push({ kind: 'document', mediaId, url: durable || undefined, mimeType: raw.document?.mime_type });
   }
 
   if (type === 'video') {
     const mediaId = raw.video?.id;
     const url = await resolveMediaUrl(mediaId);
-    const durable = url ? await storeRemoteMedia(url, `whatsapp/${inbound.externalId}`) : url;
+    const durable = await durableMediaUrl(url, `whatsapp/${inbound.externalId}`);
     attachments.push({ kind: 'video', mediaId, url: durable || undefined, mimeType: raw.video?.mime_type });
   }
 
