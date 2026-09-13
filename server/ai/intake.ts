@@ -55,6 +55,11 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       sellerName: ctx.participantType === 'admin' ? 'Admin' : undefined,
       source: 'whatsapp',
     });
+    if (['APPROVED', 'PUBLISHED', 'UPDATED', 'SOLD', 'ARCHIVED'].includes(draft.state)) {
+      await markMessageProcessed(messageId);
+      return;
+    }
+
     await retry(() => updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' }));
 
     // RECEIVED → PROCESSING (system). Failed drafts are retried on new messages.
@@ -119,13 +124,6 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     const validation = validateDraft(mergedData);
 
     const targetState = validation.readyToReview ? 'READY_FOR_REVIEW' : 'INCOMPLETE';
-
-    // If the draft is already live/terminal, new seller info never silently re-publishes.
-    // Processing is acknowledged silently so the sender is not spammed per message.
-    if (['APPROVED', 'PUBLISHED', 'UPDATED', 'SOLD', 'ARCHIVED'].includes(draft.state)) {
-      await markMessageProcessed(messageId);
-      return;
-    }
 
     // Move READY_FOR_REVIEW → PROCESSING first when new info makes it incomplete again.
     if (draft.state === 'READY_FOR_REVIEW' && targetState !== 'READY_FOR_REVIEW') {
