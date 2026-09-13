@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Car } from '../../types';
-import { Calendar, Fuel, MessageCircle, ArrowRight, Eye, Images } from 'lucide-react';
+import { Calendar, Fuel, Gauge, MessageCircle, ArrowRight, Eye, Images, Car as CarIcon } from 'lucide-react';
 import { createWhatsAppLink } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 
@@ -44,18 +44,28 @@ export const CarCard: React.FC<CarCardProps> = ({
       whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
       className="group relative bg-white rounded-2xl flex flex-col overflow-hidden border border-slate-200/90 shadow-sm hover:shadow-premium hover:border-amber-300/70 transition-all duration-300"
     >
-      <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden cursor-pointer" onClick={handleCardClick}>
-        <motion.img
-          src={car.images[0] || 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=1200'}
-          alt={car.title}
-          referrerPolicy="no-referrer"
-          className="w-full h-full object-cover"
-          whileHover={{ scale: 1.07 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          loading="lazy"
-        />
+      <div className="relative aspect-[16/10] bg-slate-900 overflow-hidden cursor-pointer" onClick={handleCardClick}>
+        {car.images[0] ? (
+          <motion.img
+            src={car.images[0]}
+            alt={car.title}
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+            whileHover={{ scale: 1.07 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex items-center justify-center">
+            <div className="text-center">
+              <CarIcon className="w-10 h-10 text-slate-600 mx-auto" />
+              <p className="text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-[0.2em]">KM Car Deals</p>
+              <p className="text-[9px] text-slate-600 font-semibold mt-0.5">Photos on request · Kalaburagi</p>
+            </div>
+          </div>
+        )}
         {/* Cinematic bottom gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-80"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent opacity-80 pointer-events-none"></div>
 
         <div className="absolute top-3 left-3 flex items-center gap-2">
           {car.status === 'Available' ? (
@@ -127,9 +137,15 @@ export const CarCard: React.FC<CarCardProps> = ({
               <Fuel className="w-3 h-3 text-slate-600 mb-0.5" />
               <span className="text-[10px] font-bold text-slate-800">{car.fuelType}</span>
             </div>
-            <div className="bg-slate-50 p-1.5 rounded-lg flex flex-col items-center text-center border border-slate-200/80 col-span-2">
+            <div className="bg-slate-50 p-1.5 rounded-lg flex flex-col items-center text-center border border-slate-200/80">
+              <Gauge className="w-3 h-3 text-slate-600 mb-0.5" />
+              <span className="text-[10px] font-bold text-slate-800">
+                {typeof car.odometerKm === 'number' ? `${car.odometerKm.toLocaleString('en-IN')} km` : '—'}
+              </span>
+            </div>
+            <div className="bg-slate-50 p-1.5 rounded-lg flex flex-col items-center text-center border border-slate-200/80">
               <span className="text-[9px] font-bold text-slate-500 uppercase leading-tight">RTO</span>
-              <span className="text-[10px] font-bold text-slate-800">{car.specs.rto?.split(' ')[0] || '—'}</span>
+              <span className="text-[10px] font-bold text-slate-800">{(car.specs?.rto || car.location || '').split(' ')[0] || '—'}</span>
             </div>
           </div>
         </div>

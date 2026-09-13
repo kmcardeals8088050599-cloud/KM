@@ -30,9 +30,10 @@ import { appendAudit, logAiUsage } from './audit.js';
 import { sendWhatsAppText, notifyAdmin, resolveMediaUrl, storeRemoteMedia, isAdminSender } from './whatsapp-api.js';
 import { markMessageProcessed, bumpProcessingAttempt } from './db.js';
 import { assertTransition } from './state-machine.js';
-import { getActiveModels } from './ai.js';
+import { getActiveModels, analyzeImages } from './ai.js';
 import { approveDraft } from './publisher.js';
-import { AUTO_PUBLISH } from './config.js';
+import { AUTO_PUBLISH, MIN_PHOTOS_FOR_PUBLISH } from './config.js';
+import { rcCardExtractionSchema } from './schemas.js';
 import { supabase } from '../supabase.js';
 import { VehicleExtractedData, MissingFieldRequest } from '../../src/types/ai.js';
 
@@ -120,10 +121,28 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     // 2. Image pipeline for image attachments
     await processImagesForMessage(draft.id, conversationId, messages, ctx);
 
-    // 3. Validation
+    // 3. Validation — a professional listing needs the required data fields AND
+    //    a believable set of photos before it can ever be considered ready.
     const validation = validateDraft(mergedData);
+    const imageCount = Array.isArray(draft.images) ? draft.images.length : 0;
+    const needsPhotos = imageCount < MIN_PHOTOS_FOR_PUBLISH;
+    const readyToReview = validation.readyToReview && !needsPhotos;
 
-    const targetState = validation.readyToReview ? 'READY_FOR_REVIEW' : 'INCOMPLETE';
+    let missingFieldRequest: MissingFieldRequest | null = validation.missingFieldRequest || null;
+    if (needsPhotos) {
+      const photoLine = `Please send at least ${MIN_PHOTOS_FOR_PUBLISH} clear photos of the car — I have ${imageCount} so far.`;
+      missingFieldRequest = missingFieldRequest
+        ? {
+            ...missingFieldRequest,
+            missing: [...new Set([...missingFieldRequest.missing, 'photos'])],
+            message: [missingFieldRequest.message, photoLine].join('\n'),
+            questions: [...missingFieldRequest.questions, 'Photos of the car?'],
+            severity: 'high',
+          }
+        : { missing: ['photos'], message: photoLine, questions: ['Photos of the car?'], severity: 'low' };
+    }
+
+    const targetState = readyToReview ? 'READY_FOR_REVIEW' : 'INCOMPLETE';
 
     // Move READY_FOR_REVIEW → PROCESSING first when new info makes it incomplete again.
     if (draft.state === 'READY_FOR_REVIEW' && targetState !== 'READY_FOR_REVIEW') {
@@ -135,7 +154,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     // ("unknown") means we still need the sender to provide the real details on WhatsApp.
     const credibleIdentity = nonPlaceholder(mergedData.brand) && nonPlaceholder(mergedData.model);
 
-    if (validation.readyToReview && (!AUTO_PUBLISH || credibleIdentity)) {
+    if (readyToReview && (!AUTO_PUBLISH || credibleIdentity)) {
       // 4. Content generation (skip re-generating when already in review with content)
       let content = draft.content;
       if (!content) {
@@ -195,7 +214,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     }
     await retry(() => updateConversation(conversationId, { state: 'waiting_answer' }));
 
-    const req = validation.missingFieldRequest;
+    const req = missingFieldRequest;
     if (req) {
       await sendMissingFieldRequestOnce(conversationId, conversation, ctx.fromPhone, req, startedAt);
     } else {
@@ -293,7 +312,20 @@ async function processImagesForMessage(
   if (newImages.length === 0) return;
 
   try {
-    const result = await classifyAndAnalyze(newImages, {}, conversationId, draftId);
+    // Load up to a bounded batch of thumbnails as base64 so vision classification can
+    // actually run (documents → RC-card extraction needs it too). Never blocks the
+    // pipeline: any download failure just means heuristic fallback.
+    const dataURLs: Record<string, string> = {};
+    for (const img of newImages.slice(0, 6)) {
+      try {
+        const b64 = await toBase64Image(img.url);
+        if (b64) dataURLs[img.id] = b64;
+      } catch {
+        /* vision unavailable for this image — heuristic category */
+      }
+    }
+
+    const result = await classifyAndAnalyze(newImages, dataURLs, conversationId, draftId);
     const combined = [...(draft.images || []), ...result.images];
     await updateVehicleDraft(draftId, { images: combined });
     await appendAudit({
@@ -307,6 +339,14 @@ async function processImagesForMessage(
       conversationId,
       requestId: ctx.requestId,
     });
+
+    // RC card present? Mine it for verified owner/registration details.
+    const rcImages = result.images.filter(
+      i => i.category === 'documents' && !i.quality.nonVehicle && dataURLs[i.id]
+    );
+    if (rcImages.length > 0 && draftId) {
+      await extractRcDetailsFromImages(draftId, conversationId, ctx, rcImages.slice(0, 2), dataURLs);
+    }
   } catch (err: any) {
     await appendAudit({
       actor: 'ai-image-agent',
@@ -332,6 +372,131 @@ function collectImageAttachments(messages: StoredMessage[]): { id: string; url: 
     }
   }
   return out;
+}
+
+// Fetch a stored image into a base64 data URL for vision analysis. Returns null for
+// oversized / non-image payloads so a single hostile attachment can never blow the budget.
+async function toBase64Image(url: string, maxBytes = 6 * 1024 * 1024): Promise<string | null> {
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  const type = res.headers.get('content-type') || 'image/jpeg';
+  if (!type.startsWith('image/')) return null;
+  const buf = new Uint8Array(await res.arrayBuffer());
+  if (buf.byteLength === 0 || buf.byteLength > maxBytes) return null;
+  let bin = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < buf.length; i += chunk) {
+    bin += String.fromCharCode.apply(null, Array.from(buf.subarray(i, i + chunk)));
+  }
+  return `data:${type};base64,${btoa(bin)}`;
+}
+
+// When a Registration Certificate photo arrives, read the visible fields and merge
+// them into the draft as HIGH-confidence, source='rc_card' data. Locked fields are
+// never overwritten; the owner name populates sellerName when still unknown.
+async function extractRcDetailsFromImages(
+  draftId: string,
+  conversationId: string,
+  ctx: IntakeContext,
+  rcImages: { id: string; originalUrl: string }[],
+  dataURLs: Record<string, string>
+): Promise<void> {
+  const draft = await getVehicleDraft(draftId);
+  if (!draft) return;
+
+  const locked = new Set(draft.lockedFields || []);
+  const patches: Record<string, unknown> = {};
+  let provenance = { ...(draft.provenance || {}) };
+  let ownerName: string | null = null;
+
+  for (const img of rcImages) {
+    const dataUrl = dataURLs[img.id];
+    if (!dataUrl) continue;
+    try {
+      const rc = await analyzeImages<Record<string, unknown>>({
+        prompt: [
+          'Read the Indian Registration Certificate (RC) in this image. Extract ONLY fields that are clearly legible.',
+          'Respond JSON: {"registrationNumber":"KA32 MP1234","ownerName":"First Last","model":"","fuelType":"Diesel","registrationYear":2021,"insuranceValidUntil":"2025-12-31","rcStatus":"Valid","notes":"..."}',
+          'A registration number looks like "KA 32 MP 1234". Never guess an unreadable value — leave it empty.',
+        ].join('\n'),
+        system:
+          'You are an automotive document reader. The RC is a legal document; extract text faithfully and return JSON only. ' +
+          'Missing/inaccurate OCR must never fabricate data for a vehicle listing. Uppercase-normalise the registration number.',
+        images: [{ id: img.id, dataUrl }],
+        schemaDescription: 'RC-card extraction JSON',
+        agent: 'rc-card',
+        event: 'extract_rc',
+        conversationId,
+        entity: 'vehicle_draft',
+        entityId: draftId,
+        maxRetries: 1,
+        validate: value => rcCardExtractionSchema.parse(value),
+      });
+
+      const regNumber = normalizeRegistration(String(rc.registrationNumber || ''));
+      const fuel = typeof rc.fuelType === 'string' ? rc.fuelType : undefined;
+      const model = typeof rc.model === 'string' ? rc.model : undefined;
+      const regYear = typeof rc.registrationYear === 'number' ? rc.registrationYear : undefined;
+      const insurance = typeof rc.insuranceValidUntil === 'string' ? rc.insuranceValidUntil : undefined;
+      const rcStatus = typeof rc.rcStatus === 'string' ? rc.rcStatus : 'RC verified from card photo';
+      ownerName = typeof rc.ownerName === 'string' && rc.ownerName.trim() ? rc.ownerName.trim() : ownerName;
+
+      const merge = (key: keyof VehicleExtractedData, value: unknown) => {
+        if (value === undefined || value === null || value === '' || locked.has(key)) return;
+        patches[key as string] = value;
+        provenance[key as string] = { source: 'rc_card', confidence: 'high', verifiedBy: 'document:rc' };
+      };
+
+      merge('registrationNumber', regNumber);
+      merge('actualRegistration', regNumber);
+      merge('fuelType', fuel);
+      merge('model', model);
+      merge('registrationYear', regYear);
+      merge('insuranceValidUntil', insurance);
+      if (!locked.has('rcStatus')) {
+        patches['rcStatus'] = rcStatus;
+        provenance['rcStatus'] = { source: 'rc_card', confidence: 'high', verifiedBy: 'document:rc' };
+      }
+
+      if (Object.keys(patches).length > 0) break; // one good RC read is enough
+    } catch (err: any) {
+      console.warn('[Intake] RC extraction failed:', err.message);
+    }
+  }
+
+  if (Object.keys(patches).length === 0) return;
+
+  const patch: Record<string, any> = {
+    data: { ...(draft.data || {}), ...patches },
+    provenance,
+  };
+  if (ownerName && !draft.sellerName) patch.sellerName = ownerName;
+
+  await retry(() => updateVehicleDraft(draftId, patch));
+  await appendAudit({
+    actor: 'ai-rc-agent',
+    actorType: 'system',
+    action: 'rc_extract',
+    entity: 'vehicle_draft',
+    entityId: draftId,
+    newValue: { fields: Object.keys(patches), ownerName },
+    source: 'whatsapp',
+    conversationId,
+    requestId: ctx.requestId,
+  });
+  await notifyAdmin(
+    ownerName
+      ? `📄 RC card read for ${draftId}: added ${Object.keys(patches).join(', ')} (owner ${ownerName}).`
+      : `📄 RC card read for ${draftId}: added ${Object.keys(patches).join(', ')}.`
+  );
+}
+
+function normalizeRegistration(raw: string): string | null {
+  const cleaned = raw.toUpperCase().replace(/[^A-Z0-9]/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!cleaned) return null;
+  const m = cleaned.match(/^([A-Z]{2}\s?\d{1,2}\s?[A-Z]{1,2}\s?\d{1,4})$/);
+  if (m && (cleaned.includes(' ') || cleaned.length >= 8)) return m[1].replace(/\s+/g, ' ').trim();
+  return null;
 }
 
 function imagesCount(images: any[]): number {

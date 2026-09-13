@@ -82,7 +82,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 { label: 'Transmission', value: car.transmission },
                 { label: 'Body Type', value: car.bodyType },
                 { label: 'Fuel', value: car.fuelType },
-                { label: 'RTO', value: car.specs.rto?.split(' ')[0] || '—' },
+                { label: 'RTO', value: car.specs?.rto?.split(' ')[0] || '—' },
               ].map(d => (
                 <div key={d.label} className="bg-slate-50 p-1.5 rounded-lg border border-slate-200 text-center">
                   <span className="text-slate-500 block text-[9px] uppercase font-bold">{d.label}</span>

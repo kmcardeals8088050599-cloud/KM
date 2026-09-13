@@ -47,7 +47,7 @@ export function filterCarsLocal(cars: Car[], filters: Partial<FilterState>): Car
 
   if (filters.rto && filters.rto !== 'All') {
     const rtoCode = filters.rto.split(' ')[0].toLowerCase();
-    result = result.filter(c => c.specs.rto.toLowerCase().startsWith(rtoCode));
+    result = result.filter(c => (c.specs?.rto || '').toLowerCase().startsWith(rtoCode) || (c.location || '').toLowerCase().startsWith(rtoCode));
   }
 
   if (filters.ownerCount && filters.ownerCount !== 'All') {

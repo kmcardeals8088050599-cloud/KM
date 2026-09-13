@@ -84,3 +84,17 @@ export const conflictResolutionSchema = z.object({
   resolved: z.coerce.boolean(),
   notes: boundedString(500).optional(),
 });
+
+// ---------------------------------------------------------------------------
+// RC-card document reader (vision OCR into validated RC fields)
+// ---------------------------------------------------------------------------
+export const rcCardExtractionSchema = z.object({
+  registrationNumber: boundedString(60).optional(),
+  ownerName: boundedString(200).optional(),
+  model: boundedString(200).optional(),
+  fuelType: boundedString(60).optional(),
+  registrationYear: boundedInt(1950, 2100).optional(),
+  insuranceValidUntil: boundedString(100).optional(),
+  rcStatus: boundedString(100).optional(),
+  notes: boundedString(300).optional(),
+});

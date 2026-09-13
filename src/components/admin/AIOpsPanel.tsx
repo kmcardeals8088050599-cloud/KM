@@ -12,7 +12,8 @@ import {
   Layers,
   ThumbsUp,
   ThumbsDown,
-  Eye
+  Eye,
+  Download
 } from 'lucide-react';
 import {
   fetchAiStatus,
@@ -24,8 +25,42 @@ import {
   aiUpdatePrice,
   aiRegenerate,
   aiIntakeText,
+  getAuthToken,
   AiDraft
 } from '../../lib/api';
+
+const PUBLISH_REQUIRED_FIELDS = [
+  'brand',
+  'model',
+  'manufacturingYear',
+  'fuelType',
+  'transmission',
+  'bodyType',
+  'ownerCount',
+  'odometerKm',
+  'price'
+];
+
+const MIN_PHOTOS_FOR_PUBLISH = 3;
+
+function missingPublishFields(d: AiDraft, includeRequired = true): string[] {
+  const data = d.data || {};
+  return PUBLISH_REQUIRED_FIELDS.filter(k => {
+    const v = data[k];
+    return v === undefined || v === null || v === '' || (typeof v === 'number' && Number.isNaN(v));
+  });
+}
+
+function photoPublishStatus(d: AiDraft): { count: number; ok: boolean } {
+  const count = d.images?.length || 0;
+  return { count, ok: count >= MIN_PHOTOS_FOR_PUBLISH };
+}
+
+function draftPublishGates(d: AiDraft): { missing: string[]; photos: { count: number; ok: boolean }; blocked: boolean } {
+  const missing = missingPublishFields(d);
+  const photos = photoPublishStatus(d);
+  return { missing, photos, blocked: missing.length > 0 || !photos.ok };
+}
 
 const STATE_BADGES: Record<string, { bg: string; text: string }> = {
   RECEIVED: { bg: 'bg-slate-100', text: 'text-slate-700' },
@@ -103,6 +138,34 @@ export const AIOpsPanel: React.FC = () => {
     setIntakeText('');
   };
 
+  const handleExport = async () => {
+    setBusy(true);
+    setError('');
+    setActionMsg('');
+    try {
+      const token = getAuthToken();
+      const res = await fetch('/api/cars/export', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      if (!res.ok) throw new Error(`Export failed (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const stamp = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `km-car-deals-catalogue-${stamp}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      setActionMsg('📄 Catalogue exported — product ids + prices included. Open in Excel.');
+    } catch (err: any) {
+      setError(err.message || 'Export failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const priceLakh = (p?: number) =>
     p === undefined || p === null ? '' : `₹${(p / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} Lakh`;
 
@@ -124,6 +187,14 @@ export const AIOpsPanel: React.FC = () => {
           className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl flex items-center gap-2 w-fit shadow-xs"
         >
           <RefreshCw className="w-4 h-4" /> Refresh
+        </button>
+        <button
+          onClick={handleExport}
+          disabled={busy}
+          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white font-extrabold text-xs rounded-xl flex items-center gap-2 w-fit shadow-xs"
+          title="Admin-only CSV with product ids + asking prices"
+        >
+          <Download className="w-4 h-4" /> Export Catalogue (Excel)
         </button>
       </div>
 
@@ -237,15 +308,38 @@ export const AIOpsPanel: React.FC = () => {
                   >
                     <Eye className="w-3.5 h-3.5" /> Review
                   </button>
-                  {d.state === 'READY_FOR_REVIEW' && (
-                    <button
-                      onClick={() => runAction(async () => aiApproveDraft(d.id), '✅ Approved & published.')}
-                      disabled={busy}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold rounded-lg flex items-center gap-1.5 disabled:opacity-40"
-                    >
-                      <ThumbsUp className="w-3.5 h-3.5" /> Approve
-                    </button>
-                  )}
+                  {d.state === 'READY_FOR_REVIEW' && (() => {
+                    const gates = draftPublishGates(d);
+                    return (
+                      <>
+                        <div className="mt-1.5 flex flex-wrap gap-1.5">
+                          {gates.missing.length > 0 && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-red-100 text-red-700">
+                              Missing: {gates.missing.join(', ')}
+                            </span>
+                          )}
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-black uppercase ${gates.photos.ok ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                            {gates.photos.count} / {MIN_PHOTOS_FOR_PUBLISH} photos
+                          </span>
+                          {gates.blocked && (
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-black uppercase bg-amber-100 text-amber-700">
+                              Remaining required fields: {gates.missing.length + (gates.photos.ok ? 0 : 1)}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => runAction(async () => aiApproveDraft(d.id), '✅ Approved & published.')}
+                          disabled={busy || gates.blocked}
+                          title={gates.blocked
+                            ? `Cannot publish yet — missing: ${gates.missing.length ? gates.missing.join(', ') : 'none'}; photos ${gates.photos.count}/3`
+                            : 'Publish to catalogue'}
+                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold rounded-lg flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          <ThumbsUp className="w-3.5 h-3.5" /> Approve {gates.blocked ? '(blocked)' : ''}
+                        </button>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             );

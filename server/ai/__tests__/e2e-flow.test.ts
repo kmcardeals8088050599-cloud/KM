@@ -398,6 +398,13 @@ describe('END-TO-END: KM Car Deals AI — production flow over real HTTP', () =>
   });
 
   it('stage 7: approval publishes to the website via the REAL publisher + state machine', async () => {
+    // Publish gate: a draft becomes publishable only with >= 3 gallery photos.
+    // The intake sample has text only, so attach gallery photos before approving.
+    const { updateVehicleDraft } = await import('../db.js');
+    await updateVehicleDraft(draftId, {
+      images: ['https://blob.e2e/cars/1.jpg', 'https://blob.e2e/cars/2.jpg', 'https://blob.e2e/cars/3.jpg'],
+    });
+
     const headers = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
     const { status, body } = await api(`/api/ai/drafts/${draftId}/approve`, { method: 'POST', headers });
     expect(status).toBe(200);

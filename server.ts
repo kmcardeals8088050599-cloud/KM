@@ -18,6 +18,7 @@ import {
   getAllExchanges,
   createExchange as dbCreateExchange,
   updateExchange as dbUpdateExchange,
+  getCarExportRows,
   findUserByUsername,
   ensureDefaultAdmin
 } from './server/db.js';
@@ -158,7 +159,8 @@ export async function createApp() {
         );
       }
 
-      res.json(filtered);
+      // Asking price is admin-only — strip it from the public API responses.
+      res.json(isAuthorized(req) ? filtered : filtered.map(stripPublicPrice));
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to fetch cars', details: err.message });
     }
@@ -172,9 +174,25 @@ export async function createApp() {
         res.status(404).json({ error: 'Car not found' });
         return;
       }
-      res.json(car);
+      res.json(isAuthorized(req) ? car : stripPublicPrice(car));
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to fetch car', details: err.message });
+    }
+  });
+
+  // GET Catalogue export (admin only) — openable in Excel, product ids included.
+  app.get('/api/cars/export', authenticateAdmin, async (_req, res) => {
+    try {
+      const rows = await getCarExportRows();
+      const csv = buildCatalogueCsv(rows);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="km-car-deals-catalogue-${new Date().toISOString().slice(0, 10)}.csv"`
+      );
+      res.send(`\uFEFF${csv}`);
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to export catalogue', details: err.message });
     }
   });
 
@@ -545,4 +563,82 @@ async function startServer() {
 
 if (!process.env.VERCEL) {
   startServer();
+}
+
+// True when the request carries a valid admin JWT (used to decide whether price data
+// may be included in a /api/cars response).
+function isAuthorized(req: express.Request): boolean {
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) return false;
+  try {
+    const decoded = jwt.verify(header.split(' ')[1], JWT_SECRET) as { role?: string };
+    return decoded.role === 'admin';
+  } catch {
+    return false;
+  }
+}
+
+function stripPublicPrice(car: Car): Car {
+  const { price, originalPrice, ...rest } = car;
+  return rest as Car;
+}
+
+const EXPORT_HEADERS = [
+  'Product ID',
+  'Draft ID',
+  'Draft State',
+  'Title',
+  'Brand',
+  'Model',
+  'Variant',
+  'Year',
+  'Price (Rs)',
+  'Odometer (km)',
+  'Fuel',
+  'Transmission',
+  'Body Type',
+  'Owner Count',
+  'Colour',
+  'Location',
+  'RTO',
+  'Status',
+  'Image Count',
+  'Features',
+  'Created At',
+] as const;
+
+const EXPORT_FIELDS: (keyof Awaited<ReturnType<typeof getCarExportRows>>[number])[] = [
+  'productId',
+  'draftId',
+  'draftState',
+  'title',
+  'brand',
+  'model',
+  'variant',
+  'year',
+  'price',
+  'odometerKm',
+  'fuelType',
+  'transmission',
+  'bodyType',
+  'ownerCount',
+  'color',
+  'location',
+  'rto',
+  'status',
+  'imageCount',
+  'features',
+  'createdAt',
+];
+
+function buildCatalogueCsv(rows: Awaited<ReturnType<typeof getCarExportRows>>): string {
+  const esc = (v: unknown): string => {
+    const s = v === null || v === undefined ? '' : String(v);
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+  const lines = [EXPORT_HEADERS.join(',')];
+  for (const row of rows) {
+    lines.push(EXPORT_FIELDS.map(f => esc(row[f])).join(','));
+  }
+  return lines.join('\r\n');
 }

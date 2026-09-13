@@ -94,7 +94,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
               <Row label="Body Type" values={cars.map(c => c.bodyType)} />
               <Row label="Fuel Type" values={cars.map(c => c.fuelType)} />
               <Row label="Transmission" values={cars.map(c => c.transmission)} />
-              <Row label="RTO" values={cars.map(c => c.specs.rto || '—')} />
+              <Row label="RTO" values={cars.map(c => c.specs?.rto || '—')} />
               <Row label="Status" values={cars.map(c => c.status)} />
             </tbody>
           </table>

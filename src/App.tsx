@@ -123,7 +123,7 @@ function MainAppContent() {
     bodyType: 'All',
     fuelType: 'All',
     transmission: 'All',
-    status: 'All'
+    status: 'Available'
   });
 
   // Fetch initial cars from server API
@@ -266,7 +266,7 @@ function MainAppContent() {
                           bodyType: 'All',
                           fuelType: 'All',
                           transmission: 'All',
-                          status: 'All'
+                          status: 'Available'
                         })
                       }
                       className="px-5 py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-sm"
@@ -297,12 +297,21 @@ function MainAppContent() {
                         className="glass-card rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center hover:shadow-premium hover:border-amber-300/70"
                       >
                         <div className="relative w-full md:w-56 h-36 shrink-0 overflow-hidden rounded-xl border border-slate-200 group/img">
-                          <img
-                            src={car.images[0]}
-                            alt={car.title}
-                            referrerPolicy="no-referrer"
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
-                          />
+                          {car.images[0] ? (
+                            <img
+                              src={car.images[0]}
+                              alt={car.title}
+                              referrerPolicy="no-referrer"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex items-center justify-center">
+                              <div className="text-center">
+                                <Images className="w-8 h-8 text-slate-600 mx-auto" />
+                                <p className="text-[9px] font-bold text-slate-500 mt-2 uppercase tracking-[0.2em]">KM Car Deals</p>
+                              </div>
+                            </div>
+                          )}
                           {car.images.length > 1 && (
                             <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-slate-950/70 text-white text-[10px] font-bold rounded-full border border-white/20 flex items-center gap-1">
                               <Images className="w-3 h-3 text-amber-400" />
@@ -321,6 +330,9 @@ function MainAppContent() {
                             <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.fuelType}</span>
                             <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.transmission}</span>
                             <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.bodyType}</span>
+                            {typeof car.odometerKm === 'number' && (
+                              <span className="bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">{car.odometerKm.toLocaleString('en-IN')} km</span>
+                            )}
                             <span className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-lg border border-amber-200 font-extrabold">{car.specs?.rto}</span>
                           </div>
                         </div>

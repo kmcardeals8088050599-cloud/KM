@@ -12,6 +12,7 @@ const complete: VehicleExtractedData = {
   ownerCount: '1st Owner',
   price: 3250000,
   odometerKm: 48000,
+  registrationYear: 2022,
 };
 
 describe('computeCompletion', () => {

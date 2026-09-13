@@ -49,6 +49,7 @@ export type FieldSource =
   | 'ai_inference'
   | 'document'
   | 'image_detection'
+  | 'rc_card'
   | 'admin'
   | 'system';
 

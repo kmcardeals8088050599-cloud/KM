@@ -8,6 +8,7 @@ export interface Car {
   title: string;
   brand: string;
   model: string;
+  variant?: string;
   year: number;
   transmission: Transmission;
   bodyType: BodyType;
@@ -16,8 +17,17 @@ export interface Car {
   status: CarStatus;
   images: string[];
   specs: {
-    rto: string;
+    rto?: string;
   };
+  /** Admin-only asking price (₹). Never rendered on the public catalogue. */
+  price?: number;
+  /** Admin-only original/asking price snapshot. */
+  originalPrice?: number;
+  odometerKm?: number;
+  color?: string;
+  location?: string;
+  features?: string[];
+  description?: string;
   createdAt: string;
 }
 

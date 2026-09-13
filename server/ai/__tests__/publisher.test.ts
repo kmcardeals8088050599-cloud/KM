@@ -62,7 +62,7 @@ const baseDraft = {
   state: 'APPROVED',
   data: { brand: 'Toyota', model: 'Fortuner', manufacturingYear: 2022, fuelType: 'Diesel', transmission: 'Automatic', bodyType: 'SUV', ownerCount: '1st Owner', odometerKm: 48000, price: 3250000 },
   content: { whatsappSalesMessage: 'Toyota Fortuner 2022 for sale.', websiteTitle: 'Toyota Fortuner 2022' },
-  images: [],
+  images: ['https://blob.test/cars/1.jpg', 'https://blob.test/cars/2.jpg', 'https://blob.test/cars/3.jpg'],
   sellerPhone: '918123991847',
   conversationId: 'conv-1',
 };
@@ -116,6 +116,53 @@ describe('publishChannels — whatsapp channel honesty', () => {
     const wa = result.entries.find(e => e.channel === 'whatsapp');
     expect(wa?.status).toBe('skipped');
     expect(sendWhatsAppText).not.toHaveBeenCalled();
+  });
+});
+
+describe('approveDraft — publish requirements gate', () => {
+  it('blocks publishing when fewer than 3 photos are attached', async () => {
+    draftStore.set('vd-no-photos', {
+      ...baseDraft,
+      id: 'vd-no-photos',
+      state: 'READY_FOR_REVIEW',
+      images: ['https://blob.test/cars/1.jpg'],
+      publishedCarId: undefined,
+    });
+
+    await expect(
+      approveDraft('vd-no-photos', { requestId: 'req-1', actor: 'admin', actorType: 'admin' })
+    ).rejects.toThrow(/photos/);
+    expect(h.createCar).not.toHaveBeenCalled();
+  });
+
+  it('blocks publishing when the odometer is missing', async () => {
+    draftStore.set('vd-no-odometer', {
+      ...baseDraft,
+      id: 'vd-no-odometer',
+      state: 'READY_FOR_REVIEW',
+      data: { ...baseDraft.data, odometerKm: undefined },
+      publishedCarId: undefined,
+    });
+
+    await expect(
+      approveDraft('vd-no-odometer', { requestId: 'req-1', actor: 'admin', actorType: 'admin' })
+    ).rejects.toThrow(/odometer/);
+    expect(h.createCar).not.toHaveBeenCalled();
+  });
+
+  it('rejects price-less vehicles (no admin asking price, no upload)', async () => {
+    draftStore.set('vd-no-price', {
+      ...baseDraft,
+      id: 'vd-no-price',
+      state: 'READY_FOR_REVIEW',
+      data: { ...baseDraft.data, price: undefined },
+      publishedCarId: undefined,
+    });
+
+    await expect(
+      approveDraft('vd-no-price', { requestId: 'req-1', actor: 'admin', actorType: 'admin' })
+    ).rejects.toThrow(/price/);
+    expect(h.createCar).not.toHaveBeenCalled();
   });
 });
 

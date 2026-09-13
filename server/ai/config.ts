@@ -7,7 +7,11 @@ export const AI_CONFIG = {
   webhookMaxAgeSeconds: 300,
   followUpMaxQuestions: 5,
   followUpRetryLimit: 3,
+  // Professional listing floor: a car is only PUBLISHABLE with at least this many photos.
+  minPhotosForPublish: 3,
 } as const;
+
+export const MIN_PHOTOS_FOR_PUBLISH = AI_CONFIG.minPhotosForPublish;
 
 // When enabled, a complete intake publishes the listing immediately — no admin
 // approval step. The only WhatsApp conversation is the ask-for-missing-fields
@@ -67,7 +71,8 @@ export const FIELD_LABELS: Record<string, string> = {
 };
 
 // Fields that MUST be present for a listing to be READY_FOR_REVIEW (based on existing
-// createCarSchema requirements).
+// createCarSchema requirements). A catalogue car cannot be uploaded until EVERY one
+// of these is present in the draft, alongside at least MIN_PHOTOS_FOR_PUBLISH photos.
 export const REQUIRED_FOR_PUBLISH: string[] = [
   'brand',
   'model',
@@ -76,6 +81,7 @@ export const REQUIRED_FOR_PUBLISH: string[] = [
   'transmission',
   'bodyType',
   'ownerCount',
+  'odometerKm',
   'price',
 ];
 

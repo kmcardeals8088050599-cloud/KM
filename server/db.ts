@@ -11,14 +11,22 @@ function rowToCar(row: any): Car {
     title: row.title,
     brand: row.brand,
     model: row.model,
+    variant: row.variant || undefined,
     year: row.year,
+    price: row.price === null || row.price === undefined ? undefined : Number(row.price),
+    originalPrice: row.original_price === null || row.original_price === undefined ? undefined : Number(row.original_price),
+    odometerKm: row.kilometers === null || row.kilometers === undefined ? undefined : row.kilometers,
+    color: row.color || undefined,
+    location: row.location || undefined,
     fuelType: row.fuel_type,
     transmission: row.transmission,
     bodyType: row.body_type,
     ownerCount: row.owner_count || '1st Owner',
     status: row.status,
     images: row.images || [],
-    specs: { rto: (row.specs?.rto) || '' },
+    features: row.features || [],
+    description: row.description || undefined,
+    specs: { rto: (row.specs?.rto) || row.location || '' },
     createdAt: row.created_at
   };
 }
@@ -65,13 +73,21 @@ function carToRow(car: Partial<Car>): Record<string, any> {
   if (car.title !== undefined) row.title = car.title;
   if (car.brand !== undefined) row.brand = car.brand;
   if (car.model !== undefined) row.model = car.model;
+  if (car.variant !== undefined) row.variant = car.variant;
   if (car.year !== undefined) row.year = car.year;
+  if (car.price !== undefined) row.price = car.price;
+  if (car.originalPrice !== undefined) row.original_price = car.originalPrice;
+  if (car.odometerKm !== undefined) row.kilometers = car.odometerKm;
+  if (car.color !== undefined) row.color = car.color;
+  if (car.location !== undefined) row.location = car.location;
   if (car.fuelType !== undefined) row.fuel_type = car.fuelType;
   if (car.transmission !== undefined) row.transmission = car.transmission;
   if (car.bodyType !== undefined) row.body_type = car.bodyType;
   if (car.ownerCount !== undefined) row.owner_count = car.ownerCount;
   if (car.status !== undefined) row.status = car.status;
   if (car.images !== undefined) row.images = car.images;
+  if (car.features !== undefined) row.features = car.features;
+  if (car.description !== undefined) row.description = car.description;
   if (car.specs !== undefined) row.specs = car.specs;
   return row;
 }
@@ -119,6 +135,53 @@ export async function updateCar(id: string, updates: Partial<Car>): Promise<Car>
 export async function deleteCar(id: string): Promise<void> {
   const { error } = await supabase.from('cars').delete().eq('id', id);
   if (error) throw new Error(`Failed to delete car: ${error.message}`);
+}
+
+// Full catalogue snapshot for the admin Excel export — EVERY car row plus its linked
+// AI draft id/state (product ids together, so the spreadsheet ties the website to WhatsApp).
+export async function getCarExportRows(): Promise<Record<string, any>[]> {
+  const { data: cars, error: carErr } = await supabase
+    .from('cars')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (carErr) throw new Error(`Failed to fetch cars for export: ${carErr.message}`);
+
+  const { data: drafts, error: draftErr } = await supabase
+    .from('vehicle_drafts')
+    .select('id, published_car_id, state');
+  if (draftErr) throw new Error(`Failed to fetch draft links for export: ${draftErr.message}`);
+
+  const draftByCar = new Map<string, { id: string; state: string }>();
+  for (const d of drafts || []) {
+    if (d.published_car_id) draftByCar.set(d.published_car_id, d);
+  }
+
+  return (cars || []).map(row => {
+    const link = draftByCar.get(row.id);
+    return {
+      productId: row.id,
+      draftId: link?.id || '',
+      draftState: link?.state || '',
+      title: row.title || '',
+      brand: row.brand || '',
+      model: row.model || '',
+      variant: row.variant || '',
+      year: row.year ?? '',
+      price: row.price === null ? '' : Number(row.price),
+      odometerKm: row.kilometers ?? '',
+      fuelType: row.fuel_type || '',
+      transmission: row.transmission || '',
+      bodyType: row.body_type || '',
+      ownerCount: row.owner_count || '',
+      color: row.color || '',
+      location: row.location || '',
+      rto: row.specs?.rto || row.location || '',
+      status: row.status || '',
+      imageCount: Array.isArray(row.images) ? row.images.length : 0,
+      features: Array.isArray(row.features) ? row.features.join('; ') : '',
+      createdAt: row.created_at || '',
+    };
+  });
 }
 
 // --- LEAD OPERATIONS ---

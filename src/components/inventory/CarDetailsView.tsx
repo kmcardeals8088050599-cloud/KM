@@ -72,6 +72,8 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
     }
   };
 
+  const mainImage = car.images[activeImageIndex] || car.images[0] || null;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -126,27 +128,39 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 space-y-4">
             <div className="relative aspect-[16/10] bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 shadow-premium group">
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={activeImageIndex}
-                  src={car.images[activeImageIndex] || car.images[0]}
-                  alt={car.title}
-                  initial={{ opacity: 0, scale: 1.02 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-cover"
-                />
-              </AnimatePresence>
+              {mainImage ? (
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeImageIndex}
+                    src={mainImage}
+                    alt={car.title}
+                    initial={{ opacity: 0, scale: 1.02 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.3 }}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover"
+                  />
+                </AnimatePresence>
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 flex items-center justify-center">
+                  <div className="text-center">
+                    <Images className="w-12 h-12 text-slate-600 mx-auto" />
+                    <p className="text-[11px] font-bold text-slate-500 mt-3 uppercase tracking-[0.2em]">KM Car Deals</p>
+                    <p className="text-[10px] text-slate-600 font-semibold mt-1">Photos on request · Kalaburagi</p>
+                  </div>
+                </div>
+              )}
               {/* Cinematic bottom gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none"></div>
 
               {/* Image counter badge */}
-              <div className="absolute top-4 right-4 px-3 py-1.5 bg-slate-950/70 text-white text-[11px] font-bold rounded-full border border-white/20 backdrop-blur-sm flex items-center gap-1.5">
-                <Images className="w-3.5 h-3.5 text-amber-400" />
-                <span>{activeImageIndex + 1} / {car.images.length}</span>
-              </div>
+              {car.images.length > 0 && (
+                <div className="absolute top-4 right-4 px-3 py-1.5 bg-slate-950/70 text-white text-[11px] font-bold rounded-full border border-white/20 backdrop-blur-sm flex items-center gap-1.5">
+                  <Images className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{activeImageIndex + 1} / {car.images.length}</span>
+                </div>
+              )}
 
               {/* Prev / Next arrows */}
               {car.images.length > 1 && (
@@ -199,7 +213,9 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   { label: 'Transmission', value: car.transmission },
                   { label: 'Body Type', value: car.bodyType },
                   { label: 'Fuel Type', value: car.fuelType },
-                  { label: 'RTO', value: car.specs.rto?.split(' ')[0] || '—' },
+                  { label: 'Kilometres', value: typeof car.odometerKm === 'number' ? `${car.odometerKm.toLocaleString('en-IN')} km` : '—' },
+                  { label: 'Colour', value: car.color || '—' },
+                  { label: 'RTO', value: (car.specs?.rto || car.location || '').split(' ')[0] || '—' },
                 ].map(d => (
                   <div key={d.label} className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                     <span className="text-slate-500 block text-[9px] uppercase font-black">{d.label}</span>

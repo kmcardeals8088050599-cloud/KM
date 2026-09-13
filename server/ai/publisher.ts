@@ -12,6 +12,34 @@ import {
 import { createCar, updateCar, getCarById } from '../db.js';
 import { appendAudit } from './audit.js';
 import { assertTransition } from './state-machine.js';
+import { computeCompletion, detectConflicts } from './validation.js';
+import { MIN_PHOTOS_FOR_PUBLISH } from './config.js';
+
+/**
+ * Deterministic publish gate: a listing must satisfy EVERY requirement (required
+ * data fields + a shown minimum of photos) before it may move to the website.
+ * This runs at approve time — never trust stale validation results.
+ */
+function assertRequirementsMet(draft: any): void {
+  const data = draft.data || {};
+  const completion = computeCompletion(data);
+  const conflicts = detectConflicts(data);
+  const imageCount = Array.isArray(draft.images) ? draft.images.length : 0;
+
+  const gaps: string[] = [
+    ...completion.missingRequired,
+    ...(imageCount < MIN_PHOTOS_FOR_PUBLISH ? [`photos (min ${MIN_PHOTOS_FOR_PUBLISH}, have ${imageCount})`] : []),
+  ];
+
+  if (gaps.length === 0 && conflicts.length === 0) return;
+
+  throw new Error(
+    'Cannot publish — requirements not met. ' +
+      (gaps.length > 0 ? `Missing: ${gaps.join(', ')}. ` : '') +
+      (conflicts.length > 0 ? `Conflicts to verify: ${conflicts.join(' ')} ` : '') +
+      'Complete every requirement before uploading to the catalogue.'
+  );
+}
 
 async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 350): Promise<T> {
   for (let attempt = 0; ; attempt++) {
@@ -60,12 +88,19 @@ function draftToCarPayload(draft: any) {
     title,
     brand: data.brand || 'Unknown',
     model: data.model || 'Unknown',
+    variant: data.variant,
     year: data.manufacturingYear || 2022,
     fuelType: fuel,
     transmission,
     bodyType: body,
     ownerCount: data.ownerCount || '1st Owner',
     status: 'Available' as const,
+    color: data.color,
+    location: data.location,
+    price: typeof data.price === 'number' ? data.price : undefined,
+    kilometers: typeof data.odometerKm === 'number' ? data.odometerKm : undefined,
+    features: Array.isArray(data.features) ? data.features : [],
+    description: draft.content?.websiteDescription || data.description,
     images: images,
     specs: { rto: data.location || 'KA-32 (Kalaburagi)' },
   };
@@ -74,6 +109,9 @@ function draftToCarPayload(draft: any) {
 export async function approveDraft(draftId: string, ctx: PublishContext): Promise<{ draft: any; car: any; result: PublishResult }> {
   const draft = await getVehicleDraft(draftId);
   if (!draft) throw new Error('Draft not found');
+
+  // Professional gate: nothing is uploaded to the catalogue until every requirement is met.
+  assertRequirementsMet(draft);
 
   // REVIEW → APPROVED (admin or system auto-publish). Idempotent: an already-APPROVED
   // draft is a retry of a partial publish, so it may be approved again.
