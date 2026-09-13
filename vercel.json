@@ -5,6 +5,9 @@
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
+  "functions": {
+    "api/index.ts": { "maxDuration": 300 }
+  },
   "crons": [
     { "path": "/api/ai/workqueue?limit=6", "schedule": "0 2 * * *" }
   ]

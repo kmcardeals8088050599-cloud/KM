@@ -46,10 +46,12 @@ function cronAuthorized(req: import('express').Request): boolean {
   return auth === `Bearer ${expected}`;
 }
 
-async function drainWorkQueue(limit: number) {
+async function drainWorkQueue(limit: number, timeBoxMs = 75_000) {
+  const started = Date.now();
   const pending = await listUnprocessedMessages(limit, 6);
   const results: { messageId: string; conversationId: string; status: string; error?: string }[] = [];
   for (const msg of pending) {
+    if (Date.now() - started > timeBoxMs) break; // stay inside gateways' response windows
     const requestId = `cron-${Date.now()}-${msg.id}`;
     const ctx = {
       requestId,
@@ -63,7 +65,7 @@ async function drainWorkQueue(limit: number) {
       results.push({ messageId: msg.id, conversationId: msg.conversationId, status: 'error', error: err.message });
     }
   }
-  return results;
+  return { results, remaining: pending.length - results.length };
 }
 
 ai.get('/ai/workqueue', async (req, res) => {
@@ -73,8 +75,8 @@ ai.get('/ai/workqueue', async (req, res) => {
   }
   try {
     const limit = Math.max(1, Math.min(Number(req.query.limit) || 10, 20));
-    const results = await drainWorkQueue(limit);
-    res.json({ processed: results.length, results });
+    const { results, remaining } = await drainWorkQueue(limit);
+    res.json({ processed: results.length, remaining, results });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
