@@ -55,12 +55,12 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       sellerName: ctx.participantType === 'admin' ? 'Admin' : undefined,
       source: 'whatsapp',
     });
-    await updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' });
+    await retry(() => updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' }));
 
     // RECEIVED → PROCESSING (system). Failed drafts are retried on new messages.
     if (draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE' || draft.state === 'PROCESSING_FAILED' || draft.state === 'IMAGE_PROCESSING_FAILED') {
       assertTransition(draft.state, 'PROCESSING', 'system');
-      draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
+      draft = await retry(() => updateVehicleDraft(draft.id, { state: 'PROCESSING' }));
     }
 
     const storedMessages = await listConversationMessages(conversationId);
@@ -76,11 +76,29 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     });
 
     const mergedData: VehicleExtractedData = extraction.data;
-    await updateVehicleDraft(draft.id, {
-      data: mergedData,
-      confidence: { ...draft.confidence, ...extraction.confidence },
-      provenance: { ...draft.provenance, ...extraction.provenance },
-    });
+
+    // One thread == one vehicle. A different credible identity is rejected instead of
+    // being merged into the existing listing (keeps the live data consistent).
+    const vehicleConflict = detectVehicleConflict(draft.data, mergedData);
+    if (vehicleConflict) {
+      await markMessageProcessed(messageId);
+      await sendWhatsAppText(
+        ctx.fromPhone,
+        ['⚠️', vehicleConflict, '', 'I did not change the existing listing.'].join('\n')
+      );
+      await notifyAdmin(
+        `🚧 Conflicting data in ${draft.id}: ${vehicleConflict.split('—').pop().trim()}`
+      );
+      return;
+    }
+
+    await retry(() =>
+      updateVehicleDraft(draft.id, {
+        data: mergedData,
+        confidence: { ...draft.confidence, ...extraction.confidence },
+        provenance: { ...draft.provenance, ...extraction.provenance },
+      })
+    );
 
     await appendAudit({
       actor: 'ai-extraction-agent',
@@ -102,13 +120,9 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
 
     const targetState = validation.readyToReview ? 'READY_FOR_REVIEW' : 'INCOMPLETE';
 
-    // If the draft is already live/terminal, new seller info is handled as a note,
-    // never silently re-published.
+    // If the draft is already live/terminal, new seller info never silently re-publishes.
+    // Processing is acknowledged silently so the sender is not spammed per message.
     if (['APPROVED', 'PUBLISHED', 'UPDATED', 'SOLD', 'ARCHIVED'].includes(draft.state)) {
-      await sendWhatsAppText(
-        ctx.fromPhone,
-        'Your vehicle is already processed. Send changes and our team will review updates.'
-      );
       await markMessageProcessed(messageId);
       return;
     }
@@ -116,7 +130,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     // Move READY_FOR_REVIEW → PROCESSING first when new info makes it incomplete again.
     if (draft.state === 'READY_FOR_REVIEW' && targetState !== 'READY_FOR_REVIEW') {
       assertTransition(draft.state, 'PROCESSING', 'system');
-      draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
+      draft = await retry(() => updateVehicleDraft(draft.id, { state: 'PROCESSING' }));
     }
 
     // Auto-publish only accepts a credible vehicle identity; placeholder brand/model
@@ -143,16 +157,16 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
           console.error('[Intake] Content generation failed:', err.message);
         }
       }
-      if (content) await updateVehicleDraft(draft.id, { content });
+      if (content) await retry(() => updateVehicleDraft(draft.id, { content }));
 
       const wasInReview = draft.state === 'READY_FOR_REVIEW';
       if (!wasInReview) {
         assertTransition(draft.state, 'READY_FOR_REVIEW', 'system');
-        draft = await updateVehicleDraft(draft.id, { state: 'READY_FOR_REVIEW' });
+        draft = await retry(() => updateVehicleDraft(draft.id, { state: 'READY_FOR_REVIEW' }));
       } else {
-        draft = await updateVehicleDraft(draft.id, { error: null });
+        draft = await retry(() => updateVehicleDraft(draft.id, { error: null }));
       }
-      await updateConversation(conversationId, { state: 'ready_for_review' });
+      await retry(() => updateConversation(conversationId, { state: 'ready_for_review' }));
 
       await markMessageProcessed(messageId);
 
@@ -179,9 +193,9 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     // Not ready → send follow-up questions (idempotent transition)
     if (draft.state !== 'INCOMPLETE') {
       assertTransition(draft.state, 'INCOMPLETE', 'system');
-      draft = await updateVehicleDraft(draft.id, { state: 'INCOMPLETE' });
+      draft = await retry(() => updateVehicleDraft(draft.id, { state: 'INCOMPLETE' }));
     }
-    await updateConversation(conversationId, { state: 'waiting_answer' });
+    await retry(() => updateConversation(conversationId, { state: 'waiting_answer' }));
 
     const req = validation.missingFieldRequest;
     if (req) {
@@ -290,6 +304,43 @@ const PLACEHOLDER_RE = /^(unknown|unk|n\/a|na|none|not given|not stated|-)$/i;
 
 function nonPlaceholder(v: unknown): boolean {
   return typeof v === 'string' && v.trim().length > 0 && !PLACEHOLDER_RE.test(v.trim());
+}
+
+// Transient Supabase/gateway failures (observed during the hosted outage) abort an
+// otherwise-fine intake run. A tiny bounded retry turns them into a non-event.
+async function retry<T>(fn: () => Promise<T>, retries = 2, delayMs = 350): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      const msg = String(err?.message || err || '');
+      const transient = /gateway timeout|timeout|too many|530|543|overloaded|pool\\_state|connection/i.test(msg);
+      if (attempt >= retries || !transient) throw err;
+      await new Promise((r) => setTimeout(r, delayMs * (attempt + 1)));
+    }
+  }
+}
+
+// One WhatsApp thread == one vehicle. A second, credible incoming identity (different
+// model/brand) must never be merged into the first listing. Returns a human reason.
+function trustModelName(m: string | undefined): string {
+  const n = (m || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return n.split(/\s+/).filter(Boolean).join(' ');
+}
+export function detectVehicleConflict(existing: VehicleExtractedData | null, merged: VehicleExtractedData): string | null {
+  if (!existing) return null;
+  const oldRaw = typeof existing.model === 'string' ? existing.model : '';
+  const newRaw = typeof merged.model === 'string' ? merged.model : '';
+  if (!nonPlaceholder(oldRaw) || !nonPlaceholder(newRaw)) return null;
+  const oldModel = trustModelName(oldRaw);
+  const newModel = trustModelName(newRaw);
+  if (!oldModel || !newModel) return null;
+  const oldKey = oldModel.split(/\s+/)[0];
+  const newKey = newModel.split(/\s+/)[0];
+  if (oldKey !== newKey) {
+    return `this thread already has a listing for "${existing.brand || ''} ${oldRaw}" — "${merged.brand || ''} ${newRaw}" is a different vehicle. Please send the second car's details from a NEW WhatsApp thread.`;
+  }
+  return null;
 }
 
 // AUTO_PUBLISH path: no admin approval step. When intake is complete + credible,

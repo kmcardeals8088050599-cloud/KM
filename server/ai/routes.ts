@@ -40,6 +40,8 @@ ai.get('/whatsapp/webhook', verifyWebhook);
 function cronAuthorized(req: import('express').Request): boolean {
   const expected = process.env.CRON_SECRET || process.env.WORKQUEUE_SECRET || '';
   if (!expected) return true; // local dev
+  // Vercel Cron runs cannot attach an Authorization header; it tags them instead.
+  if (req.headers['x-vercel-cron'] === '1') return true;
   const auth = req.get('authorization') || '';
   return auth === `Bearer ${expected}`;
 }
