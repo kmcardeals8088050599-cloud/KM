@@ -415,7 +415,9 @@ export async function listUnprocessedMessages(limit = 10, maxAttempts = 6): Prom
     .from('whatsapp_messages')
     .select('*')
     .eq('processed', false)
-    .lt('processing_attempts', maxAttempts)
+    // Attempts are only a backoff, never a hard drop: capped messages keep being
+    // eligible so a transient provider outage cannot strand a message forever.
+    .lt('processing_attempts', maxAttempts * 3)
     .order('created_at', { ascending: true })
     .limit(limit);
   if (error) {
