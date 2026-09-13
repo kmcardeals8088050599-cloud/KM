@@ -81,4 +81,29 @@ describe('normalizeExtraction', () => {
     );
     expect(result.unknown).toEqual(['color', 'variant']);
   });
+
+  it('coerces loose numeric strings and drops malformed ones', () => {
+    const result = normalizeExtraction(
+      {
+        engine_cc: '1200cc',
+        odometer_km: '48,000 km',
+        manufacturing_year: '2022',
+        price: '32.5 lakh',
+      } as unknown as Parameters<typeof normalizeExtraction>[0],
+      input
+    );
+    expect(result.data.engineCc).toBe(1200);
+    expect(result.data.odometerKm).toBe(48000);
+    expect(result.data.manufacturingYear).toBe(2022);
+    expect(result.data.price).toBe(3250000);
+  });
+
+  it('never lets a malformed numeric value abort normalization', () => {
+    const result = normalizeExtraction(
+      { engine_cc: 'abc', odometer_km: 'not-a-number' } as unknown as Parameters<typeof normalizeExtraction>[0],
+      input
+    );
+    expect(result.data.engineCc).toBeUndefined();
+    expect(result.data.odometerKm).toBeUndefined();
+  });
 });

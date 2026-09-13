@@ -14,13 +14,17 @@ describe('state machine', () => {
     expect(canTransition('PROCESSING', 'INCOMPLETE', 'system')).toBe(true);
   });
 
-  it('allows READY_FOR_REVIEW → APPROVED via admin only', () => {
+  it('allows READY_FOR_REVIEW → APPROVED via admin or system (auto-publish)', () => {
     expect(canTransition('READY_FOR_REVIEW', 'APPROVED', 'admin')).toBe(true);
-    expect(canTransition('READY_FOR_REVIEW', 'APPROVED', 'system')).toBe(false);
+    expect(canTransition('READY_FOR_REVIEW', 'APPROVED', 'system')).toBe(true);
   });
 
   it('allows APPROVED → PUBLISHED via system', () => {
     expect(canTransition('APPROVED', 'PUBLISHED', 'system')).toBe(true);
+  });
+
+  it('allows PROCESSING_FAILED → PROCESSING via system (retry)', () => {
+    expect(canTransition('PROCESSING_FAILED', 'PROCESSING', 'system')).toBe(true);
   });
 
   it('blocks invalid transitions with a throw', () => {

@@ -7,6 +7,7 @@
 
 import { generateStructured } from './ai.js';
 import { sanitizeExtractedData } from './schemas.js';
+import { parseIndianPrice } from './config.js';
 import type {
   ExtractionResult,
   FieldConfidence,
@@ -185,11 +186,16 @@ export function normalizeExtraction(raw: RawExtractionOutput, input: ExtractionA
     // Respect locked fields (human-edited values are never overwritten by AI)
     if (input.lockedFields?.includes(target)) continue;
 
-    // Model output sometimes arrives as a string list (e.g. features) instead of
-    // an array — coerce before validation so a quirky reply can't abort intake.
+    // Model output sometimes arrives as a string list (e.g. features) or as a loose
+    // string number (e.g. engine_cc "1200cc") — coerce before validation so quirky
+    // replies can't abort intake. Truly malformed numeric values are dropped.
     let value: unknown = rawVal;
     if (target === 'features' && typeof value === 'string') {
       value = splitList(value);
+    } else if (NUMERIC_FIELDS.has(target)) {
+      const n = coerceNumeric(value, target);
+      if (n === undefined) continue;
+      value = n;
     }
 
     (data as Record<string, unknown>)[target] = value;
@@ -234,6 +240,24 @@ function splitList(value: string): string[] {
   const parts = value.split(/[,;|\n]|\band\b/i);
   const cleaned = parts.map((s) => s.trim()).filter(Boolean);
   return cleaned.slice(0, 200);
+}
+
+// Numeric target fields. LLM output quirk: these arrive as loose strings
+// ("48,000 km", "1200cc", "32.5 lakh") — coerce, and drop if truly malformed.
+const NUMERIC_FIELDS = new Set(['price', 'odometerKm', 'engineCc', 'manufacturingYear', 'registrationYear']);
+
+function coerceNumeric(value: unknown, field: string): number | undefined {
+  if (typeof value === 'number') return isNaN(value) ? undefined : value;
+  if (typeof value === 'string') {
+    const text = value.trim();
+    if (!text) return undefined;
+    if (field === 'price') return parseIndianPrice(text);
+    const cleaned = text.replace(/[^\d.-]/g, '');
+    if (!cleaned) return undefined;
+    const n = Number(cleaned);
+    return isNaN(n) ? undefined : n;
+  }
+  return undefined;
 }
 
 function normalizeSource(s?: string): FieldSource {

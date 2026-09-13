@@ -31,6 +31,8 @@ import { sendWhatsAppText, notifyAdmin, resolveMediaUrl, storeRemoteMedia } from
 import { markMessageProcessed, bumpProcessingAttempt } from './db.js';
 import { assertTransition } from './state-machine.js';
 import { getActiveModels } from './ai.js';
+import { approveDraft } from './publisher.js';
+import { AUTO_PUBLISH } from './config.js';
 import { supabase } from '../supabase.js';
 import { VehicleExtractedData } from '../../src/types/ai.js';
 
@@ -117,7 +119,11 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
     }
 
-    if (validation.readyToReview) {
+    // Auto-publish only accepts a credible vehicle identity; placeholder brand/model
+    // ("unknown") means we still need the sender to provide the real details on WhatsApp.
+    const credibleIdentity = nonPlaceholder(mergedData.brand) && nonPlaceholder(mergedData.model);
+
+    if (validation.readyToReview && (!AUTO_PUBLISH || credibleIdentity)) {
       // 4. Content generation (skip re-generating when already in review with content)
       let content = draft.content;
       if (!content) {
@@ -139,8 +145,8 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       }
       if (content) await updateVehicleDraft(draft.id, { content });
 
-      const firstNotify = draft.state !== 'READY_FOR_REVIEW';
-      if (draft.state !== 'READY_FOR_REVIEW') {
+      const wasInReview = draft.state === 'READY_FOR_REVIEW';
+      if (!wasInReview) {
         assertTransition(draft.state, 'READY_FOR_REVIEW', 'system');
         draft = await updateVehicleDraft(draft.id, { state: 'READY_FOR_REVIEW' });
       } else {
@@ -150,7 +156,9 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
 
       await markMessageProcessed(messageId);
 
-      if (firstNotify) {
+      if (AUTO_PUBLISH) {
+        await autoPublishDraft(draft.id, ctx);
+      } else if (!wasInReview) {
         const title = mergedData.brand + ' ' + mergedData.model;
         await notifyAdmin(
           [ '🚘 *Draft Ready — KM Car Deals*',
@@ -276,6 +284,54 @@ function collectImageAttachments(messages: StoredMessage[]): { id: string; url: 
 
 function imagesCount(images: any[]): number {
   return Array.isArray(images) ? images.length : 0;
+}
+
+const PLACEHOLDER_RE = /^(unknown|unk|n\/a|na|none|not given|not stated|-)$/i;
+
+function nonPlaceholder(v: unknown): boolean {
+  return typeof v === 'string' && v.trim().length > 0 && !PLACEHOLDER_RE.test(v.trim());
+}
+
+// AUTO_PUBLISH path: no admin approval step. When intake is complete + credible,
+// the listing is published automatically and the seller + admin are notified on WhatsApp.
+async function autoPublishDraft(draftId: string, ctx: IntakeContext): Promise<void> {
+  try {
+    const { draft: pub } = await approveDraft(draftId, {
+      requestId: ctx.requestId,
+      actor: 'ai-intake-agent',
+      actorType: 'system',
+    });
+    if (pub.state === 'PUBLISHED') {
+      const title = pub.content?.websiteTitle || `${pub.data?.brand || ''} ${pub.data?.model || ''}`.trim();
+      if (pub.sellerPhone) {
+        await sendWhatsAppText(
+          pub.sellerPhone,
+          [
+            '🎉 *Your car is LIVE on kmcardeals.com!*',
+            '',
+            title,
+            'https://kmcardeals.com',
+            '',
+            'We will call you to complete the paperwork. Thanks for listing with KM Car Deals!',
+          ].join('\n')
+        );
+      }
+      await notifyAdmin(
+        [
+          '🚘 *Auto-Published*',
+          '',
+          title,
+          `Car: ${pub.publishedCarId}`,
+          pub.sellerPhone ? `Seller: ${pub.sellerPhone}` : '',
+        ].filter(Boolean).join('\n')
+      );
+    } else {
+      await notifyAdmin(`⚠️ Auto-publish did not complete for draft ${draftId} (state ${pub.state}).`);
+    }
+  } catch (err: any) {
+    console.error('[Intake] Auto-publish failed:', err.message);
+    await notifyAdmin(`⚠️ Auto-publish failed for draft ${draftId}: ${err.message}`);
+  }
 }
 
 async function markProcessingFailure(

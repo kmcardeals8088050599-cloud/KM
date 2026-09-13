@@ -9,6 +9,12 @@ export const AI_CONFIG = {
   followUpRetryLimit: 3,
 } as const;
 
+// When enabled, a complete intake publishes the listing immediately — no admin
+// approval step. The only WhatsApp conversation is the ask-for-missing-fields
+// follow-up with the sender (and admin notifications).
+export const AUTO_PUBLISH: boolean =
+  ['1', 'true', 'yes', 'on'].includes((process.env.AUTO_PUBLISH || '').toLowerCase());
+
 export const BRAND_CONFIG: BrandingConfig = {
   brandName: 'KM Car Deals',
   tagline: 'Trusted Multi Brand Pre-Owned Cars',

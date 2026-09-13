@@ -55,8 +55,8 @@ export async function approveDraft(draftId: string, ctx: PublishContext): Promis
   const draft = await getVehicleDraft(draftId);
   if (!draft) throw new Error('Draft not found');
 
-  // REVIEW → APPROVED (admin)
-  assertTransition(draft.state as VehicleDraftState, 'APPROVED', 'admin');
+  // REVIEW → APPROVED (admin or system auto-publish)
+  assertTransition(draft.state as VehicleDraftState, 'APPROVED', ctx.actorType);
   const approved = await updateVehicleDraft(draftId, { state: 'APPROVED' });
 
   const car = draftToCarPayload(approved);
