@@ -86,14 +86,38 @@ ai.get('/ai/blobprobe', async (req, res) => {
   }
   const mediaId = String(req.query.mediaId || '1981794675868107');
   try {
-    const { resolveMediaUrl, storeRemoteMedia } = await import('./whatsapp-api.js');
-    const url = await resolveMediaUrl(mediaId);
-    const storeResult = url ? await storeRemoteMedia(url, `probe/${Date.now()}`) : null;
+    const { resolveMediaUrl } = await import('./whatsapp-api.js');
     const cfg = (await import('./whatsapp-api.js')).whatsappConfig();
+    const url = await resolveMediaUrl(mediaId);
+    let fetchStatus = -1, fetchCt = '', fetchErr = '', putErr = '', putUrl = '';
+    if (url) {
+      try {
+        const headers: Record<string, string> = {};
+        if (cfg.token) headers.Authorization = `Bearer ${cfg.token}`;
+        const r = await fetch(url, { headers });
+        fetchStatus = r.status; fetchCt = r.headers.get('content-type') || '';
+        if (r.ok) {
+          const b = await r.blob();
+          try {
+            const { put } = await import('@vercel/blob');
+            const stored = await put(`probe/${Date.now()}.jpg`, b, { access: 'public', addRandomSuffix: false });
+            putUrl = stored.url.slice(0, 90);
+          } catch (e: any) {
+            putErr = `status=${e.status} ${e.message}`;
+          }
+        }
+      } catch (e: any) {
+        fetchErr = e.message;
+      }
+    }
     res.json({
       mediaId,
       mediaUrl: url ? url.slice(0, 80) : null,
-      storedUrl: storeResult ? storeResult.slice(0, 90) : null,
+      fetchWithTokenStatus: fetchStatus,
+      fetchErr,
+      contentType: fetchCt,
+      putErr,
+      putUrl,
       blobTokenSet: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       blobStoreId: process.env.BLOB_STORE_ID || '(unset)',
       waTokenSet: Boolean(cfg.token),
