@@ -27,14 +27,14 @@ import { generateVehicleContent } from './content.js';
 import { buildTranscript } from './transcript.js';
 import { classifyAndAnalyze } from './images.js';
 import { appendAudit, logAiUsage } from './audit.js';
-import { sendWhatsAppText, notifyAdmin, resolveMediaUrl, storeRemoteMedia } from './whatsapp-api.js';
+import { sendWhatsAppText, notifyAdmin, resolveMediaUrl, storeRemoteMedia, isAdminSender } from './whatsapp-api.js';
 import { markMessageProcessed, bumpProcessingAttempt } from './db.js';
 import { assertTransition } from './state-machine.js';
 import { getActiveModels } from './ai.js';
 import { approveDraft } from './publisher.js';
 import { AUTO_PUBLISH } from './config.js';
 import { supabase } from '../supabase.js';
-import { VehicleExtractedData } from '../../src/types/ai.js';
+import { VehicleExtractedData, MissingFieldRequest } from '../../src/types/ai.js';
 
 export interface IntakeContext {
   requestId: string;
@@ -197,15 +197,55 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
 
     const req = validation.missingFieldRequest;
     if (req) {
-      await sendWhatsAppText(ctx.fromPhone, req.message);
+      await sendMissingFieldRequestOnce(conversationId, conversation, ctx.fromPhone, req, startedAt);
     } else {
-      await sendWhatsAppText(ctx.fromPhone, 'Please send the remaining vehicle details so I can complete the listing.');
+      await sendMissingFieldRequestOnce(conversationId, conversation, ctx.fromPhone, null, startedAt);
     }
     await markMessageProcessed(messageId);
   } catch (err: any) {
     console.error('[Intake] Failed:', err.message);
     await markProcessingFailure(conversationId, messageId, err, ctx);
   }
+}
+
+// Ask for missing details at most once per missing-set + cooldown window. A seller
+// uploading a burst of photos should get ONE consolidated question, not a repeat
+// prompt per photo. The ask signature is persisted on the conversation.
+async function sendMissingFieldRequestOnce(
+  conversationId: string,
+  conversation: any,
+  fromPhone: string,
+  req: MissingFieldRequest | null,
+  startedAt: number
+): Promise<void> {
+  const sig = (req?.missing || []).map((k: string) => k.toLowerCase().trim()).sort().join(',');
+  const now = Date.now();
+  const metadata = conversation.metadata || {};
+  const prev = metadata.lastMissingAsk;
+
+  if (prev && prev.sig === sig && now - prev.at < 20 * 60_000) {
+    return; // identical request already asked — the sender is still working on it
+  }
+
+  const message = req
+    ? req.message
+    : 'Please send the remaining vehicle details so I can complete the listing.';
+  await sendWhatsAppText(fromPhone, message);
+  await retry(() =>
+    updateConversation(conversationId, {
+      metadata: { ...metadata, lastMissingAsk: { sig, at: now } },
+    })
+  );
+  await logAiUsage({
+    entity: 'whatsapp_message',
+    entityId: conversationId,
+    agent: 'intake',
+    model: getActiveModels().text,
+    event: 'ask_missing_fields',
+    status: 'ok',
+    durationMs: Date.now() - startedAt,
+    conversationId,
+  });
 }
 
 // Repair stored attachments whose ephemeral Media URL was lost at ingest time (e.g.
@@ -352,7 +392,9 @@ async function autoPublishDraft(draftId: string, ctx: IntakeContext): Promise<vo
     });
     if (pub.state === 'PUBLISHED') {
       const title = pub.content?.websiteTitle || `${pub.data?.brand || ''} ${pub.data?.model || ''}`.trim();
-      if (pub.sellerPhone) {
+      // Skip the seller-facing "LIVE" blast when the seller IS the admin — they already
+      // receive the Auto-Published notify below, so a second message is pure noise.
+      if (pub.sellerPhone && !isAdminSender(pub.sellerPhone)) {
         await sendWhatsAppText(
           pub.sellerPhone,
           [
@@ -365,15 +407,13 @@ async function autoPublishDraft(draftId: string, ctx: IntakeContext): Promise<vo
           ].join('\n')
         );
       }
-      await notifyAdmin(
-        [
-          '🚘 *Auto-Published*',
-          '',
-          title,
-          `Car: ${pub.publishedCarId}`,
-          pub.sellerPhone ? `Seller: ${pub.sellerPhone}` : '',
-        ].filter(Boolean).join('\n')
-      );
+      await notifyAdmin([
+        '🚘 *Auto-Published*',
+        '',
+        title,
+        `Car: ${pub.publishedCarId}`,
+        pub.sellerPhone ? `Seller: ${pub.sellerPhone}` : '',
+      ].filter(Boolean).join('\n'));
     } else {
       await notifyAdmin(`⚠️ Auto-publish did not complete for draft ${draftId} (state ${pub.state}).`);
     }

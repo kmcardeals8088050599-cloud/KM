@@ -31,6 +31,9 @@ vi.mock('../admin-commands.js', () => ({
 vi.mock('../whatsapp-api.js', () => ({
   resolveMediaUrl: vi.fn(async () => null),
   storeRemoteMedia: vi.fn(async () => null),
+  sendWhatsAppText: vi.fn(async () => ({ ok: true })),
+  notifyAdmin: vi.fn(async () => ({ ok: true })),
+  isAdminSender: vi.fn(() => false),
 }));
 vi.mock('../audio.js', () => ({ transcribeAudioUrl: vi.fn(async () => null) }));
 

@@ -12,9 +12,9 @@ import {
   getOrCreateConversation,
   listUnprocessedMessages,
 } from './db.js';
-import { resolveMediaUrl, storeRemoteMedia } from './whatsapp-api.js';
+import { resolveMediaUrl, storeRemoteMedia, isAdminSender } from './whatsapp-api.js';
 import { runIntake } from './intake.js';
-import { handleAdminMessage, isAdminSender } from './admin-commands.js';
+import { handleAdminMessage } from './admin-commands.js';
 import { transcribeAudioUrl } from './audio.js';
 import type { InboundMessage, MessageAttachment } from '../../src/types/ai.js';
 

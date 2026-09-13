@@ -11,7 +11,7 @@ import {
   updateConversation,
   getOrCreateConversation,
 } from './db.js';
-import { sendWhatsAppText } from './whatsapp-api.js';
+import { sendWhatsAppText, isAdminSender } from './whatsapp-api.js';
 import {
   approveDraft,
   markDraftArchived,
@@ -25,11 +25,6 @@ import type { IntakeContext } from './intake.js';
 import { parseIndianPrice } from './config.js';
 import { appendAudit } from './audit.js';
 import { AdminCommand } from '../../src/types/ai.js';
-
-export function isAdminSender(phone: string): boolean {
-  const admin = (process.env.WHATSAPP_ADMIN_PHONE || '').replace(/\D/g, '');
-  return admin !== '' && phone.replace(/\D/g, '') === admin;
-}
 
 export async function handleAdminMessage(
   conversationId: string,
@@ -53,10 +48,32 @@ export async function handleAdminMessage(
   // 2. Detect a new command
   const match = detectAdminCommand(text);
   if (!match) {
-    await sendWhatsAppText(fromPhone, adminHelp(text));
+    await maybeReplyUnknownAdminText(conversation, fromPhone, text);
     return;
   }
   await routeCommand(conversationId, conversation, fromPhone, match.command, match, text, requestId);
+}
+
+// Non-command admin chatter is acknowledged silently instead of echoing the full
+// menu on every message. The full menu is only sent when the admin asks for help;
+// otherwise a single short hint is sent, and repeated chatter within a cooldown
+// window gets no reply at all.
+async function maybeReplyUnknownAdminText(conversation: any, fromPhone: string, text: string): Promise<void> {
+  const lower = text.toLowerCase();
+  const asksHelp = /(^|[^a-z])(help|menu|commands?|what can you do|\?+)\b/.test(lower) || text.trim() === '';
+  const now = Date.now();
+  const metadata = conversation.metadata || {};
+  const prev = metadata.adminChitchat;
+
+  if (!asksHelp && prev && now - prev.last < 10 * 60_000) {
+    return; // already hinted recently — stay silent
+  }
+
+  await sendWhatsAppText(fromPhone, asksHelp ? adminHelp(text) : '🤖 Typing a command like "Show pending" or "help" shows what I can do. Non-command messages are ignored.');
+
+  await updateConversation(conversation.id, {
+    metadata: { ...metadata, adminChitchat: { last: now } },
+  });
 }
 
 async function routeCommand(

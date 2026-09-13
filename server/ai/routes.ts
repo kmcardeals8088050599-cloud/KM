@@ -15,7 +15,7 @@ import {
 import { approveDraft, markDraftArchived, markDraftSold, updateDraftPrice } from './publisher.js';
 import { reprocessDraft } from './intake.js';
 import { listUnprocessedMessages } from './db.js';
-import { isAdminSender } from './admin-commands.js';
+import { isAdminSender } from './whatsapp-api.js';
 import { runIntake } from './intake.js';
 import { extractVehicleFromConversation } from './extraction.js';
 import { generateVehicleContent } from './content.js';

@@ -60,6 +60,12 @@ export async function notifyAdmin(text: string): Promise<{ ok: boolean; error?: 
   return sendWhatsAppText(adminPhone, text);
 }
 
+// True when the phone belongs to the configured admin account.
+export function isAdminSender(phone: string): boolean {
+  const admin = (process.env.WHATSAPP_ADMIN_PHONE || '').replace(/\D/g, '');
+  return admin !== '' && (phone || '').replace(/\D/g, '') === admin;
+}
+
 // Resolve a Meta media id → temporary download URL.
 export async function resolveMediaUrl(mediaId: string): Promise<string | null> {
   const { token, configured } = whatsappConfig();
