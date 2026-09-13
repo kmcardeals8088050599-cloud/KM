@@ -78,6 +78,32 @@ ai.get('/ai/workqueue', async (req, res) => {
   }
 });
 
+// TEMP diagnostic: exercise Meta media resolve + durable store end-to-end.
+ai.get('/ai/blobprobe', async (req, res) => {
+  if (!cronAuthorized(req)) {
+    res.status(401).json({ error: 'unauthorized' });
+    return;
+  }
+  const mediaId = String(req.query.mediaId || '1981794675868107');
+  try {
+    const { resolveMediaUrl, storeRemoteMedia } = await import('./whatsapp-api.js');
+    const url = await resolveMediaUrl(mediaId);
+    const storeResult = url ? await storeRemoteMedia(url, `probe/${Date.now()}`) : null;
+    const cfg = (await import('./whatsapp-api.js')).whatsappConfig();
+    res.json({
+      mediaId,
+      mediaUrl: url ? url.slice(0, 80) : null,
+      storedUrl: storeResult ? storeResult.slice(0, 90) : null,
+      blobTokenSet: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      blobStoreId: process.env.BLOB_STORE_ID || '(unset)',
+      waTokenSet: Boolean(cfg.token),
+      waConfigured: cfg.configured,
+    });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message, stack: (err.stack || '').slice(0, 600) });
+  }
+});
+
 ai.post('/whatsapp/webhook', async (req, res) => {
   try {
     const result = await processWebhookBody(req.body);
