@@ -49,6 +49,8 @@ export const Footer: React.FC = () => {
                 { path: '/buy-sell', label: 'Buy & Sell Services' },
                 { path: '/about', label: 'About KM Car Deals' },
                 { path: '/contact', label: 'Location & Working Hours' },
+                { path: '/privacy', label: 'Privacy Policy' },
+                { path: '/terms', label: 'Terms & Conditions' },
               ].map(link => (
                 <li key={link.path}>
                   <Link

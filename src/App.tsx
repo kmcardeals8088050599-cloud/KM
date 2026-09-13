@@ -35,6 +35,8 @@ import { BuySellView } from './components/buysell/BuySellView';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
 import { CompareBar } from './components/common/CompareBar';
+import { PrivacyPolicy } from './components/legal/PrivacyPolicy';
+import { TermsOfService } from './components/legal/TermsOfService';
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -374,6 +376,10 @@ function MainAppContent() {
 
           {/* Contact Route */}
           <Route path="/contact" element={<ContactView />} />
+
+          {/* Legal Routes */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
 
           {/* Compare Route */}
           <Route
