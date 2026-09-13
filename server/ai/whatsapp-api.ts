@@ -79,9 +79,15 @@ export async function resolveMediaUrl(mediaId: string): Promise<string | null> {
 // Download remote media and persist a durable copy in Vercel Blob.
 // Returns the durable public URL. Images and audio (voice notes need a stable
 // URL for transcription) are stored; other types are left to their functional paths.
+// Meta's media download URLs require the WhatsApp token as an Authorization header.
 export async function storeRemoteMedia(url: string, prefix: string): Promise<string | null> {
   try {
-    const res = await fetch(url);
+    const token = whatsappConfig().token;
+    const headers: Record<string, string> = {};
+    if (token && /lookaside\.fbsbx\.com|graph\.facebook\.com|fbcdn\.net/.test(url)) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+    const res = await fetch(url, { headers });
     if (!res.ok) return null;
     const blob = await res.blob();
     const kind = blob.type.startsWith('audio/') ? 'audio' : blob.type.startsWith('image/') ? 'image' : null;
