@@ -78,56 +78,6 @@ ai.get('/ai/workqueue', async (req, res) => {
   }
 });
 
-// TEMP diagnostic: exercise Meta media resolve + durable store end-to-end.
-ai.get('/ai/blobprobe', async (req, res) => {
-  if (!cronAuthorized(req)) {
-    res.status(401).json({ error: 'unauthorized' });
-    return;
-  }
-  const mediaId = String(req.query.mediaId || '1981794675868107');
-  try {
-    const { resolveMediaUrl } = await import('./whatsapp-api.js');
-    const cfg = (await import('./whatsapp-api.js')).whatsappConfig();
-    const url = await resolveMediaUrl(mediaId);
-    let fetchStatus = -1, fetchCt = '', fetchErr = '', putErr = '', putUrl = '';
-    if (url) {
-      try {
-        const headers: Record<string, string> = {};
-        if (cfg.token) headers.Authorization = `Bearer ${cfg.token}`;
-        const r = await fetch(url, { headers });
-        fetchStatus = r.status; fetchCt = r.headers.get('content-type') || '';
-        if (r.ok) {
-          const b = await r.blob();
-          try {
-            const { put } = await import('@vercel/blob');
-            const stored = await put(`probe/${Date.now()}.jpg`, b, { access: 'public', addRandomSuffix: false });
-            putUrl = stored.url.slice(0, 90);
-          } catch (e: any) {
-            putErr = `status=${e.status} ${e.message}`;
-          }
-        }
-      } catch (e: any) {
-        fetchErr = e.message;
-      }
-    }
-    res.json({
-      mediaId,
-      mediaUrl: url ? url.slice(0, 80) : null,
-      fetchWithTokenStatus: fetchStatus,
-      fetchErr,
-      contentType: fetchCt,
-      putErr,
-      putUrl,
-      blobTokenSet: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
-      blobStoreId: process.env.BLOB_STORE_ID || '(unset)',
-      waTokenSet: Boolean(cfg.token),
-      waConfigured: cfg.configured,
-    });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message, stack: (err.stack || '').slice(0, 600) });
-  }
-});
-
 ai.post('/whatsapp/webhook', async (req, res) => {
   try {
     const result = await processWebhookBody(req.body);
