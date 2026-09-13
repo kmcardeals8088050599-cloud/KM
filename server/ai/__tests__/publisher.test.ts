@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Isolate the publisher from real Supabase / Instagram / WhatsApp side effects.
 const h = vi.hoisted(() => {
@@ -49,11 +49,12 @@ vi.mock('../instagram.js', () => ({
 }));
 vi.mock('../whatsapp-api.js', () => ({
   sendWhatsAppText: vi.fn(),
+  publishCatalogueProduct: vi.fn(),
 }));
 
 import { publishChannels, approveDraft } from '../publisher.js';
 import { storePublishEntry } from '../db.js';
-import { sendWhatsAppText } from '../whatsapp-api.js';
+import { sendWhatsAppText, publishCatalogueProduct } from '../whatsapp-api.js';
 
 const draftStore = h.store;
 
@@ -116,6 +117,76 @@ describe('publishChannels — whatsapp channel honesty', () => {
     const wa = result.entries.find(e => e.channel === 'whatsapp');
     expect(wa?.status).toBe('skipped');
     expect(sendWhatsAppText).not.toHaveBeenCalled();
+  });
+});
+
+describe('publishChannels — whatsapp catalogue + status honesty', () => {
+  const ORIGINAL_SITE_URL = process.env.PUBLIC_SITE_URL;
+  beforeEach(() => {
+    process.env.PUBLIC_SITE_URL = 'https://kmcardeals.example';
+  });
+  afterEach(() => {
+    if (ORIGINAL_SITE_URL === undefined) delete process.env.PUBLIC_SITE_URL;
+    else process.env.PUBLIC_SITE_URL = ORIGINAL_SITE_URL;
+  });
+
+  it('pushes a catalogue product and reports success when the Catalog API accepts it', async () => {
+    draftStore.set(baseDraft.id, { ...baseDraft });
+    (sendWhatsAppText as any).mockResolvedValue({ ok: true });
+    (publishCatalogueProduct as any).mockResolvedValue({ ok: true, externalId: 'prod-123' });
+
+    const result = await publishChannels(baseDraft.id, 'car-1', {
+      requestId: 'req-x',
+      actor: 'admin',
+      actorType: 'admin',
+    });
+
+    const cat = result.entries.find(e => e.channel === 'whatsapp_catalogue');
+    expect(cat?.status).toBe('success');
+    expect(cat?.externalId).toBe('prod-123');
+    expect(publishCatalogueProduct).toHaveBeenCalledWith(
+      expect.objectContaining({
+        retailerId: 'car-1',
+        currency: 'INR',
+        url: 'https://kmcardeals.example/inventory/car-1',
+      })
+    );
+  });
+
+  it('reports an honest skip when the catalogue is not Commerce-configured', async () => {
+    draftStore.set(baseDraft.id, { ...baseDraft });
+    (sendWhatsAppText as any).mockResolvedValue({ ok: true });
+    (publishCatalogueProduct as any).mockResolvedValue({
+      ok: false,
+      skipped: true,
+      error: 'WhatsApp catalogue not configured (WHATSAPP_CATALOG_ID)',
+    });
+
+    const result = await publishChannels(baseDraft.id, 'car-1', {
+      requestId: 'req-x',
+      actor: 'admin',
+      actorType: 'admin',
+    });
+
+    const cat = result.entries.find(e => e.channel === 'whatsapp_catalogue');
+    expect(cat?.status).toBe('skipped');
+    expect(cat?.status).not.toBe('success');
+  });
+
+  it('always records whatsapp_status as an honest skip (Cloud API has no Status endpoint)', async () => {
+    draftStore.set(baseDraft.id, { ...baseDraft });
+    (sendWhatsAppText as any).mockResolvedValue({ ok: true });
+    (publishCatalogueProduct as any).mockResolvedValue({ ok: true, externalId: 'prod-123' });
+
+    const result = await publishChannels(baseDraft.id, 'car-1', {
+      requestId: 'req-x',
+      actor: 'admin',
+      actorType: 'admin',
+    });
+
+    const status = result.entries.find(e => e.channel === 'whatsapp_status');
+    expect(status?.status).toBe('skipped');
+    expect(status?.error).toMatch(/not supported by WhatsApp Cloud API/i);
   });
 });
 

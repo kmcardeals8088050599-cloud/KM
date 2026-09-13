@@ -421,6 +421,8 @@ describe('END-TO-END: KM Car Deals AI — production flow over real HTTP', () =>
     expect(byChannel['website']).toBe('success');
     expect(byChannel['instagram']).toBe('skipped'); // unconfigured → clean skip, no rollback
     expect(byChannel['whatsapp']).toBe('skipped');  // no recipient phone configured → honest skip
+    expect(byChannel['whatsapp_catalogue']).toBe('skipped'); // no WHATSAPP_CATALOG_ID → honest skip
+    expect(byChannel['whatsapp_status']).toBe('skipped');    // Cloud API has no Status endpoint → always honest skip
   });
 
   it('stage 8: the published car is the real /api/cars inventory (no parallel system)', async () => {
@@ -453,7 +455,7 @@ describe('END-TO-END: KM Car Deals AI — production flow over real HTTP', () =>
     const { status } = await api(`/api/ai/drafts/${draftId}/sold`, { method: 'POST', headers });
     expect(status).toBe(200);
 
-    const cars = await api('/api/cars');
+    const cars = await api('/api/cars', { headers });
     const car = (cars.body as any[]).find((c: any) => c.id === carId);
     expect(car.status).toBe('Sold');
 

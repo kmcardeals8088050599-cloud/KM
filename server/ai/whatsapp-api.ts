@@ -50,6 +50,79 @@ export async function sendWhatsAppText(to: string, body: string): Promise<{ ok: 
   }
 }
 
+// WhatsApp Business Catalogue (Commerce) config. A catalogue product can only be
+// pushed when the WhatsApp Business account is Commerce-enabled and a catalog id is
+// configured — otherwise the caller must report an honest skip, never a fake success.
+export function whatsappCatalogueConfig(): {
+  configured: boolean;
+  catalogId?: string;
+  token?: string;
+  graphUrl: string;
+} {
+  const token = process.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_API_TOKEN || '';
+  const catalogId = process.env.WHATSAPP_CATALOG_ID || '';
+  const graphUrl = process.env.META_GRAPH_URL || 'https://graph.facebook.com/v19.0';
+  return { configured: Boolean(token && catalogId), catalogId, token, graphUrl };
+}
+
+export interface CatalogueProduct {
+  retailerId: string; // stable unique merchant id — we reuse the deterministic car id
+  name: string;
+  description: string;
+  price: number;      // whole rupees
+  currency?: string;  // defaults to INR
+  imageUrl: string;
+  url: string;        // website landing page for the car
+  availability?: 'in stock' | 'out of stock';
+  condition?: 'new' | 'refurbished' | 'used';
+  brand?: string;
+}
+
+// Push (or update) a single product into the WhatsApp Business Catalogue via the
+// official Meta Catalog API. Idempotent on retailer_id: re-publishing the same car
+// updates the existing product rather than duplicating it.
+export async function publishCatalogueProduct(
+  product: CatalogueProduct
+): Promise<{ ok: boolean; skipped?: boolean; externalId?: string; error?: string }> {
+  const { configured, catalogId, token, graphUrl } = whatsappCatalogueConfig();
+  if (!configured || !catalogId || !token) {
+    return { ok: false, skipped: true, error: 'WhatsApp catalogue not configured (WHATSAPP_CATALOG_ID)' };
+  }
+  try {
+    const body = {
+      name: product.name.slice(0, 100),
+      description: product.description.slice(0, 5000),
+      retailer_id: product.retailerId,
+      availability: product.availability || 'in stock',
+      condition: product.condition || 'used',
+      price: Math.round(product.price),
+      currency: product.currency || 'INR',
+      brand: product.brand || undefined,
+      url: product.url,
+      image_url: product.imageUrl,
+    };
+    const res = await fetch(`${graphUrl}/${catalogId}/products`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return { ok: false, error: JSON.stringify(data?.error || data).slice(0, 500) };
+    }
+    // Meta returns { id: "<product_id>" } on create/upsert.
+    if (!data?.id) {
+      return { ok: false, error: 'catalogue API returned no product id' };
+    }
+    return { ok: true, externalId: String(data.id) };
+  } catch (err: any) {
+    return { ok: false, error: err.message };
+  }
+}
+
 // Admin notification helper — reuses existing admin phone env or the incoming sender.
 export async function notifyAdmin(text: string): Promise<{ ok: boolean; error?: string }> {
   const adminPhone = process.env.WHATSAPP_ADMIN_PHONE || '';

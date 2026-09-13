@@ -175,7 +175,12 @@ export interface GeneratedContent {
 // ---------------------------------------------------------------------------
 // Publish results (per-channel, independent)
 // ---------------------------------------------------------------------------
-export type PublishChannel = 'website' | 'instagram' | 'whatsapp';
+export type PublishChannel =
+  | 'website'
+  | 'instagram'
+  | 'whatsapp'            // plain sales-text message to seller/admin
+  | 'whatsapp_catalogue'  // WhatsApp Business Catalogue product (Catalog API)
+  | 'whatsapp_status';    // WhatsApp Status — not supported by the Cloud API, recorded honestly
 export type PublishStatus = 'pending' | 'success' | 'failed' | 'skipped';
 
 export interface PublishEntry {

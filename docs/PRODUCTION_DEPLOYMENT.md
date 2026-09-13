@@ -70,6 +70,16 @@ Set `OLLAMA_BASE_URL=https://ai.kminternal.example.com` (not localhost) or the b
 - **Instagram publishing**: `INSTAGRAM_ACCOUNT_ID` + `IG_USER_ACCESS_TOKEN` (a personal IG
   account connected via the Meta Business Suite with `instagram_content_publish`). If unset,
   publishing cleanly reports `skipped` — the website still works.
+- **WhatsApp Business Catalogue**: `WHATSAPP_CATALOG_ID` (a Commerce-enabled WhatsApp Business
+  account's catalog id) + `PUBLIC_SITE_URL` (your deployed site origin, used for the product
+  link `/inventory/<carId>`). When set, each published car is pushed as a catalogue product via
+  the official Meta Catalog API, idempotent on the car id (`retailer_id`). When unset, the
+  channel reports an honest `skipped — not configured`; the website/Instagram channels are
+  unaffected. The token must carry the `catalog_management` / WhatsApp Business Messaging scope.
+- **WhatsApp Status**: intentionally **not** published. Meta's WhatsApp Business Cloud API
+  exposes no Status endpoint, and this system never uses unofficial automation. Every publish
+  records an honest `whatsapp_status: skipped (not supported by WhatsApp Cloud API)` entry
+  rather than implying a post happened.
 - **Vercel Blob** (media/photos): `BLOB_READ_WRITE_TOKEN` from your Vercel project.
 
 ## 5. Core secrets (boot guard enforces these)

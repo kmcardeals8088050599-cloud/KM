@@ -199,10 +199,11 @@ export const AIOpsPanel: React.FC = () => {
       </div>
 
       {/* Integration readiness */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
         <StatusCard label="AI Provider" ok={status ? aiProviderReady(status) : undefined} hint={aiProviderHint(status)} />
         <StatusCard label="WhatsApp API" ok={status?.whatsappConfigured} />
         <StatusCard label="Instagram" ok={status?.instagramConfigured} />
+        <StatusCard label="WA Catalogue" ok={status?.whatsappCatalogueConfigured} hint="Commerce + PUBLIC_SITE_URL" />
         <StatusCard label="Drafts" ok={status ? status.draftsTotal > 0 : false} count={status?.draftsTotal} />
       </div>
 

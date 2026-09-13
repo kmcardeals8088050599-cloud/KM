@@ -15,7 +15,7 @@ import {
 import { approveDraft, markDraftArchived, markDraftSold, updateDraftPrice } from './publisher.js';
 import { reprocessDraft } from './intake.js';
 import { listUnprocessedMessages } from './db.js';
-import { isAdminSender } from './whatsapp-api.js';
+import { isAdminSender, whatsappCatalogueConfig } from './whatsapp-api.js';
 import { runIntake } from './intake.js';
 import { extractVehicleFromConversation } from './extraction.js';
 import { generateVehicleContent } from './content.js';
@@ -116,6 +116,7 @@ ai.get('/ai/status', authenticateAdmin, async (_req, res) => {
     aiProviderError: ai?.error || (ai ? null : 'AI health check timed out'),
     whatsappConfigured: Boolean(process.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_API_TOKEN),
     instagramConfigured: Boolean(process.env.INSTAGRAM_ACCOUNT_ID && process.env.IG_USER_ACCESS_TOKEN),
+    whatsappCatalogueConfigured: Boolean(whatsappCatalogueConfig().configured && process.env.PUBLIC_SITE_URL),
     adminPhone: process.env.WHATSAPP_ADMIN_PHONE || null,
     draftsTotal: drafts.length,
     byState,

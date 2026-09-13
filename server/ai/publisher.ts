@@ -62,7 +62,7 @@ function deterministicCarId(draftId: string): string {
 }
 import type { PublishResult, PublishEntry, VehicleDraftState } from '../../src/types/ai.js';
 import { publishToInstagram } from './instagram.js';
-import { sendWhatsAppText } from './whatsapp-api.js';
+import { sendWhatsAppText, publishCatalogueProduct } from './whatsapp-api.js';
 
 export interface PublishContext {
   requestId: string;
@@ -179,9 +179,17 @@ export async function publishChannels(
   const ig = await publishToInstagram(draft, ctx);
   entries.push(ig);
 
-  // 3. WhatsApp catalogue content — best effort.
+  // 3. WhatsApp sales-text message — best effort.
   const wa = await publishWhatsAppContent(draft, ctx);
   entries.push(wa);
+
+  // 4. WhatsApp Business Catalogue product — best effort, independent.
+  const waCatalogue = await publishWhatsAppCatalogue(draft, carId, ctx);
+  entries.push(waCatalogue);
+
+  // 5. WhatsApp Status — not supported by the Cloud API; recorded honestly.
+  const waStatus = await recordWhatsAppStatus(draft, ctx);
+  entries.push(waStatus);
 
   await retry(() => updateVehicleDraft(draftId, { publishResult: { entries } }));
 
@@ -271,6 +279,109 @@ async function publishWhatsAppContent(draft: any, ctx: PublishContext): Promise<
     await storePublishEntry({ vehicleDraftId: draft.id, channel: 'whatsapp', status: 'failed', error: err.message, requestId: ctx.requestId });
     return entry;
   }
+}
+
+async function publishWhatsAppCatalogue(draft: any, carId: string, ctx: PublishContext): Promise<PublishEntry> {
+  const base: PublishEntry = {
+    channel: 'whatsapp_catalogue',
+    status: 'pending',
+    retryCount: 0,
+    requestId: ctx.requestId,
+    updatedAt: new Date().toISOString(),
+  };
+  try {
+    const data = draft.data || {};
+    const image = (draft.images || [])
+      .map((img: any) => (typeof img === 'string' ? img : img?.variants?.whatsapp || img?.originalUrl))
+      .filter(Boolean)[0];
+    const siteUrl = (process.env.PUBLIC_SITE_URL || '').replace(/\/+$/, '');
+    const name =
+      draft.content?.websiteTitle ||
+      `${data.manufacturingYear || ''} ${data.brand || ''} ${data.model || ''} ${data.variant || ''}`.trim();
+    const description =
+      draft.content?.whatsappSalesMessage ||
+      draft.content?.websiteDescription ||
+      data.description ||
+      name;
+
+    // The Catalog API needs a public image and a product URL. Skip honestly if absent.
+    if (!image) {
+      const skip: PublishEntry = { ...base, status: 'skipped', error: 'no public image for catalogue product' };
+      await storePublishEntry({ vehicleDraftId: draft.id, carId, channel: 'whatsapp_catalogue', status: 'skipped', error: skip.error, requestId: ctx.requestId });
+      return skip;
+    }
+    if (!siteUrl) {
+      const skip: PublishEntry = { ...base, status: 'skipped', error: 'PUBLIC_SITE_URL not configured for catalogue product link' };
+      await storePublishEntry({ vehicleDraftId: draft.id, carId, channel: 'whatsapp_catalogue', status: 'skipped', error: skip.error, requestId: ctx.requestId });
+      return skip;
+    }
+
+    const price = typeof data.price === 'number' ? data.price : 0;
+    const { ok, skipped, externalId, error } = await publishCatalogueProduct({
+      retailerId: carId, // stable id → re-publish upserts instead of duplicating
+      name,
+      description,
+      price,
+      currency: 'INR',
+      imageUrl: image,
+      url: `${siteUrl}/inventory/${carId}`,
+      availability: 'in stock',
+      condition: 'used',
+      brand: data.brand || undefined,
+    });
+
+    if (skipped) {
+      const skip: PublishEntry = { ...base, status: 'skipped', error: error || 'catalogue not configured' };
+      await storePublishEntry({ vehicleDraftId: draft.id, carId, channel: 'whatsapp_catalogue', status: 'skipped', error: skip.error, requestId: ctx.requestId });
+      return skip;
+    }
+    if (!ok) {
+      const fail: PublishEntry = { ...base, status: 'failed', error: error || 'catalogue publish failed' };
+      await storePublishEntry({ vehicleDraftId: draft.id, carId, channel: 'whatsapp_catalogue', status: 'failed', error: fail.error, requestId: ctx.requestId });
+      return fail;
+    }
+
+    const entry: PublishEntry = { ...base, status: 'success', externalId };
+    await storePublishEntry({ vehicleDraftId: draft.id, carId, channel: 'whatsapp_catalogue', status: 'success', externalId, requestId: ctx.requestId });
+    await appendAudit({
+      actor: ctx.actor,
+      actorType: ctx.actorType,
+      action: 'whatsapp_catalogue_published',
+      entity: 'vehicle_draft',
+      entityId: draft.id,
+      newValue: { carId, productId: externalId },
+      source: ctx.actorType,
+      requestId: ctx.requestId,
+      conversationId: draft.conversationId,
+    });
+    return entry;
+  } catch (err: any) {
+    const entry: PublishEntry = { ...base, status: 'failed', error: err.message };
+    await storePublishEntry({ vehicleDraftId: draft.id, carId, channel: 'whatsapp_catalogue', status: 'failed', error: err.message, requestId: ctx.requestId });
+    return entry;
+  }
+}
+
+// WhatsApp Status cannot be posted through the official WhatsApp Business Cloud API —
+// Meta exposes no Status endpoint, and this system never uses unofficial automation.
+// Rather than imply a post happened, we always record an honest, explicit skip.
+async function recordWhatsAppStatus(draft: any, ctx: PublishContext): Promise<PublishEntry> {
+  const skip: PublishEntry = {
+    channel: 'whatsapp_status',
+    status: 'skipped',
+    retryCount: 0,
+    requestId: ctx.requestId,
+    updatedAt: new Date().toISOString(),
+    error: 'not supported by WhatsApp Cloud API',
+  };
+  await storePublishEntry({
+    vehicleDraftId: draft.id,
+    channel: 'whatsapp_status',
+    status: 'skipped',
+    error: skip.error,
+    requestId: ctx.requestId,
+  });
+  return skip;
 }
 
 export async function markDraftArchived(draftId: string, ctx: PublishContext, reason?: string): Promise<void> {

@@ -131,12 +131,19 @@ export async function createApp() {
     }
   });
 
-  // GET Cars (public)
+  // GET Cars (public). Without an explicit status filter, non-admin callers only
+  // ever see Available inventory — Sold/Reserved and drafts never leak.
   app.get('/api/cars', async (req, res) => {
     try {
       const { brand, bodyType, fuelType, search, featured, status } = req.query;
+      const authed = isAuthorized(req);
       let filtered = await getAllCars();
 
+      const effectiveStatus = !authed && !status ? 'Available' : (status as string | undefined);
+
+      if (effectiveStatus && typeof effectiveStatus === 'string' && effectiveStatus !== 'All') {
+        filtered = filtered.filter(c => c.status.toLowerCase() === effectiveStatus.toLowerCase());
+      }
       if (brand && typeof brand === 'string' && brand !== 'All') {
         filtered = filtered.filter(c => c.brand.toLowerCase() === brand.toLowerCase());
       }
@@ -145,9 +152,6 @@ export async function createApp() {
       }
       if (fuelType && typeof fuelType === 'string' && fuelType !== 'All') {
         filtered = filtered.filter(c => c.fuelType.toLowerCase() === fuelType.toLowerCase());
-      }
-      if (status && typeof status === 'string' && status !== 'All') {
-        filtered = filtered.filter(c => c.status.toLowerCase() === status.toLowerCase());
       }
       if (search && typeof search === 'string') {
         const q = search.toLowerCase();
@@ -158,11 +162,31 @@ export async function createApp() {
             c.model.toLowerCase().includes(q)
         );
       }
+      if (featured && typeof featured === 'string' && featured !== 'false') {
+        filtered = filtered.filter(c => (c as any).isFeatured === true);
+      }
 
       // Asking price is admin-only — strip it from the public API responses.
-      res.json(isAuthorized(req) ? filtered : filtered.map(stripPublicPrice));
+      res.json(authed ? filtered : filtered.map(stripPublicPrice));
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to fetch cars', details: err.message });
+    }
+  });
+
+  // GET Catalogue export (admin only) — openable in Excel, product ids + prices included.
+  // Registered before /api/cars/:id so the :id param never swallows "export".
+  app.get('/api/cars/export', authenticateAdmin, async (_req, res) => {
+    try {
+      const rows = await getCarExportRows();
+      const csv = buildCatalogueCsv(rows);
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="km-car-deals-catalogue-${new Date().toISOString().slice(0, 10)}.csv"`
+      );
+      res.send(`\uFEFF${csv}`);
+    } catch (err: any) {
+      res.status(500).json({ error: 'Failed to export catalogue', details: err.message });
     }
   });
 
@@ -177,22 +201,6 @@ export async function createApp() {
       res.json(isAuthorized(req) ? car : stripPublicPrice(car));
     } catch (err: any) {
       res.status(500).json({ error: 'Failed to fetch car', details: err.message });
-    }
-  });
-
-  // GET Catalogue export (admin only) — openable in Excel, product ids included.
-  app.get('/api/cars/export', authenticateAdmin, async (_req, res) => {
-    try {
-      const rows = await getCarExportRows();
-      const csv = buildCatalogueCsv(rows);
-      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-      res.setHeader(
-        'Content-Disposition',
-        `attachment; filename="km-car-deals-catalogue-${new Date().toISOString().slice(0, 10)}.csv"`
-      );
-      res.send(`\uFEFF${csv}`);
-    } catch (err: any) {
-      res.status(500).json({ error: 'Failed to export catalogue', details: err.message });
     }
   });
 
