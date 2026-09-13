@@ -55,8 +55,8 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     });
     await updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' });
 
-    // RECEIVED → PROCESSING (system)
-    if (draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE') {
+    // RECEIVED → PROCESSING (system). Failed drafts are retried on new messages.
+    if (draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE' || draft.state === 'PROCESSING_FAILED' || draft.state === 'IMAGE_PROCESSING_FAILED') {
       assertTransition(draft.state, 'PROCESSING', 'system');
       draft = await updateVehicleDraft(draft.id, { state: 'PROCESSING' });
     }

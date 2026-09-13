@@ -65,4 +65,20 @@ describe('normalizeExtraction', () => {
     expect(result.data.model).toBeUndefined();
     expect(result.unknown.length).toBeGreaterThanOrEqual(0);
   });
+
+  it('coerces a string features list before validation (Ollama quirk)', () => {
+    const result = normalizeExtraction(
+      { features: 'Sunroof, ABS, Airbags and Cruise Control' } as unknown as Parameters<typeof normalizeExtraction>[0],
+      input
+    );
+    expect(result.data.features).toEqual(['Sunroof', 'ABS', 'Airbags', 'Cruise Control']);
+  });
+
+  it('coerces a string unknown list', () => {
+    const result = normalizeExtraction(
+      { unknown: 'color, variant' } as unknown as Parameters<typeof normalizeExtraction>[0],
+      input
+    );
+    expect(result.unknown).toEqual(['color', 'variant']);
+  });
 });

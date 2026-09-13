@@ -171,7 +171,11 @@ export function normalizeExtraction(raw: RawExtractionOutput, input: ExtractionA
   const confidence: Record<string, number> = {};
   const provenance: FieldProvenanceMap = {};
   const known: string[] = [];
-  const unknown: string[] = (Array.isArray(raw.unknown) ? raw.unknown : []).filter(Boolean);
+  const unknown: string[] = Array.isArray(raw.unknown)
+    ? raw.unknown.filter((u): u is string => typeof u === 'string')
+    : typeof raw.unknown === 'string'
+      ? splitList(raw.unknown)
+      : [];
 
   for (const [modelKey, target] of Object.entries(FIELD_MAP)) {
     const rawVal = raw[modelKey as keyof RawExtractionOutput];
@@ -181,7 +185,14 @@ export function normalizeExtraction(raw: RawExtractionOutput, input: ExtractionA
     // Respect locked fields (human-edited values are never overwritten by AI)
     if (input.lockedFields?.includes(target)) continue;
 
-    (data as Record<string, unknown>)[target] = rawVal;
+    // Model output sometimes arrives as a string list (e.g. features) instead of
+    // an array — coerce before validation so a quirky reply can't abort intake.
+    let value: unknown = rawVal;
+    if (target === 'features' && typeof value === 'string') {
+      value = splitList(value);
+    }
+
+    (data as Record<string, unknown>)[target] = value;
     known.push(target);
 
     const conf = raw.confidence?.[modelKey];
@@ -192,7 +203,7 @@ export function normalizeExtraction(raw: RawExtractionOutput, input: ExtractionA
     const source: FieldSource = normalizeSource(provRaw?.source);
     const provConfidence: FieldConfidence = normalizeConfidence(provRaw?.confidence);
     provenance[target] = {
-      value: rawVal,
+      value,
       source,
       confidence: provConfidence,
       notes: provRaw?.notes,
@@ -217,6 +228,12 @@ export function normalizeExtraction(raw: RawExtractionOutput, input: ExtractionA
     unknown,
     notes: raw.notes || '',
   };
+}
+
+function splitList(value: string): string[] {
+  const parts = value.split(/[,;|\n]|\band\b/i);
+  const cleaned = parts.map((s) => s.trim()).filter(Boolean);
+  return cleaned.slice(0, 200);
 }
 
 function normalizeSource(s?: string): FieldSource {
