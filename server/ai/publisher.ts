@@ -9,9 +9,29 @@ import {
   updateVehicleDraft,
   storePublishEntry,
 } from './db.js';
-import { createCar, updateCar } from '../db.js';
+import { createCar, updateCar, getCarById } from '../db.js';
 import { appendAudit } from './audit.js';
 import { assertTransition } from './state-machine.js';
+
+async function retry<T>(fn: () => Promise<T>, retries = 3, delayMs = 350): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      const msg = (err?.message || '').toLowerCase();
+      const transient = /gateway timeout|timeout|too many|530|543|overloaded|connection|network/i.test(msg);
+      if (attempt >= retries || !transient) throw err;
+      await new Promise((r) => setTimeout(r, delayMs * (attempt + 1)));
+    }
+  }
+}
+
+// One draft == exactly one car, forever. The car id is derived from the draft id so
+// a partial publish (createCar succeeded, later steps hit a gateway timeout) can never
+// strand an orphan or cause a duplicate: the next attempt reuses the same row.
+function deterministicCarId(draftId: string): string {
+  return `car-${draftId.replace(/^vd-/, '')}`;
+}
 import type { PublishResult, PublishEntry, VehicleDraftState } from '../../src/types/ai.js';
 import { publishToInstagram } from './instagram.js';
 import { sendWhatsAppText } from './whatsapp-api.js';
@@ -46,7 +66,7 @@ function draftToCarPayload(draft: any) {
     bodyType: body,
     ownerCount: data.ownerCount || '1st Owner',
     status: 'Available' as const,
-    images: images.slice(0, 15),
+    images: images,
     specs: { rto: data.location || 'KA-32 (Kalaburagi)' },
   };
 }
@@ -55,14 +75,23 @@ export async function approveDraft(draftId: string, ctx: PublishContext): Promis
   const draft = await getVehicleDraft(draftId);
   if (!draft) throw new Error('Draft not found');
 
-  // REVIEW → APPROVED (admin or system auto-publish)
-  assertTransition(draft.state as VehicleDraftState, 'APPROVED', ctx.actorType);
-  const approved = await updateVehicleDraft(draftId, { state: 'APPROVED' });
+  // REVIEW → APPROVED (admin or system auto-publish). Idempotent: an already-APPROVED
+  // draft is a retry of a partial publish, so it may be approved again.
+  const approved = draft.state === 'APPROVED' ? draft : (assertTransition(draft.state as VehicleDraftState, 'APPROVED', ctx.actorType), await retry(() => updateVehicleDraft(draftId, { state: 'APPROVED' })));
 
-  const car = draftToCarPayload(approved);
-  const created = await createCar(car);
+  // Idempotent car creation: reuse an existing published car, else the deterministic
+  // car id for this draft if a partial publish already created the row, else create.
+  const carId = approved.publishedCarId || deterministicCarId(draftId);
+  let existing = approved.publishedCarId ? await getCarById(approved.publishedCarId) : null;
+  if (!existing) existing = await getCarById(carId);
+  let created;
+  if (existing) {
+    created = await updateCar(existing.id, draftToCarPayload(approved));
+  } else {
+    created = await createCar(draftToCarPayload(approved), carId);
+  }
 
-  await updateVehicleDraft(draftId, { publishedCarId: created.id });
+  await retry(() => updateVehicleDraft(draftId, { publishedCarId: created.id }));
 
   await appendAudit({
     actor: ctx.actor,
@@ -80,15 +109,17 @@ export async function approveDraft(draftId: string, ctx: PublishContext): Promis
   const result = await publishChannels(draftId, created.id, ctx);
 
   // APPROVED → PUBLISHED (system) if the website channel succeeded; otherwise PUBLISH_FAILED.
-  const websiteEntry = result.entries.find(e => e.channel === 'website');
+  const websiteEntry = result.entries.find((e) => e.channel === 'website');
   const finalState: VehicleDraftState = websiteEntry?.status === 'success' ? 'PUBLISHED' : 'PUBLISH_FAILED';
   assertTransition('APPROVED', finalState, 'system');
-  await updateVehicleDraft(draftId, {
-    state: finalState,
-    publishedAt: finalState === 'PUBLISHED' ? new Date().toISOString() : undefined,
-  });
+  await retry(() =>
+    updateVehicleDraft(draftId, {
+      state: finalState,
+      publishedAt: finalState === 'PUBLISHED' ? new Date().toISOString() : undefined,
+    })
+  );
 
-  return { draft: await getVehicleDraft(draftId), car: created, result };
+  return { draft: await retry(() => getVehicleDraft(draftId)), car: created, result };
 }
 
 // Publish to website (create/update), instagram, whatsapp-content — independent statuses.
@@ -114,7 +145,7 @@ export async function publishChannels(
   const wa = await publishWhatsAppContent(draft, ctx);
   entries.push(wa);
 
-  await updateVehicleDraft(draftId, { publishResult: { entries } });
+  await retry(() => updateVehicleDraft(draftId, { publishResult: { entries } }));
 
   return { entries };
 }

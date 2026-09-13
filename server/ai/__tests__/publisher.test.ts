@@ -3,13 +3,26 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Isolate the publisher from real Supabase / Instagram / WhatsApp side effects.
 const h = vi.hoisted(() => {
   const store = new Map<string, any>();
+  const cars = new Map<string, any>();
   return {
     store,
+    cars,
     getVehicleDraft: vi.fn(async (id: string) => store.get(id) || null),
     updateVehicleDraft: vi.fn(async (id: string, patch: any) => {
       const next = { ...(store.get(id) || {}), ...patch };
       store.set(id, next);
       return next;
+    }),
+    getCarById: vi.fn(async (id: string) => cars.get(id) || null),
+    updateCar: vi.fn(async (id: string, patch: any) => {
+      const next = { ...(cars.get(id) || { id }), ...patch };
+      cars.set(id, next);
+      return next;
+    }),
+    createCar: vi.fn(async (payload: any, id?: string) => {
+      const row = { id: id || 'car-1', ...payload };
+      cars.set(row.id, row);
+      return row;
     }),
   };
 });
@@ -20,13 +33,11 @@ vi.mock('../db.js', () => ({
   storePublishEntry: vi.fn(async () => {}),
 }));
 vi.mock('../audit.js', () => ({ appendAudit: vi.fn(async () => {}) }));
-vi.mock('../../db.js', async () => {
-  return {
-    updateCar: vi.fn(async () => ({ id: 'car-1', title: 'car' })),
-    getCarById: vi.fn(async () => null),
-    createCar: vi.fn(async () => ({ id: 'car-1' })),
-  };
-});
+vi.mock('../../db.js', () => ({
+  updateCar: h.updateCar,
+  getCarById: h.getCarById,
+  createCar: h.createCar,
+}));
 vi.mock('../instagram.js', () => ({
   publishToInstagram: vi.fn(async () => ({
     channel: 'instagram',
@@ -40,7 +51,7 @@ vi.mock('../whatsapp-api.js', () => ({
   sendWhatsAppText: vi.fn(),
 }));
 
-import { publishChannels } from '../publisher.js';
+import { publishChannels, approveDraft } from '../publisher.js';
 import { storePublishEntry } from '../db.js';
 import { sendWhatsAppText } from '../whatsapp-api.js';
 
@@ -50,7 +61,7 @@ const baseDraft = {
   id: 'vd-test',
   state: 'APPROVED',
   data: { brand: 'Toyota', model: 'Fortuner', manufacturingYear: 2022, fuelType: 'Diesel', transmission: 'Automatic', bodyType: 'SUV', ownerCount: '1st Owner', odometerKm: 48000, price: 3250000 },
-  content: { whatsappSalesMessage: 'Toyota Fortuner 2022 for sale.' },
+  content: { whatsappSalesMessage: 'Toyota Fortuner 2022 for sale.', websiteTitle: 'Toyota Fortuner 2022' },
   images: [],
   sellerPhone: '918123991847',
   conversationId: 'conv-1',
@@ -59,6 +70,7 @@ const baseDraft = {
 beforeEach(() => {
   vi.clearAllMocks();
   draftStore.clear();
+  h.cars.clear();
 });
 
 describe('publishChannels — whatsapp channel honesty', () => {
@@ -104,5 +116,34 @@ describe('publishChannels — whatsapp channel honesty', () => {
     const wa = result.entries.find(e => e.channel === 'whatsapp');
     expect(wa?.status).toBe('skipped');
     expect(sendWhatsAppText).not.toHaveBeenCalled();
+  });
+});
+
+describe('approveDraft — idempotent car creation (no orphan duplicates)', () => {
+  it('reuses the deterministic car on a partial-publish retry instead of creating a second', async () => {
+    // Draft starts in READY_FOR_REVIEW with no published car (first attempt).
+    draftStore.set('vd-pub', {
+      ...baseDraft,
+      id: 'vd-pub',
+      state: 'READY_FOR_REVIEW',
+      publishedCarId: undefined,
+    });
+
+    // First publish attempt: state moves APPROVED and a car is created.
+    const first = await approveDraft('vd-pub', { requestId: 'req-1', actor: 'system', actorType: 'system' });
+    expect(first.car).toBeTruthy();
+    expect(first.car.id).toBe('car-pub'); // deterministic
+
+    // Simulate a gateway timeout: publishedCarId never linked, state stuck APPROVED.
+    const d = draftStore.get('vd-pub');
+    draftStore.set('vd-pub', { ...d, publishedCarId: undefined, state: 'APPROVED' });
+
+    // Second publish attempt (retry): must NOT create a new car row.
+    h.createCar.mockClear();
+    const second = await approveDraft('vd-pub', { requestId: 'req-2', actor: 'system', actorType: 'system' });
+
+    expect(h.createCar).not.toHaveBeenCalled();
+    expect(second.car.id).toBe('car-pub');
+    expect(draftStore.get('vd-pub').publishedCarId).toBe('car-pub');
   });
 });

@@ -97,10 +97,10 @@ export async function getCarById(id: string): Promise<Car | null> {
   return rowToCar(data);
 }
 
-export async function createCar(car: Omit<Car, 'id' | 'createdAt'>): Promise<Car> {
-  const id = generateId('car');
+export async function createCar(car: Omit<Car, 'id' | 'createdAt'>, id?: string): Promise<Car> {
+  const carId = id || generateId('car');
   const row = {
-    id,
+    id: carId,
     ...carToRow(car),
     created_at: new Date().toISOString()
   };
