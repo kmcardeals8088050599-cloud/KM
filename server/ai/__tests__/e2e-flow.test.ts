@@ -100,7 +100,7 @@ vi.mock('../provider/ollama.js', () => {
 // used by server/db.ts + server/ai/*.
 // ---------------------------------------------------------------------------
 type Row = Record<string, any>;
-interface Filter { op: 'eq' | 'is' | 'not' | 'gte' | 'lte'; col: string; val: any }
+interface Filter { op: 'eq' | 'is' | 'not' | 'gte' | 'lte' | 'lt' | 'gt'; col: string; val: any }
 
 vi.mock('../../supabase.js', () => {
   class QueryBuilder {
@@ -127,6 +127,8 @@ vi.mock('../../supabase.js', () => {
     not(col: string, val: any): this { this.filters.push({ op: 'not', col, val }); return this; }
     gte(col: string, val: any): this { this.filters.push({ op: 'gte', col, val }); return this; }
     lte(col: string, val: any): this { this.filters.push({ op: 'lte', col, val }); return this; }
+    lt(col: string, val: any): this { this.filters.push({ op: 'lt', col, val }); return this; }
+    gt(col: string, val: any): this { this.filters.push({ op: 'gt', col, val }); return this; }
     order(col: string, opts?: { ascending?: boolean }): this { this.orderBy.push({ col, asc: opts?.ascending !== false }); return this; }
     limit(n: number): this { this.limitN = n; return this; }
     range(a: number, b: number): this { this.rangeN = [a, b]; return this; }
@@ -142,6 +144,8 @@ vi.mock('../../supabase.js', () => {
         if (f.op === 'not' && row[f.col] === f.val) return false;
         if (f.op === 'gte' && !(row[f.col] >= f.val)) return false;
         if (f.op === 'lte' && !(row[f.col] <= f.val)) return false;
+        if (f.op === 'lt' && !(row[f.col] < f.val)) return false;
+        if (f.op === 'gt' && !(row[f.col] > f.val)) return false;
       }
       return true;
     }

@@ -10,6 +10,7 @@ import {
   getMessageByExternalId,
   persistInboundMessage,
   getOrCreateConversation,
+  listUnprocessedMessages,
 } from './db.js';
 import { resolveMediaUrl, storeRemoteMedia } from './whatsapp-api.js';
 import { runIntake } from './intake.js';
@@ -125,6 +126,17 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
           await runIntakeWithinTimeout(conversation.id, externalId, ctx);
         }
         stored++;
+
+        // In-band catch-up: clear this conversation's earlier backlog within the same
+        // invocation while we still have budget (Cloudflare edges cut the call ~100s).
+        const budgetUntil = Date.now() + INTAKE_TIMEOUT_MS;
+        const leftover = (await listUnprocessedMessages(6, 6))
+          .filter((m) => m.conversationId === conversation.id && m.id !== externalId)
+          .slice(0, 2);
+        for (const lm of leftover) {
+          if (Date.now() > budgetUntil - 5_000) break;
+          await runIntakeWithinTimeout(lm.conversationId, lm.id, ctx);
+        }
       }
     }
   }

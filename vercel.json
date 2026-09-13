@@ -6,6 +6,6 @@
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "crons": [
-    { "path": "/api/ai/workqueue?limit=6", "schedule": "*/5 * * * *" }
+    { "path": "/api/ai/workqueue?limit=6", "schedule": "0 2 * * *" }
   ]
 }

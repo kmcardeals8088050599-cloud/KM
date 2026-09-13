@@ -20,6 +20,7 @@ vi.mock('../db.js', async () => {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     })),
+    listUnprocessedMessages: vi.fn(async () => []),
   };
 });
 vi.mock('../intake.js', () => ({ runIntake: vi.fn(async () => {}) }));
