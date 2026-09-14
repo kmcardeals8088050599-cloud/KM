@@ -673,7 +673,7 @@ async function markProcessingFailure(
   ctx: IntakeContext
 ): Promise<void> {
   try {
-    const conversation = await getOrCreateConversation(ctx.fromPhone, 'seller');
+    const conversation = await getOrCreateConversation(ctx.fromPhone, ctx.participantType);
     const draft = await getVehicleDraftByConversation(conversationId);
     if (draft && (draft.state === 'PROCESSING' || draft.state === 'RECEIVED' || draft.state === 'INCOMPLETE')) {
       await updateVehicleDraft(draft.id, {

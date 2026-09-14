@@ -52,6 +52,40 @@ async function runIntakeWithinTimeout(
   }
 }
 
+type DispatchCtx = { requestId: string; fromPhone: string; participantType: 'seller' | 'dealer' | 'buyer' | 'admin' };
+
+// Dealer-operator routing, shared by the live message and the backlog catch-up so a
+// queued admin command is never mistaken for a car submission. A pending confirmation
+// is resolved ONLY by a short yes/no reply; an anchored command verb is a command;
+// every other admin message is a submission and runs intake. When a submission arrives
+// mid-confirmation, the stale pending action is cleared so a later stray "yes" can't
+// fire it.
+async function dispatchAdminOrIntake(opts: {
+  conversation: { id: string; metadata?: Record<string, any> | null };
+  fromPhone: string;
+  senderIsAdmin: boolean;
+  text: string;
+  messageId: string;
+  requestId: string;
+  ctx: DispatchCtx;
+}): Promise<void> {
+  const { conversation, fromPhone, senderIsAdmin, text, messageId, requestId, ctx } = opts;
+  const pendingAction = conversation.metadata?.pendingAction;
+  const isConfirmationReply = Boolean(pendingAction) && looksLikeConfirmationReply(text);
+  const isCommand = senderIsAdmin && (isConfirmationReply || detectAdminCommand(text) !== null);
+
+  if (isCommand) {
+    await handleAdminMessage(conversation.id, fromPhone, text, requestId);
+    return;
+  }
+  if (senderIsAdmin && pendingAction) {
+    await updateConversation(conversation.id, {
+      metadata: { ...(conversation.metadata || {}), pendingAction: null },
+    });
+  }
+  await runIntakeWithinTimeout(conversation.id, messageId, ctx);
+}
+
 // --- Verification (GET) ---
 export function verifyWebhook(req: Request, res: Response): void {
   const mode = req.query['hub.mode'];
@@ -129,32 +163,17 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
         };
 
         // Dealer-operator model: the admin both runs commands AND submits cars on the
-        // same WhatsApp thread. A pending confirmation is resolved ONLY by a short
-        // yes/no reply; a recognized command verb (anchored) is a command. Every other
-        // admin message — car details, photos, voice notes — is a submission and runs
-        // intake. ctx.participantType is already 'admin' here, so those submissions
-        // carry admin trust into runIntake.
-        const text = inbound.text || '';
-        const pendingAction = conversation.metadata?.pendingAction;
-        const isConfirmationReply = Boolean(pendingAction) && looksLikeConfirmationReply(text);
-        const isCommand = senderIsAdmin && (isConfirmationReply || detectAdminCommand(text) !== null);
-
-        if (isCommand) {
-          // Admin control responses processed in-band (fast, safe to await).
-          await handleAdminMessage(conversation.id, fromPhone, text, requestId);
-        } else {
-          // A car submission arrived while a confirmation was pending. Drop the stale
-          // pending action so a later stray "yes" can't fire it, then run intake.
-          if (senderIsAdmin && pendingAction) {
-            await updateConversation(conversation.id, {
-              metadata: { ...(conversation.metadata || {}), pendingAction: null },
-            });
-          }
-          // Intake processed in-band. Vercel Fluid freezes bare fire-and-forget
-          // promises once the handler returns, so awaiting here is what actually gets
-          // the AI work done; the timeout guard keeps the 200 bounded.
-          await runIntakeWithinTimeout(conversation.id, externalId, ctx);
-        }
+        // same WhatsApp thread. Routing lives in dispatchAdminOrIntake so the backlog
+        // catch-up below applies the exact same logic.
+        await dispatchAdminOrIntake({
+          conversation,
+          fromPhone,
+          senderIsAdmin,
+          text: inbound.text || '',
+          messageId: externalId,
+          requestId,
+          ctx,
+        });
         stored++;
 
         // In-band catch-up: clear this conversation's earlier backlog within the same
@@ -165,7 +184,18 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
           .slice(0, 2);
         for (const lm of leftover) {
           if (Date.now() > budgetUntil - 5_000) break;
-          await runIntakeWithinTimeout(lm.conversationId, lm.id, ctx);
+          // Re-read the conversation so a backlog command that set/cleared a pending
+          // action is visible to the next message's routing decision.
+          const fresh = await getOrCreateConversation(fromPhone, ctx.participantType);
+          await dispatchAdminOrIntake({
+            conversation: fresh,
+            fromPhone,
+            senderIsAdmin,
+            text: lm.text || '',
+            messageId: lm.id,
+            requestId,
+            ctx,
+          });
         }
       }
     }

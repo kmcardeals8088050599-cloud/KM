@@ -40,7 +40,7 @@ vi.mock('../whatsapp-api.js', () => ({
 vi.mock('../audio.js', () => ({ transcribeAudioUrl: vi.fn(async () => null) }));
 
 import { processWebhookBody } from '../webhook.js';
-import { getMessageByExternalId, persistInboundMessage, detectAdminCommand, getOrCreateConversation, updateConversation } from '../db.js';
+import { getMessageByExternalId, persistInboundMessage, detectAdminCommand, getOrCreateConversation, updateConversation, listUnprocessedMessages } from '../db.js';
 import { runIntake } from '../intake.js';
 import { handleAdminMessage } from '../admin-commands.js';
 import { isAdminSender } from '../whatsapp-api.js';
@@ -129,6 +129,8 @@ describe('processWebhookBody — dealer-operator smart routing', () => {
     (getOrCreateConversation as any).mockReset();
     (updateConversation as any).mockReset();
     (updateConversation as any).mockResolvedValue({});
+    (listUnprocessedMessages as any).mockReset();
+    (listUnprocessedMessages as any).mockResolvedValue([]);
     (runIntake as any).mockReset();
     (handleAdminMessage as any).mockReset();
     (runIntake as any).mockResolvedValue(undefined);
@@ -193,5 +195,25 @@ describe('processWebhookBody — dealer-operator smart routing', () => {
 
     expect(runIntake).toHaveBeenCalledTimes(1);
     expect(handleAdminMessage).not.toHaveBeenCalled();
+  });
+
+  it('routes a BACKLOG admin command through the command agent, not intake', async () => {
+    (isAdminSender as any).mockReturnValue(true);
+    // Live message is a car (intake); the queued backlog message is a command.
+    (detectAdminCommand as any).mockImplementation((t: string) =>
+      /^show pending/i.test(t.trim()) ? { command: 'show_pending' } : null
+    );
+    (getOrCreateConversation as any).mockResolvedValue(conv());
+    (listUnprocessedMessages as any).mockResolvedValue([
+      { id: 'lm-1', externalId: 'lm-1', conversationId: 'conv-1', fromPhone: '910000000000', role: 'from', text: 'show pending', processed: false },
+    ]);
+
+    await processWebhookBody(payload('wamid-main-car', 'Toyota Fortuner 2022 diesel 48k'));
+
+    // Live car message → intake.
+    expect(runIntake).toHaveBeenCalledTimes(1);
+    // Backlog command → command agent (previously it was wrongly run through intake).
+    expect(handleAdminMessage).toHaveBeenCalledTimes(1);
+    expect((handleAdminMessage as any).mock.calls[0][2]).toBe('show pending');
   });
 });
