@@ -21,6 +21,7 @@ vi.mock('../db.js', async () => {
       updatedAt: new Date().toISOString(),
     })),
     listUnprocessedMessages: vi.fn(async () => []),
+    detectAdminCommand: vi.fn(() => null),
   };
 });
 vi.mock('../intake.js', () => ({ runIntake: vi.fn(async () => {}) }));
@@ -38,8 +39,10 @@ vi.mock('../whatsapp-api.js', () => ({
 vi.mock('../audio.js', () => ({ transcribeAudioUrl: vi.fn(async () => null) }));
 
 import { processWebhookBody } from '../webhook.js';
-import { getMessageByExternalId, persistInboundMessage } from '../db.js';
+import { getMessageByExternalId, persistInboundMessage, detectAdminCommand, getOrCreateConversation } from '../db.js';
 import { runIntake } from '../intake.js';
+import { handleAdminMessage } from '../admin-commands.js';
+import { isAdminSender } from '../whatsapp-api.js';
 
 const samplePayload = (wamid: string) => ({
   object: 'whatsapp_business_account',
@@ -92,5 +95,86 @@ describe('processWebhookBody', () => {
     const result = await processWebhookBody({ entry: [{ changes: [{ value: { statuses: [{}] } }] }] });
     expect(result.stored).toBe(0);
     expect(getMessageByExternalId).not.toHaveBeenCalled();
+  });
+});
+
+describe('processWebhookBody — dealer-operator smart routing', () => {
+  const payload = (wamid: string, body: string, from = '910000000000') => ({
+    object: 'whatsapp_business_account',
+    entry: [{
+      changes: [{
+        value: {
+          messaging_product: 'whatsapp',
+          messages: [{ from, id: wamid, timestamp: '1720000000', type: 'text', text: { body } }],
+        },
+        field: 'messages',
+      }],
+    }],
+  });
+  const conv = (metadata: Record<string, any> = {}) => ({
+    id: 'conv-1',
+    externalPhone: '910000000000',
+    participantType: 'admin',
+    state: 'idle',
+    metadata,
+    lastActivity: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+
+  beforeEach(() => {
+    (isAdminSender as any).mockReset();
+    (detectAdminCommand as any).mockReset();
+    (getOrCreateConversation as any).mockReset();
+    (runIntake as any).mockReset();
+    (handleAdminMessage as any).mockReset();
+    (runIntake as any).mockResolvedValue(undefined);
+    (handleAdminMessage as any).mockResolvedValue(undefined);
+  });
+
+  it('routes an admin car submission (no command match) to intake, not the command agent', async () => {
+    (isAdminSender as any).mockReturnValue(true);
+    (detectAdminCommand as any).mockReturnValue(null);
+    (getOrCreateConversation as any).mockResolvedValue(conv());
+
+    await processWebhookBody(payload('wamid-admin-car', 'Toyota Fortuner 2022 diesel 48k'));
+
+    expect(runIntake).toHaveBeenCalledTimes(1);
+    expect(handleAdminMessage).not.toHaveBeenCalled();
+    // The submission carries admin trust into intake.
+    expect((runIntake as any).mock.calls[0][2]).toMatchObject({ participantType: 'admin' });
+  });
+
+  it('routes a recognized admin command to the command agent, not intake', async () => {
+    (isAdminSender as any).mockReturnValue(true);
+    (detectAdminCommand as any).mockReturnValue({ command: 'show_pending' });
+    (getOrCreateConversation as any).mockResolvedValue(conv());
+
+    await processWebhookBody(payload('wamid-admin-cmd', 'show pending'));
+
+    expect(handleAdminMessage).toHaveBeenCalledTimes(1);
+    expect(runIntake).not.toHaveBeenCalled();
+  });
+
+  it('routes a confirmation reply ("yes") to the command agent when an action is pending', async () => {
+    (isAdminSender as any).mockReturnValue(true);
+    (detectAdminCommand as any).mockReturnValue(null); // bare "yes" is not a command
+    (getOrCreateConversation as any).mockResolvedValue(conv({ pendingAction: { action: 'approve', draftId: 'vd-1' } }));
+
+    await processWebhookBody(payload('wamid-admin-yes', 'yes'));
+
+    expect(handleAdminMessage).toHaveBeenCalledTimes(1);
+    expect(runIntake).not.toHaveBeenCalled();
+  });
+
+  it('always routes a non-admin sender to intake', async () => {
+    (isAdminSender as any).mockReturnValue(false);
+    (detectAdminCommand as any).mockReturnValue(null);
+    (getOrCreateConversation as any).mockResolvedValue(conv({ participantType: 'seller' } as any));
+
+    await processWebhookBody(payload('wamid-seller', 'Mahindra Thar 2023'));
+
+    expect(runIntake).toHaveBeenCalledTimes(1);
+    expect(handleAdminMessage).not.toHaveBeenCalled();
   });
 });

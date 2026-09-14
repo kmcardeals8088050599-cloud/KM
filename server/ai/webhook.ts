@@ -11,6 +11,7 @@ import {
   persistInboundMessage,
   getOrCreateConversation,
   listUnprocessedMessages,
+  detectAdminCommand,
 } from './db.js';
 import { resolveMediaUrl, storeRemoteMedia, isAdminSender } from './whatsapp-api.js';
 import { runIntake } from './intake.js';
@@ -116,11 +117,20 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
           participantType: senderIsAdmin ? 'admin' as const : 'seller' as const,
         };
 
-        if (senderIsAdmin) {
+        // Dealer-operator model: the admin both runs commands AND submits cars on the
+        // same WhatsApp thread. A pending confirmation (awaiting "Yes") or a recognized
+        // command goes to the command agent; every other admin message — car details,
+        // photos, voice notes — is a submission and runs intake. ctx.participantType is
+        // already 'admin' here, so those submissions carry admin trust into runIntake.
+        const awaitingConfirmation = Boolean(conversation.metadata?.pendingAction);
+        const isCommand =
+          senderIsAdmin && (awaitingConfirmation || detectAdminCommand(inbound.text || '') !== null);
+
+        if (isCommand) {
           // Admin control responses processed in-band (fast, safe to await).
           await handleAdminMessage(conversation.id, fromPhone, inbound.text || '', requestId);
         } else {
-          // Seller intake processed in-band. Vercel Fluid freezes bare fire-and-forget
+          // Intake processed in-band. Vercel Fluid freezes bare fire-and-forget
           // promises once the handler returns, so awaiting here is what actually gets
           // the AI work done; the timeout guard keeps the 200 bounded.
           await runIntakeWithinTimeout(conversation.id, externalId, ctx);

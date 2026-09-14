@@ -32,7 +32,7 @@ import { markMessageProcessed, bumpProcessingAttempt } from './db.js';
 import { assertTransition } from './state-machine.js';
 import { getActiveModels, analyzeImages } from './ai.js';
 import { approveDraft } from './publisher.js';
-import { AUTO_PUBLISH, MIN_PHOTOS_FOR_PUBLISH } from './config.js';
+import { AI_CONFIG, AUTO_PUBLISH, MIN_PHOTOS_FOR_PUBLISH, FIELD_LABELS, FOLLOWUP_COOLDOWN_MS, FOLLOWUP_RETRY_LIMIT } from './config.js';
 import { rcCardExtractionSchema } from './schemas.js';
 import { supabase } from '../supabase.js';
 import { VehicleExtractedData, MissingFieldRequest } from '../../src/types/ai.js';
@@ -150,11 +150,15 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       draft = await retry(() => updateVehicleDraft(draft.id, { state: 'PROCESSING' }));
     }
 
+    // The dealer/admin is a trusted operator: their own submissions publish automatically
+    // once complete. AUTO_PUBLISH extends the same behavior to every sender when enabled.
+    const shouldAutoPublish = AUTO_PUBLISH || ctx.participantType === 'admin';
+
     // Auto-publish only accepts a credible vehicle identity; placeholder brand/model
     // ("unknown") means we still need the sender to provide the real details on WhatsApp.
     const credibleIdentity = nonPlaceholder(mergedData.brand) && nonPlaceholder(mergedData.model);
 
-    if (readyToReview && (!AUTO_PUBLISH || credibleIdentity)) {
+    if (readyToReview && (!shouldAutoPublish || credibleIdentity)) {
       // 4. Content generation (skip re-generating when already in review with content)
       let content = draft.content;
       if (!content) {
@@ -187,7 +191,7 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
 
       await markMessageProcessed(messageId);
 
-      if (AUTO_PUBLISH) {
+      if (shouldAutoPublish) {
         await autoPublishDraft(draft.id, ctx);
       } else if (!wasInReview) {
         const title = mergedData.brand + ' ' + mergedData.model;
@@ -214,12 +218,14 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
     }
     await retry(() => updateConversation(conversationId, { state: 'waiting_answer' }));
 
-    const req = missingFieldRequest;
-    if (req) {
-      await sendMissingFieldRequestOnce(conversationId, conversation, ctx.fromPhone, req, startedAt);
-    } else {
-      await sendMissingFieldRequestOnce(conversationId, conversation, ctx.fromPhone, null, startedAt);
-    }
+    await sendMissingFieldRequest(
+      conversationId,
+      ctx.fromPhone,
+      ctx.participantType,
+      missingFieldRequest,
+      imageCount,
+      startedAt
+    );
     await markMessageProcessed(messageId);
   } catch (err: any) {
     console.error('[Intake] Failed:', err.message);
@@ -227,33 +233,72 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
   }
 }
 
-// Ask for missing details at most once per missing-set + cooldown window. A seller
-// uploading a burst of photos should get ONE consolidated question, not a repeat
-// prompt per photo. The ask signature is persisted on the conversation.
-async function sendMissingFieldRequestOnce(
+// Ledger key under which the verification/conflict prompt is tracked (it has no field name).
+const CONFLICT_ASK_KEY = '__conflict__';
+
+// Ask for missing details like a professional: ONE consolidated question listing only
+// the fields we have NOT already asked about recently. A per-field ledger on the
+// conversation metadata (`missingAsks`) records when each field was last asked and how
+// many times, so a burst of photos/messages never triggers a repeat prompt, a field
+// asked within the cooldown is never re-listed, and nothing is nagged more than
+// FOLLOWUP_RETRY_LIMIT times. The ledger is re-read fresh right before sending to keep
+// concurrent webhook invocations from double-asking.
+export async function sendMissingFieldRequest(
   conversationId: string,
-  conversation: any,
   fromPhone: string,
+  participantType: IntakeContext['participantType'],
   req: MissingFieldRequest | null,
+  imageCount: number,
   startedAt: number
 ): Promise<void> {
-  const sig = (req?.missing || []).map((k: string) => k.toLowerCase().trim()).sort().join(',');
-  const now = Date.now();
-  const metadata = conversation.metadata || {};
-  const prev = metadata.lastMissingAsk;
+  const missing = (req?.missing || []).map(k => k.trim()).filter(Boolean);
+  const conflictNotice = missing.length === 0 ? (req?.message || '').trim() : '';
+  if (missing.length === 0 && !conflictNotice) return; // nothing specific to ask — never nag
 
-  if (prev && prev.sig === sig && now - prev.at < 20 * 60_000) {
-    return; // identical request already asked — the sender is still working on it
+  // Fresh read narrows the race window between parallel webhook invocations.
+  const conversation = await getOrCreateConversation(fromPhone, participantType);
+  const metadata = conversation.metadata || {};
+  const asks: Record<string, { at: number; count: number }> = metadata.missingAsks || {};
+  const now = Date.now();
+
+  const askable = (key: string): boolean => {
+    const prev = asks[key];
+    if (!prev) return true;
+    if (prev.count >= FOLLOWUP_RETRY_LIMIT) return false; // asked enough — leave it on the dashboard
+    return now - prev.at >= FOLLOWUP_COOLDOWN_MS;
+  };
+
+  let freshKeys: string[];
+  let message: string;
+
+  if (conflictNotice) {
+    // Verification/conflict prompt: tracked under its own key so it is sent once per
+    // cooldown and capped, exactly like a field ask.
+    if (!askable(CONFLICT_ASK_KEY)) return;
+    freshKeys = [CONFLICT_ASK_KEY];
+    message = conflictNotice;
+  } else {
+    freshKeys = missing.filter(askable);
+    if (freshKeys.length === 0) return; // everything outstanding was already asked recently
+    const lines = freshKeys.slice(0, AI_CONFIG.followUpMaxQuestions).map((field, i) => {
+      if (field === 'photos') {
+        return `${i + 1}. Clear photos of the car (at least ${MIN_PHOTOS_FOR_PUBLISH} — I have ${imageCount} so far)`;
+      }
+      return `${i + 1}. ${FIELD_LABELS[field] || field}`;
+    });
+    message = ['I can create the listing, but I still need:', ...lines].join('\n');
   }
 
-  const message = req
-    ? req.message
-    : 'Please send the remaining vehicle details so I can complete the listing.';
   await sendWhatsAppText(fromPhone, message);
+
+  // Advance the ledger only for the keys actually asked.
+  const nextAsks = { ...asks };
+  for (const key of freshKeys) {
+    const prev = nextAsks[key] || { at: 0, count: 0 };
+    nextAsks[key] = { at: now, count: prev.count + 1 };
+  }
   await retry(() =>
-    updateConversation(conversationId, {
-      metadata: { ...metadata, lastMissingAsk: { sig, at: now } },
-    })
+    updateConversation(conversationId, { metadata: { ...metadata, missingAsks: nextAsks } })
   );
   await logAiUsage({
     entity: 'whatsapp_message',
