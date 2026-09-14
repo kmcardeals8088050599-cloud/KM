@@ -204,6 +204,62 @@ export async function getOrCreateDraftForConversation(
   throw new Error(`Failed to create vehicle draft: ${error.message}`);
 }
 
+// All drafts on a conversation, oldest first. The dealer-operator thread carries many
+// cars over time, so a conversation is no longer 1:1 with a draft.
+export async function listConversationDrafts(conversationId: string): Promise<VehicleDraft[]> {
+  const { data, error } = await supabase
+    .from('vehicle_drafts')
+    .select('*')
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true });
+  if (error) throw new Error(`Failed to list conversation drafts: ${error.message}`);
+  return (data || []).map(rowToDraft);
+}
+
+// Open the NEXT draft on a conversation whose current draft is finished. The id is
+// deterministic on the conversation + sequence (`vd-<conv>`, `vd-<conv>-1`, …) so
+// concurrent intakes collide on the PK and reuse the created row instead of spawning
+// duplicate listings — the same guarantee getOrCreateDraftForConversation gives.
+export async function startNextDraftForConversation(
+  conversationId: string,
+  input: Omit<Parameters<typeof createVehicleDraft>[0], 'id' | 'conversationId'>
+): Promise<VehicleDraft> {
+  const drafts = await listConversationDrafts(conversationId);
+  const seq = drafts.length;
+  const id = seq === 0 ? `vd-${conversationId}` : `vd-${conversationId}-${seq}`;
+  const now = new Date().toISOString();
+  const row = {
+    id,
+    conversation_id: conversationId,
+    state: input.state,
+    data: input.data || {},
+    confidence: {},
+    provenance: {},
+    locked_fields: [],
+    source: input.source || 'whatsapp',
+    seller_name: input.sellerName || null,
+    seller_phone: input.sellerPhone || null,
+    seller_id: input.sellerId || null,
+    dealer_id: input.dealerId || null,
+    content: null,
+    images: [],
+    documents: [],
+    publish_result: null,
+    published_car_id: null,
+    error: null,
+    created_at: now,
+    updated_at: now,
+  };
+  const { data, error } = await supabase.from('vehicle_drafts').insert(row).select().single();
+  if (!error) return rowToDraft(data);
+
+  if (error.code === '23505' || /duplicate key/i.test(error.message || '')) {
+    const existing = await getVehicleDraft(id);
+    if (existing) return existing;
+  }
+  throw new Error(`Failed to start next vehicle draft: ${error.message}`);
+}
+
 export async function getVehicleDraft(id: string): Promise<VehicleDraft | null> {
   const { data, error } = await supabase
     .from('vehicle_drafts')
@@ -569,15 +625,17 @@ export function detectAdminCommand(text: string): AdminCommandMatch | null {
   if (/^(show|open|get)\s+(the\s+)?(fortuner|draft)/.test(t) || /^show\s+draft\b/i.test(t)) {
     return { command: 'show_draft', draftId: draftMatch?.[1] };
   }
-  if (/(approve|reject|confirm|yes|publish|mark\s+sold|regenerate|change\s+price)/.test(t)) {
-    if (/approve/.test(t)) return { command: 'approve', draftId: draftMatch?.[1] };
-    if (/reject/.test(t)) return { command: 'reject', draftId: draftMatch?.[1] };
-    if (/publish/.test(t)) return { command: 'publish', draftId: draftMatch?.[1] };
-    if (/mark\s+sold/.test(t)) return { command: 'mark_sold', draftId: draftMatch?.[1] };
-    if (/regenerate\s+(image|photo)/.test(t)) return { command: 'regenerate_images', draftId: draftMatch?.[1] };
-    if (/regenerate\s+(content|desc|description)/.test(t)) return { command: 'regenerate_content', draftId: draftMatch?.[1] };
-  }
-  if (/change\s+price/.test(t)) {
+  // Command verbs must START the message. A car description that merely contains
+  // "publish"/"approve"/"reject" (e.g. "ready to publish this Fortuner") is a
+  // submission, not a command, and must fall through to intake. Bare "yes"/"confirm"
+  // are confirmation replies, resolved by the pending-action path — not commands.
+  if (/^approve\b/.test(t)) return { command: 'approve', draftId: draftMatch?.[1] };
+  if (/^reject\b/.test(t)) return { command: 'reject', draftId: draftMatch?.[1] };
+  if (/^publish\b/.test(t)) return { command: 'publish', draftId: draftMatch?.[1] };
+  if (/^mark\b/.test(t) && /\bsold\b/.test(t)) return { command: 'mark_sold', draftId: draftMatch?.[1] };
+  if (/^regenerate\s+(image|photo)/.test(t)) return { command: 'regenerate_images', draftId: draftMatch?.[1] };
+  if (/^regenerate\s+(content|desc|description)/.test(t)) return { command: 'regenerate_content', draftId: draftMatch?.[1] };
+  if (/^change\s+price/.test(t)) {
     const priceMatch = t.match(/change\s+price\s+of\s+([\w-]+)\s+to\s+(.+)/i);
     return {
       command: 'change_price',

@@ -10,6 +10,7 @@ import {
   getMessageByExternalId,
   persistInboundMessage,
   getOrCreateConversation,
+  updateConversation,
   listUnprocessedMessages,
   detectAdminCommand,
 } from './db.js';
@@ -22,6 +23,16 @@ import type { InboundMessage, MessageAttachment } from '../../src/types/ai.js';
 // Cap an intake run so the webhook always returns 200. If the AI work outlives the
 // budget the message stays unprocessed and the guarded /api/ai/workqueue rescues it.
 const INTAKE_TIMEOUT_MS = 90_000;
+
+// Short affirmative/negative replies that resolve a pending admin confirmation. Kept
+// tight (anchored + length cap) so a car description that happens to start with "yes"
+// ("yes it's a 2022 Fortuner, 48k km…") is never mistaken for a confirmation and lost.
+const CONFIRM_REPLY_RE =
+  /^(yes|y|ya|yeah|yep|ok|okay|confirm|sure|do it|go ahead|no|n|nope|cancel|stop|never ?mind)\b/i;
+function looksLikeConfirmationReply(text: string): boolean {
+  const t = text.trim();
+  return t.length <= 40 && CONFIRM_REPLY_RE.test(t);
+}
 
 async function runIntakeWithinTimeout(
   conversationId: string,
@@ -118,18 +129,27 @@ export async function processWebhookBody(body: any): Promise<{ stored: number; s
         };
 
         // Dealer-operator model: the admin both runs commands AND submits cars on the
-        // same WhatsApp thread. A pending confirmation (awaiting "Yes") or a recognized
-        // command goes to the command agent; every other admin message — car details,
-        // photos, voice notes — is a submission and runs intake. ctx.participantType is
-        // already 'admin' here, so those submissions carry admin trust into runIntake.
-        const awaitingConfirmation = Boolean(conversation.metadata?.pendingAction);
-        const isCommand =
-          senderIsAdmin && (awaitingConfirmation || detectAdminCommand(inbound.text || '') !== null);
+        // same WhatsApp thread. A pending confirmation is resolved ONLY by a short
+        // yes/no reply; a recognized command verb (anchored) is a command. Every other
+        // admin message — car details, photos, voice notes — is a submission and runs
+        // intake. ctx.participantType is already 'admin' here, so those submissions
+        // carry admin trust into runIntake.
+        const text = inbound.text || '';
+        const pendingAction = conversation.metadata?.pendingAction;
+        const isConfirmationReply = Boolean(pendingAction) && looksLikeConfirmationReply(text);
+        const isCommand = senderIsAdmin && (isConfirmationReply || detectAdminCommand(text) !== null);
 
         if (isCommand) {
           // Admin control responses processed in-band (fast, safe to await).
-          await handleAdminMessage(conversation.id, fromPhone, inbound.text || '', requestId);
+          await handleAdminMessage(conversation.id, fromPhone, text, requestId);
         } else {
+          // A car submission arrived while a confirmation was pending. Drop the stale
+          // pending action so a later stray "yes" can't fire it, then run intake.
+          if (senderIsAdmin && pendingAction) {
+            await updateConversation(conversation.id, {
+              metadata: { ...(conversation.metadata || {}), pendingAction: null },
+            });
+          }
           // Intake processed in-band. Vercel Fluid freezes bare fire-and-forget
           // promises once the handler returns, so awaiting here is what actually gets
           // the AI work done; the timeout guard keeps the 200 bounded.

@@ -31,4 +31,13 @@ describe('detectAdminCommand', () => {
   it('returns null for junk', () => {
     expect(detectAdminCommand('hello there')).toBeNull();
   });
+  it('does NOT treat a car description containing a command word as a command', () => {
+    expect(detectAdminCommand('ready to publish this Toyota Fortuner 2022, 48000 km')).toBeNull();
+    expect(detectAdminCommand('I want to approve the loan for this Thar')).toBeNull();
+    expect(detectAdminCommand('not rejected, just a scratch on the bumper')).toBeNull();
+  });
+  it('still detects an anchored command verb', () => {
+    expect(detectAdminCommand('publish KMC-1042')?.command).toBe('publish');
+    expect(detectAdminCommand('Mark KMC-1042 sold')?.command).toBe('mark_sold');
+  });
 });

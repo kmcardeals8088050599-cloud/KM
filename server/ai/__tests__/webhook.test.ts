@@ -22,6 +22,7 @@ vi.mock('../db.js', async () => {
     })),
     listUnprocessedMessages: vi.fn(async () => []),
     detectAdminCommand: vi.fn(() => null),
+    updateConversation: vi.fn(async () => ({})),
   };
 });
 vi.mock('../intake.js', () => ({ runIntake: vi.fn(async () => {}) }));
@@ -39,7 +40,7 @@ vi.mock('../whatsapp-api.js', () => ({
 vi.mock('../audio.js', () => ({ transcribeAudioUrl: vi.fn(async () => null) }));
 
 import { processWebhookBody } from '../webhook.js';
-import { getMessageByExternalId, persistInboundMessage, detectAdminCommand, getOrCreateConversation } from '../db.js';
+import { getMessageByExternalId, persistInboundMessage, detectAdminCommand, getOrCreateConversation, updateConversation } from '../db.js';
 import { runIntake } from '../intake.js';
 import { handleAdminMessage } from '../admin-commands.js';
 import { isAdminSender } from '../whatsapp-api.js';
@@ -126,6 +127,8 @@ describe('processWebhookBody — dealer-operator smart routing', () => {
     (isAdminSender as any).mockReset();
     (detectAdminCommand as any).mockReset();
     (getOrCreateConversation as any).mockReset();
+    (updateConversation as any).mockReset();
+    (updateConversation as any).mockResolvedValue({});
     (runIntake as any).mockReset();
     (handleAdminMessage as any).mockReset();
     (runIntake as any).mockResolvedValue(undefined);
@@ -165,6 +168,20 @@ describe('processWebhookBody — dealer-operator smart routing', () => {
 
     expect(handleAdminMessage).toHaveBeenCalledTimes(1);
     expect(runIntake).not.toHaveBeenCalled();
+  });
+
+  it('treats a car description sent while a confirmation is pending as a submission — clears the stale pending action, runs intake', async () => {
+    (isAdminSender as any).mockReturnValue(true);
+    (detectAdminCommand as any).mockReturnValue(null);
+    (getOrCreateConversation as any).mockResolvedValue(conv({ pendingAction: { action: 'approve', draftId: 'vd-1' } }));
+
+    // Long, car-like text that starts with "yes" must NOT be read as a confirmation.
+    await processWebhookBody(payload('wamid-admin-car-midconfirm', 'yes but first — Mahindra Thar 2023, 20000 km, ₹18 lakh'));
+
+    expect(handleAdminMessage).not.toHaveBeenCalled();
+    expect(runIntake).toHaveBeenCalledTimes(1);
+    // The stale pending action is dropped so a later stray "yes" can't fire it.
+    expect((updateConversation as any).mock.calls.some((c: any[]) => c[1]?.metadata?.pendingAction === null)).toBe(true);
   });
 
   it('always routes a non-admin sender to intake', async () => {

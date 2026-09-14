@@ -16,6 +16,7 @@ import {
   updateConversation,
   getVehicleDraftByConversation,
   getOrCreateDraftForConversation,
+  startNextDraftForConversation,
   updateVehicleDraft,
   getVehicleDraft,
   listConversationMessages,
@@ -43,22 +44,53 @@ export interface IntakeContext {
   participantType: 'seller' | 'dealer' | 'admin' | 'buyer';
 }
 
+// A finished draft: the car is live or gone, so the next credible vehicle on this
+// thread starts a NEW draft instead of being dropped.
+const TERMINAL_DRAFT_STATES = ['APPROVED', 'PUBLISHED', 'UPDATED', 'SOLD', 'ARCHIVED'];
+
 export async function runIntake(conversationId: string, messageId: string, ctx: IntakeContext): Promise<void> {
   const startedAt = Date.now();
   try {
     const conversation = await getOrCreateConversation(ctx.fromPhone, ctx.participantType);
 
-    // Deterministic find-or-create: concurrent webhook invocations for the same
-    // conversation converge on the SAME draft row, never duplicates.
-    let draft = await getOrCreateDraftForConversation(conversationId, {
-      state: 'RECEIVED',
+    const newDraftInput = {
+      state: 'RECEIVED' as const,
       sellerPhone: ctx.fromPhone,
       sellerName: ctx.participantType === 'admin' ? 'Admin' : undefined,
       source: 'whatsapp',
-    });
-    if (['APPROVED', 'PUBLISHED', 'UPDATED', 'SOLD', 'ARCHIVED'].includes(draft.state)) {
-      await markMessageProcessed(messageId);
-      return;
+    };
+
+    const storedMessages = await listConversationMessages(conversationId);
+    let draft = await getVehicleDraftByConversation(conversationId);
+    let messages: StoredMessage[];
+    let extraction: Awaited<ReturnType<typeof extractVehicleFromConversation>> | null = null;
+
+    if (draft && TERMINAL_DRAFT_STATES.includes(draft.state)) {
+      // Dealer-operator model: this ONE thread carries many cars over time. When the
+      // current draft is finished, the next message is potentially a NEW car — so scope
+      // the transcript to messages that arrived AFTER it finished and only open a fresh
+      // draft when they describe a credible vehicle. Stray chatter ("thanks", "ok") is
+      // ignored silently: no phantom draft, no follow-up nag.
+      const boundary = Date.parse(draft.updatedAt || draft.createdAt || '') || 0;
+      messages = await ensureMediaUrls(
+        storedMessages.filter((m) => (Date.parse(m.createdAt || '') || 0) > boundary)
+      );
+      extraction = await extractVehicleFromConversation({
+        conversationId,
+        transcript: buildTranscript(messages),
+        existing: null,
+        lockedFields: [],
+      });
+      if (!(nonPlaceholder(extraction.data.brand) && nonPlaceholder(extraction.data.model))) {
+        await markMessageProcessed(messageId);
+        return;
+      }
+      draft = await startNextDraftForConversation(conversationId, newDraftInput);
+    } else {
+      // Deterministic find-or-create: concurrent webhook invocations for the same
+      // conversation converge on the SAME draft row, never duplicates.
+      draft = draft || (await getOrCreateDraftForConversation(conversationId, newDraftInput));
+      messages = await ensureMediaUrls(storedMessages);
     }
 
     await retry(() => updateConversation(conversationId, { vehicleDraftId: draft.id, state: 'collecting' }));
@@ -69,17 +101,18 @@ export async function runIntake(conversationId: string, messageId: string, ctx: 
       draft = await retry(() => updateVehicleDraft(draft.id, { state: 'PROCESSING' }));
     }
 
-    const storedMessages = await listConversationMessages(conversationId);
-    const messages = await ensureMediaUrls(storedMessages);
     const transcript = buildTranscript(messages);
 
-    // 1. AI structured extraction (merge with existing data, respect locked fields)
-    const extraction = await extractVehicleFromConversation({
-      conversationId,
-      transcript,
-      existing: draft.data,
-      lockedFields: draft.lockedFields,
-    });
+    // 1. AI structured extraction (merge with existing data, respect locked fields).
+    //    The rotation path already extracted against a blank slate; reuse that result.
+    if (!extraction) {
+      extraction = await extractVehicleFromConversation({
+        conversationId,
+        transcript,
+        existing: draft.data,
+        lockedFields: draft.lockedFields,
+      });
+    }
 
     const mergedData: VehicleExtractedData = extraction.data;
 
