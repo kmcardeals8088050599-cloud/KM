@@ -53,15 +53,15 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm text-slate-700 font-medium">{label}</label>
+      <label className="block text-sm text-slate-700 font-semibold">{label}</label>
 
       {images.length > 0 && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
           {images.map((url, idx) => (
-            <div key={url} className="relative group aspect-video rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+            <div key={url} className="relative group aspect-video rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
               <img src={url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               {idx === 0 && (
-                <span className="absolute bottom-1.5 left-1.5 bg-slate-900/80 text-white text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-wide">
+                <span className="absolute bottom-1.5 left-1.5 bg-gradient-gold text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow">
                   Cover
                 </span>
               )}

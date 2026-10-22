@@ -60,9 +60,9 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2.5 text-[13px] font-medium rounded-full transition-all duration-300 shrink-0 ${
+                className={`px-5 py-2.5 text-[13px] font-semibold rounded-full transition-all duration-300 shrink-0 ${
                   activeCategory === cat
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-gradient-gold text-slate-950 shadow-[0_8px_20px_-6px_rgba(176,141,74,0.5)]'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
@@ -72,10 +72,25 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
           </div>
         </div>
 
-        {/* Cars Grid */}
+        {/* Cars Grid — desktop: elevated 3-col grid. Mobile: bespoke swipe carousel, ~85vw cards with a peek of the next. */}
+        <motion.div layout className="swipe-row gap-4 -mx-4 px-4 md:hidden">
+          <AnimatePresence mode="popLayout">
+            {featuredList.slice(0, 6).map(car => (
+              <div key={car.id} className="swipe-item w-[85vw] max-w-sm">
+                <CarCard
+                  car={car}
+                  onSelectCar={onSelectCar}
+                  onQuickView={onQuickView}
+                  onExchangeSelect={onExchangeSelect}
+                />
+              </div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
         <motion.div
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8"
         >
           <AnimatePresence mode="popLayout">
             {featuredList.slice(0, 6).map(car => (

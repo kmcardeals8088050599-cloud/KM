@@ -6,6 +6,47 @@ interface ServicesSectionProps {
   setActiveTab?: (tab: string) => void;
 }
 
+interface Service {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  description: string;
+  features: string[];
+  actionLabel: string;
+  route: string;
+  badge: string;
+}
+
+const ServiceCardBody: React.FC<{ service: Service }> = ({ service }) => (
+  <div className="space-y-4">
+    <div className="flex items-center justify-between">
+      <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-[0_8px_18px_-6px_rgba(176,141,74,0.45)]">
+        {service.icon}
+      </div>
+      <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full whitespace-nowrap">
+        {service.badge}
+      </span>
+    </div>
+
+    <h3 className="text-lg font-bold text-slate-900">
+      {service.title}
+    </h3>
+
+    <p className="text-[13px] text-slate-500 leading-relaxed">
+      {service.description}
+    </p>
+
+    <div className="space-y-2 pt-3 border-t border-slate-100">
+      {service.features.map((feature, idx) => (
+        <div key={idx} className="flex items-center gap-2 text-[12px] text-slate-600">
+          <CheckCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" strokeWidth={1.75} />
+          <span>{feature}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+
 export const ServicesSection: React.FC<ServicesSectionProps> = () => {
   const navigate = useNavigate();
 
@@ -66,41 +107,37 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
           </p>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Services — desktop: elevated 4-col grid. Mobile: swipe carousel (reads better than 4 stacked cards). */}
+        <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white rounded-3xl p-7 flex flex-col justify-between shadow-card hover:shadow-premium transition-shadow duration-300"
+              className="swipe-item w-[82vw] max-w-sm executive-card rounded-3xl p-7 flex flex-col justify-between"
             >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center">
-                    {service.icon}
-                  </div>
-                  <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">
-                    {service.badge}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {service.title}
-                </h3>
-
-                <p className="text-[13px] text-slate-500 leading-relaxed">
-                  {service.description}
-                </p>
-
-                <div className="space-y-2 pt-3 border-t border-slate-100">
-                  {service.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-[12px] text-slate-600">
-                      <CheckCircle className="w-3.5 h-3.5 text-slate-400 shrink-0" strokeWidth={1.75} />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
-                </div>
+              <ServiceCardBody service={service} />
+              <div className="pt-6">
+                <button
+                  onClick={() => {
+                    navigate(service.route);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="btn-primary-apple w-full !text-[13px]"
+                >
+                  <span>{service.actionLabel}</span>
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                </button>
               </div>
+            </div>
+          ))}
+        </div>
 
+        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((service) => (
+            <div
+              key={service.id}
+              className="executive-card rounded-3xl p-7 flex flex-col justify-between"
+            >
+              <ServiceCardBody service={service} />
               <div className="pt-6">
                 <button
                   onClick={() => {

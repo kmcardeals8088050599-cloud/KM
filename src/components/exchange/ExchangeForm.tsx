@@ -62,42 +62,54 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
     if (onSuccess) onSuccess();
   };
 
-  const inputClasses = "w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-slate-900 font-normal focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
+  const inputClasses = "w-full bg-white border border-slate-300 rounded-xl px-4 py-3.5 text-slate-900 font-normal focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
+
+  const stepHeading = (num: string, label: string) => (
+    <div className="flex items-center gap-3">
+      <span className="w-8 h-8 rounded-full bg-gradient-gold text-slate-950 font-bold text-sm flex items-center justify-center shrink-0 shadow-[0_4px_14px_-2px_rgba(201,169,110,0.5)]">
+        {num}
+      </span>
+      <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+        {label}
+      </h3>
+    </div>
+  );
 
   return (
-    <div className="py-24 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <div className="pt-28 pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
+      <div className="max-w-4xl mx-auto space-y-10">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <p className="section-eyebrow flex items-center justify-center gap-1.5">
-            <RefreshCw className="w-3.5 h-3.5 text-amber-600" /> Instant Vehicle Exchange Program
+        <div className="relative text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6 overflow-hidden shadow-xl">
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,rgba(201,169,110,0.35),transparent_60%)]" />
+          <p className="section-eyebrow-light flex items-center justify-center gap-1.5 relative z-10">
+            <RefreshCw className="w-3.5 h-3.5 text-amber-400" /> Instant Vehicle Exchange Program
           </p>
-          <h1 className="section-headline text-slate-900">
-            Exchange your car at KM Car Deals
+          <h1 className="section-headline-light relative z-10">
+            Exchange your car at <span className="text-gradient-amber">KM Car Deals</span>
           </h1>
-          <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed relative z-10">
             Upgrade your existing car easily. Get a fair market valuation, doorstep physical evaluation in Kalaburagi, and hassle-free instant paper transfer.
           </p>
         </div>
 
         {/* Selected Upgrade Vehicle Notification */}
         {targetCar && (
-          <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex items-center justify-between gap-4">
+          <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex items-center justify-between gap-4 shadow-sm">
             <div>
-              <span className="text-[11px] text-slate-500 uppercase tracking-wide block mb-1">Target Upgrade Vehicle</span>
+              <span className="text-[11px] text-amber-700 font-bold uppercase tracking-wide block mb-1">Target Upgrade Vehicle</span>
               <h4 className="text-sm font-semibold text-slate-900">{targetCar.title} ({targetCar.year})</h4>
             </div>
-            <img src={targetCar.images[0]} alt="" className="w-20 h-14 object-cover rounded-xl shrink-0 border border-slate-200" referrerPolicy="no-referrer" />
+            <img src={targetCar.images[0]} alt="" className="w-20 h-14 object-cover rounded-xl shrink-0 border border-slate-200 shadow-md" referrerPolicy="no-referrer" />
           </div>
         )}
 
         {/* Main Exchange Form */}
         {submitted ? (
-          <div className="bg-white border border-slate-200 p-12 rounded-3xl text-center space-y-4 shadow-sm">
+          <div className="bg-white border border-slate-200 p-12 rounded-3xl text-center space-y-4 shadow-xl">
             <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
               <CheckCircle2 className="w-9 h-9" />
             </div>
-            <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Exchange details received</h2>
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Exchange details received</h2>
             <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
               We have opened WhatsApp with your details. Our sales manager at KM Car Deals will evaluate your vehicle and connect with you shortly for doorstep inspection.
             </p>
@@ -109,12 +121,10 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-12 space-y-10 shadow-sm">
+          <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-12 space-y-10 shadow-xl">
             {/* Step 1: Customer Contact */}
             <div className="space-y-5">
-              <h3 className="text-xs font-medium text-slate-400 uppercase tracking-widest">
-                1. Customer contact info
-              </h3>
+              {stepHeading('1', 'Customer contact info')}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm">
                 <div>
                   <label className="block text-slate-700 font-medium mb-1.5">Your full name *</label>
@@ -143,10 +153,8 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             </div>
 
             {/* Step 2: Vehicle Specs */}
-            <div className="space-y-5">
-              <h3 className="text-xs font-medium text-slate-400 uppercase tracking-widest">
-                2. Details of your existing car
-              </h3>
+            <div className="space-y-5 pt-6 border-t border-slate-100">
+              {stepHeading('2', 'Details of your existing car')}
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 text-sm">
                 <div>
@@ -239,10 +247,8 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             </div>
 
             {/* Step 3: Photos & Remarks */}
-            <div className="space-y-5">
-              <h3 className="text-xs font-medium text-slate-400 uppercase tracking-widest">
-                3. Vehicle photos &amp; comments
-              </h3>
+            <div className="space-y-5 pt-6 border-t border-slate-100">
+              {stepHeading('3', 'Vehicle photos & comments')}
 
               <ImageUploader images={uploadedPhotos} onChange={setUploadedPhotos} kind="exchange" maxImages={5} label="Upload photos of your existing car (optional)" />
 
@@ -258,15 +264,27 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="pt-6 border-t border-slate-200">
+            {/* Submit Button - desktop inline */}
+            <div className="hidden lg:block pt-6 border-t border-slate-200">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-full transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-full transition-colors shadow-[0_8px_24px_-6px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>{loading ? 'Processing...' : 'Submit request & open WhatsApp evaluation'}</span>
+              </button>
+            </div>
+
+            {/* Submit Button - mobile sticky CTA so it's reachable from anywhere in the long form */}
+            <div className="mobile-sticky-cta lg:hidden">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-full transition-colors shadow-[0_8px_24px_-6px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>{loading ? 'Processing...' : 'Submit & open WhatsApp'}</span>
               </button>
             </div>
           </form>

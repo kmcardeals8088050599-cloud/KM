@@ -62,8 +62,40 @@ export const ShowroomGallery: React.FC = () => {
           ))}
         </div>
 
-        {/* Gallery Grid */}
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Gallery — mobile: swipe showcase carousel of big photography. Desktop: elevated grid. */}
+        <div className="swipe-row gap-5 -mx-4 px-4 md:hidden">
+          {filteredPhotos.map((photo) => (
+            <div
+              key={photo.id}
+              onClick={() => setActivePhoto(photo)}
+              className="swipe-item w-[85vw] max-w-sm executive-card rounded-3xl overflow-hidden cursor-pointer relative"
+            >
+              <div className="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                <img
+                  src={photo.imageUrl}
+                  alt={photo.title}
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent"></div>
+                <div className="absolute top-3 left-3">
+                  <span className="text-[11px] font-semibold text-slate-900 bg-white/90 backdrop-blur px-3 py-1 rounded-full">
+                    {photo.category}
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-4 right-4 space-y-1">
+                  <h3 className="text-lg font-bold text-white text-shadow-hero line-clamp-1">{photo.title}</h3>
+                  <div className="text-[11px] text-white/80 font-medium flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} />
+                    <span className="truncate">{photo.locationTag}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <motion.div layout className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
           <AnimatePresence mode="popLayout">
             {filteredPhotos.map((photo) => (
               <motion.div
@@ -75,27 +107,28 @@ export const ShowroomGallery: React.FC = () => {
                 transition={{ duration: 0.3 }}
                 key={photo.id}
                 onClick={() => setActivePhoto(photo)}
-                className="bg-white rounded-3xl overflow-hidden group cursor-pointer transition-shadow duration-300 shadow-card hover:shadow-premium flex flex-col justify-between relative"
+                className="executive-card rounded-3xl overflow-hidden group cursor-pointer flex flex-col justify-between relative"
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 flex items-center justify-center">
                   <img
                     src={photo.imageUrl}
                     alt={photo.title}
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                   {/* Badge Overlay */}
                   <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="text-[11px] font-medium text-slate-900 bg-white/90 backdrop-blur px-3 py-1 rounded-full">
+                    <span className="text-[11px] font-semibold text-slate-900 bg-white/90 backdrop-blur px-3 py-1 rounded-full">
                       {photo.category}
                     </span>
                   </div>
 
                   {/* Quick View Hover Icon */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10 pointer-events-none">
-                    <div className="w-11 h-11 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-md scale-90 group-hover:scale-100 transition-transform">
-                      <Eye className="w-4 h-4" strokeWidth={1.75} />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    <div className="w-12 h-12 rounded-full bg-gradient-gold text-slate-950 flex items-center justify-center shadow-premium scale-90 group-hover:scale-100 transition-transform">
+                      <Eye className="w-4.5 h-4.5" strokeWidth={1.75} />
                     </div>
                   </div>
 
@@ -106,7 +139,7 @@ export const ShowroomGallery: React.FC = () => {
                 </div>
 
                 <div className="p-5 space-y-1.5">
-                  <h3 className="text-base font-semibold text-slate-900 line-clamp-1">
+                  <h3 className="text-base font-bold text-slate-900 line-clamp-1">
                     {photo.title}
                   </h3>
                   <p className="text-[13px] text-slate-500 line-clamp-2">

@@ -42,7 +42,7 @@ export const CarCard: React.FC<CarCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
-      className="group relative bg-white rounded-3xl flex flex-col overflow-hidden shadow-card hover:shadow-premium transition-shadow duration-300"
+      className="group relative executive-card rounded-3xl flex flex-col overflow-hidden"
     >
       <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden cursor-pointer" onClick={handleCardClick}>
         {car.images[0] ? (
@@ -110,7 +110,7 @@ export const CarCard: React.FC<CarCardProps> = ({
 
           <h3
             onClick={handleCardClick}
-            className="text-lg font-semibold text-slate-900 line-clamp-1 cursor-pointer tracking-tight mt-0.5"
+            className="text-lg font-bold text-slate-900 line-clamp-1 cursor-pointer tracking-tight mt-0.5"
           >
             {car.title}
           </h3>

@@ -17,7 +17,25 @@ export const BrandCarousel: React.FC<BrandCarouselProps> = ({ onBrandClick }) =>
         </p>
       </div>
 
-      <div className="flex items-center gap-3 overflow-x-auto no-scrollbar max-w-7xl mx-auto px-4 justify-start md:justify-center py-2">
+      {/* Mobile: bespoke swipe-snap carousel of brand chips. Desktop: centered wrapped row. */}
+      <div className="swipe-row gap-3 px-4 md:hidden">
+        {BRAND_LOGOS.map((brand, i) => (
+          <button
+            key={i}
+            onClick={() => {
+              onBrandClick(brand.name);
+              navigate('/inventory');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="swipe-item flex items-center gap-2 px-6 py-3 rounded-full bg-white shadow-card active:shadow-premium transition-all duration-300 group focus:outline-none whitespace-nowrap"
+          >
+            <span className="font-semibold text-[13px] text-slate-700 group-hover:text-slate-900 tracking-tight">
+              {brand.name}
+            </span>
+          </button>
+        ))}
+      </div>
+      <div className="hidden md:flex flex-wrap items-center gap-3 max-w-7xl mx-auto px-4 justify-center py-2">
         {BRAND_LOGOS.map((brand, i) => (
           <button
             key={i}
@@ -28,7 +46,7 @@ export const BrandCarousel: React.FC<BrandCarouselProps> = ({ onBrandClick }) =>
             }}
             className="flex items-center gap-2 px-6 py-3 rounded-full bg-white shadow-card hover:shadow-premium transition-all duration-300 shrink-0 group focus:outline-none hover:-translate-y-0.5"
           >
-            <span className="font-medium text-[13px] text-slate-700 group-hover:text-slate-900 tracking-tight">
+            <span className="font-semibold text-[13px] text-slate-700 group-hover:text-slate-900 tracking-tight">
               {brand.name}
             </span>
           </button>

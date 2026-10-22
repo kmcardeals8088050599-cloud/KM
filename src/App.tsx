@@ -177,7 +177,7 @@ function MainAppContent() {
       )}
 
       {/* Main Content Area with Routes */}
-      <main className={`${location.pathname.startsWith('/admin') ? '' : 'pt-14'} flex-1 relative z-10`}>
+      <main className={`${location.pathname.startsWith('/admin') ? '' : 'pt-16 lg:pt-[100px]'} flex-1 relative z-10`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}
@@ -228,10 +228,10 @@ function MainAppContent() {
           <Route
             path="/inventory"
             element={
-              <div className="py-16 px-4 lg:px-8 max-w-7xl mx-auto space-y-10 min-h-screen">
+              <div className="py-10 md:py-16 px-4 lg:px-8 max-w-7xl mx-auto space-y-8 md:space-y-10 min-h-screen">
                 <div className="space-y-3 text-center max-w-2xl mx-auto">
                   <span className="section-eyebrow">Multi-Brand Pre-Owned Showroom</span>
-                  <h1 className="section-headline mt-1">
+                  <h1 className="section-headline mt-1 !text-3xl md:!text-5xl">
                     Explore all <span className="text-gradient-amber">pre-owned cars</span>
                   </h1>
                   <p className="text-sm text-slate-500">
@@ -239,7 +239,7 @@ function MainAppContent() {
                   </p>
                 </div>
 
-                {/* Filter Bar */}
+                {/* Filter Bar — inline panel on desktop, sticky trigger + bottom sheet on mobile */}
                 <InventoryFilter
                   filters={filters}
                   setFilters={setFilters}
@@ -273,7 +273,7 @@ function MainAppContent() {
                     </button>
                   </div>
                 ) : viewMode === 'grid' ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {filteredCars.map(car => (
                       <CarCard
                         key={car.id}
@@ -292,9 +292,9 @@ function MainAppContent() {
                       <div
                         key={car.id}
                         onClick={() => handleSelectCar(car)}
-                        className="bg-white border border-slate-200/80 rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center hover:shadow-premium"
+                        className="bg-white border border-slate-200/80 rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center hover:shadow-premium hover:-translate-y-1"
                       >
-                        <div className="relative w-full md:w-56 h-36 shrink-0 overflow-hidden rounded-xl group/img">
+                        <div className="relative w-full md:w-56 h-40 md:h-36 shrink-0 overflow-hidden rounded-xl group/img">
                           {car.images[0] ? (
                             <img
                               src={car.images[0]}
@@ -317,13 +317,13 @@ function MainAppContent() {
                             </span>
                           )}
                         </div>
-                        <div className="flex-1 space-y-2">
+                        <div className="flex-1 space-y-2 w-full">
                           <div className="flex items-center gap-2 text-xs text-slate-500">
-                            <span className="text-amber-600 uppercase tracking-wide font-medium">{car.brand}</span>
+                            <span className="text-amber-600 uppercase tracking-wide font-bold">{car.brand}</span>
                             <span>•</span>
                             <span>{car.year}</span>
                           </div>
-                          <h3 className="text-lg font-semibold text-slate-900 tracking-tight">{car.title}</h3>
+                          <h3 className="text-lg font-bold text-slate-900 tracking-tight">{car.title}</h3>
                           <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-600">
                             <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.fuelType}</span>
                             <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.transmission}</span>
@@ -331,7 +331,7 @@ function MainAppContent() {
                             {typeof car.odometerKm === 'number' && (
                               <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.odometerKm.toLocaleString('en-IN')} km</span>
                             )}
-                            <span className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full font-medium">{car.specs?.rto}</span>
+                            <span className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full font-semibold">{car.specs?.rto}</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0 w-full md:w-auto">
