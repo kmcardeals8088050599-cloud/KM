@@ -53,24 +53,24 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
 
   return (
     <div className="space-y-3">
-      <label className="block text-slate-700 font-bold">{label}</label>
+      <label className="block text-sm text-slate-700 font-medium">{label}</label>
 
       {images.length > 0 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
           {images.map((url, idx) => (
             <div key={url} className="relative group aspect-video rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
               <img src={url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               {idx === 0 && (
-                <span className="absolute bottom-1 left-1 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded uppercase">
+                <span className="absolute bottom-1.5 left-1.5 bg-slate-900/80 text-white text-[10px] font-medium px-2 py-0.5 rounded-full uppercase tracking-wide">
                   Cover
                 </span>
               )}
               <button
                 type="button"
                 onClick={() => handleRemove(url)}
-                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-slate-900/70 text-white flex items-center justify-center hover:bg-red-600 transition-colors"
+                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-slate-900/60 text-white flex items-center justify-center hover:bg-slate-900 transition-colors"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-3.5 h-3.5" strokeWidth={1.75} />
               </button>
             </div>
           ))}
@@ -78,16 +78,16 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       )}
 
       {images.length < maxImages && (
-        <label className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-red-500 hover:bg-red-50/50 transition-colors text-slate-600 font-bold">
+        <label className="flex items-center justify-center gap-2 p-5 border border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-amber-400 hover:bg-amber-50/30 transition-colors text-slate-500 text-sm font-medium">
           {uploading ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={1.75} />
               <span>Uploading...</span>
             </>
           ) : (
             <>
-              <Upload className="w-4 h-4" />
-              <span>Add Photos ({images.length}/{maxImages})</span>
+              <Upload className="w-4 h-4" strokeWidth={1.75} />
+              <span>Add photos ({images.length}/{maxImages})</span>
             </>
           )}
           <input
@@ -103,10 +103,10 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       )}
 
       {errors.length > 0 && (
-        <div className="p-2.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-[11px] font-semibold space-y-0.5">
+        <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-red-600 text-xs space-y-1">
           {errors.map((err, i) => (
             <div key={i} className="flex items-center gap-1.5">
-              <AlertCircle className="w-3 h-3 shrink-0" />
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} />
               <span>{err}</span>
             </div>
           ))}

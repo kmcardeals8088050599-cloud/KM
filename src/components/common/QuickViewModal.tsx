@@ -25,26 +25,25 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const whatsappUrl = createWhatsAppLink(DEALERSHIP_INFO.whatsappNumber, whatsappMsg);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/60 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-slate-100 text-slate-700 hover:text-white hover:bg-red-600 transition-all border border-slate-300"
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 text-slate-700 hover:text-slate-900 hover:bg-white transition-all shadow-sm"
         >
-          <X className="w-5 h-5" />
+          <X className="w-5 h-5" strokeWidth={1.75} />
         </button>
 
-        <div className="w-full md:w-1/2 bg-slate-100 p-4 flex flex-col justify-between">
-          <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-200 border border-slate-300 group">
+        <div className="w-full md:w-1/2 bg-slate-50 p-4 flex flex-col justify-between">
+          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200">
             <img
               src={car.images[activeImgIndex] || car.images[0]}
               alt={car.title}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent pointer-events-none"></div>
             {car.images.length > 1 && (
-              <div className="absolute top-3 right-3 px-2 py-1 bg-slate-950/70 text-white text-[10px] font-bold rounded-full border border-white/20 backdrop-blur-sm">
+              <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 text-white text-[10px] font-medium rounded-full backdrop-blur-sm">
                 {activeImgIndex + 1} / {car.images.length}
               </div>
             )}
@@ -56,8 +55,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 <button
                   key={idx}
                   onClick={() => setActiveImgIndex(idx)}
-                  className={`relative w-16 h-12 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
-                    activeImgIndex === idx ? 'border-amber-500 scale-105 shadow-md' : 'border-slate-300 opacity-60 hover:opacity-100'
+                  className={`relative w-16 h-12 rounded-lg overflow-hidden transition-all shrink-0 ${
+                    activeImgIndex === idx ? 'ring-2 ring-slate-900 scale-105 shadow-md' : 'opacity-60 hover:opacity-100'
                   }`}
                 >
                   <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -70,9 +69,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         <div className="w-full md:w-1/2 p-6 flex flex-col justify-between overflow-y-auto bg-white">
           <div className="space-y-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-amber-600">{car.brand}</span>
-              <h2 className="text-xl font-black text-slate-900">{car.title}</h2>
-              <p className="text-xs text-slate-500 font-medium mt-1">{car.model}</p>
+              <span className="text-xs font-medium uppercase tracking-wide text-amber-600">{car.brand}</span>
+              <h2 className="text-xl font-semibold text-slate-900 tracking-tight">{car.title}</h2>
+              <p className="text-xs text-slate-500 mt-1">{car.model}</p>
             </div>
 
             <div className="grid grid-cols-3 gap-1.5 text-[11px]">
@@ -84,9 +83,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 { label: 'Fuel', value: car.fuelType },
                 { label: 'RTO', value: car.specs?.rto?.split(' ')[0] || '—' },
               ].map(d => (
-                <div key={d.label} className="bg-slate-50 p-1.5 rounded-lg border border-slate-200 text-center">
-                  <span className="text-slate-500 block text-[9px] uppercase font-bold">{d.label}</span>
-                  <span className="font-bold text-slate-900 text-[11px]">{d.value}</span>
+                <div key={d.label} className="bg-slate-50 p-1.5 rounded-xl text-center">
+                  <span className="text-slate-500 block text-[9px] uppercase">{d.label}</span>
+                  <span className="font-semibold text-slate-900 text-[11px]">{d.value}</span>
                 </div>
               ))}
             </div>
@@ -98,9 +97,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-xs"
+                className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs rounded-full flex items-center justify-center gap-1.5"
               >
-                <MessageCircle className="w-4 h-4 fill-white" />
+                <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
                 <span>Inquire WhatsApp</span>
               </a>
 
@@ -109,7 +108,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                   onClose();
                   onExchangeSelect(car);
                 }}
-                className="py-2.5 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs rounded-xl flex items-center justify-center gap-1 shadow-xs"
+                className="btn-secondary-apple !px-3 !py-2.5 text-xs"
               >
                 <span>Exchange For This</span>
               </button>
@@ -120,10 +119,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 onClose();
                 onFullDetails(car);
               }}
-              className="w-full py-2.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 transition-colors shadow-xs"
+              className="btn-primary-apple w-full !py-2.5 text-xs"
             >
               <span>Full Specifications & Gallery</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
             </button>
           </div>
         </div>

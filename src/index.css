@@ -2,17 +2,17 @@
 
 /* ===========================================================================
    KM Car Deals — Premium Design System
-   Champagne gold accent on a refined warm-charcoal graphite scale.
-   Every amber / slate / emerald utility across the app re-maps to these
-   tokens, so the whole frontend inherits one coherent, professional palette.
+   Apple-style monochrome foundation (pure black / white / gray scale) with
+   a single champagne-gold accent reserved for CTAs, highlights and focus
+   states. Generous whitespace, large display type, restrained motion.
    =========================================================================== */
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
-  --shadow-premium: 0 24px 60px -18px rgba(24, 22, 20, 0.25);
-  --shadow-card: 0 4px 24px -8px rgba(24, 22, 20, 0.12);
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --shadow-premium: 0 24px 60px -18px rgba(0, 0, 0, 0.18);
+  --shadow-card: 0 2px 20px -6px rgba(0, 0, 0, 0.08);
 
-  /* Champagne gold accent (replaces amber) */
+  /* Champagne gold — the ONE accent color, used sparingly */
   --color-amber-50: #fdf9ef;
   --color-amber-100: #f8f0da;
   --color-amber-200: #f0e0b4;
@@ -25,20 +25,20 @@
   --color-amber-900: #644e2e;
   --color-amber-950: #372a16;
 
-  /* Warm charcoal graphite (replaces slate) */
-  --color-slate-50: #f7f6f3;
-  --color-slate-100: #edece9;
-  --color-slate-200: #dcdad5;
-  --color-slate-300: #bfbcb6;
-  --color-slate-400: #97948c;
-  --color-slate-500: #757169;
-  --color-slate-600: #5c584f;
-  --color-slate-700: #44403a;
-  --color-slate-800: #2b2824;
-  --color-slate-900: #1d1b18;
-  --color-slate-950: #100f0d;
+  /* Apple-style neutral gray scale (replaces slate) */
+  --color-slate-50: #fbfbfd;
+  --color-slate-100: #f5f5f7;
+  --color-slate-200: #e8e8ed;
+  --color-slate-300: #d2d2d7;
+  --color-slate-400: #aeaeb4;
+  --color-slate-500: #86868b;
+  --color-slate-600: #6e6e73;
+  --color-slate-700: #4a4a4e;
+  --color-slate-800: #2d2d31;
+  --color-slate-900: #1d1d1f;
+  --color-slate-950: #000000;
 
-  /* Refined pine green (replaces emerald; used for calls-to-action/WhatsApp) */
+  /* Refined pine green (used for CTAs/WhatsApp only) */
   --color-emerald-50: #f1faf5;
   --color-emerald-100: #ddf3e6;
   --color-emerald-200: #bce7cd;
@@ -51,12 +51,12 @@
   --color-emerald-900: #184030;
   --color-emerald-950: #0b241b;
 
-  /* Optional pressing neutrals for accents (deep inks) */
-  --color-ink-500: #4d4a44;
-  --color-ink-600: #34312c;
-  --color-ink-700: #24211d;
-  --color-ink-800: #161412;
-  --color-ink-900: #0d0c0b;
+  /* Deep ink neutrals */
+  --color-ink-500: #6e6e73;
+  --color-ink-600: #424245;
+  --color-ink-700: #2d2d31;
+  --color-ink-800: #1d1d1f;
+  --color-ink-900: #000000;
 }
 
 @layer utilities {
@@ -70,17 +70,20 @@
 
 @layer base {
   body {
-    background-color: #f7f6f3;
-    color: #1d1b18;
+    background-color: #ffffff;
+    color: #1d1d1f;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    letter-spacing: -0.01em;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
 }
 
@@ -88,8 +91,8 @@
 :root {
   --theme-accent: #c9a96e;
   --theme-accent-hover: #b08d4a;
-  --theme-header-bg: #100f0d;
-  --theme-card-border: rgba(220, 218, 213, 0.9);
+  --theme-header-bg: rgba(255, 255, 255, 0.8);
+  --theme-card-border: rgba(0, 0, 0, 0.08);
 }
 
 @keyframes floatOrb1 {
@@ -114,26 +117,99 @@
 .executive-card {
   background: #ffffff;
   border: 1px solid var(--theme-card-border);
-  box-shadow: 0 4px 20px -4px rgba(24, 22, 20, 0.05);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 20px -6px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .executive-card:hover {
-  border-color: rgba(201, 169, 110, 0.55);
-  box-shadow: 0 20px 44px -12px rgba(24, 22, 20, 0.16);
+  border-color: rgba(201, 169, 110, 0.4);
+  box-shadow: 0 20px 44px -12px rgba(0, 0, 0, 0.12);
   transform: translateY(-4px);
 }
 
 .executive-badge {
-  background: #f7f6f3;
-  color: #1d1b18;
-  border: 1px solid #dcdad5;
+  background: #f5f5f7;
+  color: #1d1d1f;
+  border: 1px solid #e8e8ed;
 }
 
 .executive-badge-accent {
-  background: #f8f0da;
-  color: #644e2e;
-  border: 1px solid #e6cc86;
+  background: #fdf9ef;
+  color: #94733a;
+  border: 1px solid #f0e0b4;
+}
+
+/* Apple-style primary/secondary pill buttons */
+.btn-primary-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 980px;
+  background: #1d1d1f;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 0.85rem 1.75rem;
+  transition: all 0.25s ease;
+}
+
+.btn-primary-apple:hover {
+  background: #000000;
+  transform: translateY(-1px);
+}
+
+.btn-accent-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 980px;
+  background: #c9a96e;
+  color: #1d1d1f;
+  font-weight: 500;
+  padding: 0.85rem 1.75rem;
+  transition: all 0.25s ease;
+}
+
+.btn-accent-apple:hover {
+  background: #b08d4a;
+  transform: translateY(-1px);
+}
+
+.btn-secondary-apple {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 980px;
+  background: transparent;
+  color: #1d1d1f;
+  font-weight: 500;
+  padding: 0.85rem 1.75rem;
+  border: 1px solid #d2d2d7;
+  transition: all 0.25s ease;
+}
+
+.btn-secondary-apple:hover {
+  border-color: #1d1d1f;
+  background: #f5f5f7;
+}
+
+/* Apple-style section headline sizing */
+.section-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #86868b;
+  text-transform: uppercase;
+}
+
+.section-headline {
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1.07;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #1d1d1f;
 }
 
 /* Ken Burns slow zoom for hero background */

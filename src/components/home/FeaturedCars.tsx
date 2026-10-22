@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Car } from '../../types';
 import { CarCard } from '../common/CarCard';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface FeaturedCarsProps {
   cars: Car[];
@@ -40,19 +40,17 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   };
 
   return (
-    <section id="featured-cars" className="py-20 px-4 lg:px-8 relative z-10 bg-slate-50">
-      <div className="max-w-7xl mx-auto space-y-10">
+    <section id="featured-cars" className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-white">
+      <div className="max-w-7xl mx-auto space-y-12">
         {/* Section Title & Category Tabs */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 pb-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 text-xs font-black text-slate-800 uppercase tracking-widest bg-slate-200 px-3.5 py-1 rounded-full border border-slate-300">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Handpicked Collection
-            </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-              FEATURED <span className="text-gradient-amber">PRE-OWNED</span> INVENTORY
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="space-y-3">
+            <p className="section-eyebrow">Handpicked Collection</p>
+            <h2 className="section-headline">
+              Featured pre-owned inventory
             </h2>
-            <p className="text-xs text-slate-600 font-medium">
-              Rigorously inspected 150-point certified cars ready for immediate delivery in Kalaburagi
+            <p className="text-sm text-slate-500 max-w-md">
+              Rigorously inspected, 150-point certified cars ready for immediate delivery in Kalaburagi.
             </p>
           </div>
 
@@ -62,10 +60,10 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2.5 text-xs font-extrabold rounded-xl transition-all duration-300 shrink-0 ${
+                className={`px-5 py-2.5 text-[13px] font-medium rounded-full transition-all duration-300 shrink-0 ${
                   activeCategory === cat
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'bg-white text-slate-700 hover:text-slate-950 border border-slate-200 hover:border-slate-400'
+                    ? 'bg-slate-900 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
                 {cat}
@@ -93,15 +91,15 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
         </motion.div>
 
         {/* Bottom CTA to view full inventory */}
-        <div className="text-center pt-6">
+        <div className="text-center pt-4">
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleViewAll}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl transition-all shadow-sm"
+            className="btn-primary-apple"
           >
             <span>View Full Inventory ({cars.length} Vehicles)</span>
-            <ArrowRight className="w-4 h-4 text-amber-400" />
+            <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
           </motion.button>
         </div>
       </div>

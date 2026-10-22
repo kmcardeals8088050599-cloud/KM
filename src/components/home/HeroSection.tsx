@@ -93,28 +93,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
         >
           {/* Badges */}
           <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold border border-white/20 backdrop-blur-md shadow-sm">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-white text-[12px] font-medium backdrop-blur-md">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" strokeWidth={1.75} />
               <span>100% Non-Accidental Certificate</span>
             </div>
 
             <a
               href="tel:+918123991847"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/95 text-white font-bold text-xs shadow-md hover:bg-emerald-500 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/95 text-white font-medium text-[12px] hover:bg-emerald-500 transition-colors"
             >
-              <Phone className="w-3.5 h-3.5 fill-white" />
+              <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
               <span>+91 81239 91847</span>
             </a>
 
             <a
               href="tel:+918088050599"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white font-bold text-xs border border-white/20 backdrop-blur-md hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 text-white font-medium text-[12px] backdrop-blur-md hover:bg-white/20 transition-colors"
             >
-              <Phone className="w-3.5 h-3.5 text-slate-200" />
+              <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
               <span>+91 80880 50599</span>
             </a>
 
-            <div className="inline-flex items-center gap-1 text-white font-bold text-xs bg-white/10 px-3 py-1 rounded-full border border-white/20 backdrop-blur-md">
+            <div className="inline-flex items-center gap-1.5 text-white font-medium text-[12px] bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md">
               <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
               <span>5.0 Rated Showroom</span>
             </div>
@@ -126,61 +126,61 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
               <KmLogo variant="amber" size="xl" />
             </div>
 
-            <div className="inline-flex items-center gap-2 text-xs font-extrabold text-amber-300 uppercase tracking-widest bg-white/10 px-3.5 py-1 rounded-lg border border-white/20 backdrop-blur-md text-shadow-hero">
-              <span>SALE</span>
+            <div className="inline-flex items-center gap-2 text-[12px] font-medium text-amber-200 uppercase tracking-widest bg-white/10 px-3.5 py-1 rounded-full backdrop-blur-md text-shadow-hero">
+              <span>Sale</span>
               <span className="text-white/40">•</span>
-              <span>PURCHASE</span>
+              <span>Purchase</span>
               <span className="text-white/40">•</span>
-              <span>EXCHANGE</span>
+              <span>Exchange</span>
             </div>
           </motion.div>
 
           {/* Banner Pill */}
           <motion.div variants={itemVariants}>
-            <span className="inline-block bg-amber-500 text-white font-extrabold text-xs uppercase tracking-wider px-4 py-2 rounded-full shadow-lg shadow-amber-900/30">
-              BUSINESS ON COMMISSION BASIS
+            <span className="inline-block bg-amber-500 text-white font-medium text-[12px] px-4 py-2 rounded-full">
+              Business on commission basis
             </span>
           </motion.div>
 
           {/* Description */}
-          <motion.p variants={itemVariants} className="text-xs sm:text-sm text-slate-100 font-medium leading-relaxed max-w-2xl text-shadow-hero">
-            Visit our multi-brand pre-owned hub opposite Hyundai Showroom in Kalaburagi. Managed by <strong className="text-white font-extrabold">Md Nadeem Khan</strong>. Every car undergoes a stringent 150-point technical check with guaranteed non-accidental status &amp; verified meter reading.
+          <motion.p variants={itemVariants} className="text-sm text-slate-100 leading-relaxed max-w-2xl text-shadow-hero">
+            Visit our multi-brand pre-owned hub opposite Hyundai Showroom in Kalaburagi. Managed by <strong className="text-white font-semibold">Md Nadeem Khan</strong>. Every car undergoes a stringent 150-point technical check with guaranteed non-accidental status &amp; verified meter reading.
           </motion.p>
 
           {/* Action Buttons */}
           <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-3 pt-2">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 300, damping: 15 }}
               onClick={() => {
                 navigate('/inventory');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="px-7 py-3.5 bg-amber-500 hover:bg-amber-400 text-white font-extrabold text-xs rounded-xl transition-all shadow-lg shadow-amber-900/30 flex items-center gap-2 cursor-pointer"
+              className="btn-accent-apple cursor-pointer"
             >
               <span>Explore Inventory</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
             </motion.button>
 
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               transition={{ type: 'spring', stiffness: 300, damping: 15 }}
               onClick={() => {
                 navigate('/exchange');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 font-extrabold text-xs rounded-xl transition-all flex items-center gap-2 backdrop-blur-md"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-medium text-[13px] rounded-full transition-all backdrop-blur-md"
             >
-              <RefreshCw className="w-4 h-4 text-amber-400" />
+              <RefreshCw className="w-4 h-4" strokeWidth={1.75} />
               <span>Exchange Vehicle</span>
             </motion.button>
           </motion.div>
 
           {/* Location Footer Bar */}
-          <motion.div variants={itemVariants} className="p-3 bg-white/10 rounded-xl border border-white/20 text-xs text-white font-bold flex items-center gap-2 backdrop-blur-md shadow-sm">
-            <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+          <motion.div variants={itemVariants} className="inline-flex p-3 bg-white/10 rounded-2xl text-[12px] text-white font-medium items-center gap-2 backdrop-blur-md">
+            <MapPin className="w-4 h-4 text-amber-400 shrink-0" strokeWidth={1.75} />
             <span>Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104.</span>
           </motion.div>
         </motion.div>
@@ -192,27 +192,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
           transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="lg:col-span-5"
         >
-          <div className="bg-white rounded-3xl p-6 shadow-2xl shadow-slate-950/40 border border-white/60">
+          <div className="bg-white rounded-3xl p-6 shadow-premium">
             <form onSubmit={handleQuickSearch} className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <span className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
+                <div className="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-amber-600" strokeWidth={1.75} />
                   </span>
                   <span>Quick Vehicle Finder</span>
                 </div>
-                <span className="text-[9px] font-black text-amber-700 uppercase tracking-wider bg-amber-50 border border-amber-200 px-2 py-1 rounded-full">
+                <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">
                   150-Point Inspected
                 </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase mb-1">Brand</label>
+                  <label className="block text-[11px] font-medium text-slate-400 mb-1">Brand</label>
                   <select
                     value={selectedBrand}
                     onChange={e => setSelectedBrand(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-shadow"
+                    className="w-full bg-slate-50 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-200 transition-shadow"
                   >
                     <option value="All">All Brands</option>
                     <option value="Maruti Suzuki">Maruti Suzuki</option>
@@ -241,11 +241,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase mb-1">Body Type</label>
+                  <label className="block text-[11px] font-medium text-slate-400 mb-1">Body Type</label>
                   <select
                     value={selectedBodyType}
                     onChange={e => setSelectedBodyType(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-slate-900 font-bold focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200 transition-shadow"
+                    className="w-full bg-slate-50 rounded-xl p-2.5 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-200 transition-shadow"
                   >
                     <option value="All">All Body Types</option>
                     <option value="Hatchback">Hatchback</option>
@@ -263,20 +263,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
               <div>
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-md shadow-amber-200"
+                  className="btn-accent-apple w-full"
                 >
-                  <Search className="w-4 h-4" />
+                  <Search className="w-4 h-4" strokeWidth={1.75} />
                   <span>Search Vehicles</span>
                 </button>
               </div>
             </form>
 
-            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[13px]">
               <a
                 href="tel:+918123991847"
-                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+                className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-full flex items-center justify-center gap-1.5 transition-colors"
               >
-                <Phone className="w-3.5 h-3.5 fill-white" />
+                <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
                 Call Now
               </a>
               <span className="w-2 shrink-0"></span>
@@ -284,7 +284,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
                 href="https://wa.me/918123991847"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+                className="flex-1 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-full flex items-center justify-center gap-1.5 transition-colors"
               >
                 WhatsApp
               </a>
@@ -299,14 +299,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2 }}
-        className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 text-slate-700 flex flex-col items-center gap-1 group"
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 text-slate-300 flex flex-col items-center gap-1 group"
       >
-        <span className="text-[9px] font-black uppercase tracking-widest group-hover:text-slate-900 transition-colors">Scroll</span>
+        <span className="text-[10px] font-medium uppercase tracking-widest group-hover:text-white transition-colors">Scroll</span>
         <motion.span
           animate={{ y: [0, 6, 0] }}
           transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
         >
-          <ChevronDown className="w-4 h-4 text-slate-500 group-hover:text-slate-900" />
+          <ChevronDown className="w-4 h-4 group-hover:text-white" strokeWidth={1.75} />
         </motion.span>
       </motion.a>
     </section>

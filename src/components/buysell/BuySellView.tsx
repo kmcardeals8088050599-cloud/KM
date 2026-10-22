@@ -30,18 +30,18 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
     setTimeout(() => setSubmitted(false), 5000);
   };
 
+  const inputClasses = "p-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
+
   return (
-    <div className="py-28 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-16">
+    <div className="py-28 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
+      <div className="max-w-7xl mx-auto space-y-20">
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-black text-amber-900 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
-            Buy, Sell, Exchange &amp; Brokerage
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            BUY &amp; SELL <span className="text-gradient-amber">PRE-OWNED CARS</span> WITH CONFIDENCE
+        <div className="text-center max-w-3xl mx-auto space-y-4">
+          <p className="section-eyebrow">Buy, Sell, Exchange &amp; Brokerage</p>
+          <h1 className="section-headline text-slate-900">
+            Buy &amp; sell pre-owned cars with confidence
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+          <p className="text-sm sm:text-base text-slate-500 leading-relaxed">
             Whether you want to purchase a certified car with bank loan assistance, sell your existing vehicle for same-day cash, or exchange for an upgrade in Kalaburagi, we guarantee transparent deals.
           </p>
         </div>
@@ -49,28 +49,26 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
         {/* 2-Column Grid: Buy vs Sell */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Buy Card */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
-                <ShoppingBag className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-black text-slate-900">Buy a Certified Pre-Owned Car</h2>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                Browse our multi-brand inventory featuring Hyundai, Maruti, Mahindra, Toyota, Tata, Kia, and Luxury cars.
+          <div className="bg-white border border-slate-200 rounded-3xl p-10 space-y-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            <div className="space-y-5">
+              <ShoppingBag className="w-7 h-7 text-amber-600" strokeWidth={1.5} />
+              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Buy a certified pre-owned car</h2>
+              <p className="text-sm text-slate-500 leading-relaxed">
+                Browse our multi-brand inventory featuring Hyundai, Maruti, Mahindra, Toyota, Tata, Kia, and luxury cars.
               </p>
 
-              <ul className="space-y-2 text-xs text-slate-700 font-medium">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>100% Non-Accidental Structural Guarantee</span>
+              <ul className="space-y-3 text-sm text-slate-600">
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>100% non-accidental structural guarantee</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Verified Kilometers with Dealer Records</span>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>Verified kilometers with dealer records</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Fast Bank Finance &amp; Low EMI Rates</span>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>Fast bank finance &amp; low EMI rates</span>
                 </li>
               </ul>
             </div>
@@ -80,85 +78,83 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                 setActiveTab('inventory');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="w-full py-3.5 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"
+              className="btn-primary-apple w-full flex items-center justify-center gap-2"
             >
-              <span>Explore Available Inventory</span>
-              <ArrowRight className="w-4 h-4 text-white" />
+              <span>Explore available inventory</span>
+              <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
             </button>
           </div>
 
           {/* Sell / Brokerage Card */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-8 space-y-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700 shadow-xs">
-                <Tag className="w-6 h-6" />
-              </div>
-              <h2 className="text-2xl font-black text-slate-900">Sell / Commission Brokerage</h2>
-              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+          <div className="bg-white border border-slate-200 rounded-3xl p-10 space-y-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+            <div className="space-y-5">
+              <Tag className="w-7 h-7 text-amber-600" strokeWidth={1.5} />
+              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Sell / commission brokerage</h2>
+              <p className="text-sm text-slate-500 leading-relaxed">
                 Get maximum market value for your vehicle with direct showroom display or instant cash sale.
               </p>
 
-              <ul className="space-y-2 text-xs text-slate-700 font-medium">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Doorstep Physical Inspection in Kalaburagi</span>
+              <ul className="space-y-3 text-sm text-slate-600">
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>Doorstep physical inspection in Kalaburagi</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Immediate Bank Payment &amp; Name Transfer Guarantee</span>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>Immediate bank payment &amp; name transfer guarantee</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Low Commission Rates for Brokerage Display</span>
+                <li className="flex items-center gap-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>Low commission rates for brokerage display</span>
                 </li>
               </ul>
             </div>
 
             {submitted ? (
-              <div className="p-4 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold rounded-xl text-center">
+              <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-xl text-center">
                 Details received! Our manager will call you for doorstep inspection.
               </div>
             ) : (
               <form onSubmit={handleSellSubmit} className="space-y-3 pt-2">
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-2 gap-3">
                   <input
                     type="text"
                     required
-                    placeholder="Your Name"
+                    placeholder="Your name"
                     value={sellerName}
                     onChange={e => setSellerName(e.target.value)}
-                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className={inputClasses}
                   />
                   <input
                     type="tel"
                     required
-                    placeholder="Phone Number"
+                    placeholder="Phone number"
                     value={sellerPhone}
                     onChange={e => setSellerPhone(e.target.value)}
-                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-slate-900 focus:outline-none focus:border-amber-500"
+                    className={inputClasses}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-2 gap-3">
                   <input
                     type="text"
-                    placeholder="Car Brand & Model (e.g. Swift 2021)"
+                    placeholder="Car brand & model (e.g. Swift 2021)"
                     value={carDetails}
                     onChange={e => setCarDetails(e.target.value)}
-                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-amber-500"
+                    className={inputClasses}
                   />
                   <input
                     type="number"
-                    placeholder="Asking Price (Lakhs)"
+                    placeholder="Asking price (Lakhs)"
                     value={askingPrice}
                     onChange={e => setAskingPrice(e.target.value)}
-                    className="p-2.5 bg-slate-50 border border-slate-300 rounded-xl font-bold text-amber-800 focus:outline-none focus:border-amber-500"
+                    className={`${inputClasses} text-amber-700`}
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs rounded-xl shadow-sm transition-colors"
+                  className="btn-accent-apple w-full"
                 >
-                  Submit Car for Valuation
+                  Submit car for valuation
                 </button>
               </form>
             )}
