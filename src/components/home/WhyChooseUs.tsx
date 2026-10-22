@@ -5,32 +5,32 @@ import { ShieldCheck, Gauge, FileCheck, Landmark, Award, HeartHandshake } from '
 export const WhyChooseUs: React.FC = () => {
   const pillars = [
     {
-      icon: <ShieldCheck className="w-6 h-6 text-slate-900" />,
+      icon: <ShieldCheck className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       title: '100% Non-Accidental Guarantee',
       desc: 'Every vehicle in our inventory undergoes structural frame and chassis validation to guarantee zero major collision history.'
     },
     {
-      icon: <Gauge className="w-6 h-6 text-slate-900" />,
+      icon: <Gauge className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       title: 'Genuine Meter Reading',
       desc: 'We verify odometer readings directly with authorized service center logs to ensure 100% authentic kilometers.'
     },
     {
-      icon: <FileCheck className="w-6 h-6 text-slate-900" />,
+      icon: <FileCheck className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       title: '150-Point Technical Inspection',
       desc: 'From engine compression to electronics, suspension, and air conditioning, every car passes strict quality benchmarks.'
     },
     {
-      icon: <Landmark className="w-6 h-6 text-slate-900" />,
+      icon: <Landmark className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       title: 'Instant Bank Finance Approval',
       desc: 'Tie-ups with leading banks (HDFC, ICICI, SBI, Axis) for quick low-interest car loans with flexible EMIs.'
     },
     {
-      icon: <Award className="w-6 h-6 text-slate-900" />,
+      icon: <Award className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       title: 'Legal RC Transfer Guarantee',
       desc: 'Complete assistance for seamless Regional Transport Office (RTO) ownership transfer without hassle.'
     },
     {
-      icon: <HeartHandshake className="w-6 h-6 text-slate-900" />,
+      icon: <HeartHandshake className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       title: 'Trusted Local Reputation',
       desc: 'Proudly rated 5.0 Stars on Google by hundreds of satisfied car owners in Kalaburagi and surrounding districts.'
     }
@@ -56,22 +56,20 @@ export const WhyChooseUs: React.FC = () => {
   };
 
   return (
-    <section className="py-20 px-4 lg:px-8 relative z-10 border-t border-slate-200 bg-white">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-white">
+      <div className="max-w-7xl mx-auto space-y-14">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center max-w-3xl mx-auto space-y-3"
+          className="text-center max-w-2xl mx-auto space-y-3"
         >
-          <span className="text-xs font-bold text-slate-800 uppercase tracking-widest bg-slate-100 px-4 py-1.5 rounded-full border border-slate-300">
-            Unmatched Quality Standards
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            WHY BUY &amp; EXCHANGE AT <span className="text-gradient-amber">KM CAR DEALS?</span>
+          <p className="section-eyebrow">Unmatched Quality Standards</p>
+          <h2 className="section-headline">
+            Why buy &amp; exchange at KM Car Deals
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          <p className="text-sm text-slate-500">
             Building lifelong trust in Kalaburagi through honest vehicle condition reporting and transparent pricing.
           </p>
         </motion.div>
@@ -88,13 +86,13 @@ export const WhyChooseUs: React.FC = () => {
               key={index}
               variants={itemVariants}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="bg-slate-50 p-6 rounded-3xl border border-slate-200 hover:border-slate-400 transition-shadow duration-300 hover:shadow-lg"
+              className="bg-slate-50 p-7 rounded-3xl transition-shadow duration-300 hover:shadow-card"
             >
-              <div className="w-12 h-12 rounded-2xl bg-white border border-slate-300 flex items-center justify-center mb-4 shadow-xs">
+              <div className="w-11 h-11 rounded-2xl bg-white flex items-center justify-center mb-5 shadow-card">
                 {item.icon}
               </div>
-              <h3 className="text-lg font-black text-slate-900 mb-2">{item.title}</h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">{item.desc}</p>
+              <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
+              <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </motion.div>

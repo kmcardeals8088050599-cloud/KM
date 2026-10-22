@@ -31,26 +31,26 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl p-8 space-y-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-md bg-white rounded-2xl p-8 space-y-6 executive-card">
         <div className="text-center space-y-3">
           <div className="flex justify-center">
             <KmLogo variant="dark" size="lg" />
           </div>
-          <h2 className="text-xl font-black text-slate-900 tracking-tight">Dealership Portal Login</h2>
-          <p className="text-xs text-slate-500 font-medium">Authenticated access for KM Car Deals staff</p>
+          <h2 className="text-xl font-semibold text-slate-900 tracking-tight">Dealership Portal Login</h2>
+          <p className="text-xs text-slate-500">Authenticated access for KM Car Deals staff</p>
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs flex items-center gap-2 font-medium">
-            <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+          <div className="p-3 bg-red-50 rounded-xl text-red-700 text-xs flex items-center gap-2">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-red-500" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4 text-xs">
+        <form onSubmit={handleLogin} className="space-y-4 text-sm">
           <div>
-            <label className="block text-slate-700 font-bold mb-1">Username</label>
+            <label className="block text-slate-600 text-xs font-medium mb-1.5">Username</label>
             <input
               type="text"
               required
@@ -58,12 +58,12 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
               placeholder="Enter admin username"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 focus:bg-white transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-slate-700 font-bold mb-1">Password</label>
+            <label className="block text-slate-600 text-xs font-medium mb-1.5">Password</label>
             <input
               type="password"
               required
@@ -71,25 +71,25 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
               placeholder="Enter admin password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-slate-900 font-medium focus:outline-none focus:border-red-600 focus:bg-white"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 focus:bg-white transition-colors"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50"
+            className="btn-primary-apple w-full flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            <Lock className="w-4 h-4" />
+            <Lock className="w-3.5 h-3.5" />
             <span>{loading ? 'Authenticating...' : 'Sign In to Dashboard'}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
 
-        <div className="pt-4 border-t border-slate-200 text-center">
+        <div className="pt-4 border-t border-slate-100 text-center">
           <button
             onClick={onCancel}
-            className="text-xs text-slate-500 hover:text-slate-800 font-semibold transition-colors"
+            className="text-xs text-slate-500 hover:text-slate-800 font-medium transition-colors"
           >
             Return to Public Website
           </button>

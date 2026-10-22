@@ -13,8 +13,8 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
     {
       id: 'buy',
       title: 'Buy Pre-Owned Cars',
-      icon: <ShoppingBag className="w-6 h-6 text-amber-600" />,
-      description: 'Explore certified pre-owned multi-brand vehicles with 100% transparent pricing, full service records, and non-accidental guarantees.',
+      icon: <ShoppingBag className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
+      description: 'Explore certified pre-owned multi-brand vehicles with transparent pricing, full service records, and non-accidental guarantees.',
       features: ['150-Point Quality Inspection', 'Instant RC Name Transfer', 'Bank Finance & Low Interest Rates'],
       actionLabel: 'Browse Inventory',
       route: '/inventory',
@@ -23,7 +23,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
     {
       id: 'exchange',
       title: 'Vehicle Exchange (Trade-In)',
-      icon: <RefreshCw className="w-6 h-6 text-amber-600" />,
+      icon: <RefreshCw className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       description: 'Submit your existing car to upgrade seamlessly to any vehicle in our showroom with top market exchange valuation.',
       features: ['Instant On-Spot Physical Evaluation', 'Highest Exchange Value Offered', 'Zero Hassle Paperwork'],
       actionLabel: 'Exchange Your Vehicle',
@@ -33,7 +33,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
     {
       id: 'sell',
       title: 'Sell Your Car Directly',
-      icon: <Tag className="w-6 h-6 text-amber-600" />,
+      icon: <Tag className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       description: 'Get instant cash payment or bank transfer for your car. We offer fair market prices with immediate legal name transfer.',
       features: ['Same-Day Direct Payment', 'Free Vehicle Doorstep Appraisal', 'Safe Legal Transfer Protection'],
       actionLabel: 'Sell My Car',
@@ -43,7 +43,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
     {
       id: 'brokerage',
       title: 'Commission Brokerage',
-      icon: <Briefcase className="w-6 h-6 text-amber-600" />,
+      icon: <Briefcase className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
       description: 'Sell your vehicle to genuine end-buyers through our extensive network in Kalaburagi while earning maximum return on minimal commission.',
       features: ['Genuine Buyer Verification', 'Professional Showroom Display', 'Safe Escrow & Payment Handling'],
       actionLabel: 'Brokerage Consultation',
@@ -53,17 +53,15 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
   ];
 
   return (
-    <section className="py-20 px-4 lg:px-8 relative z-10 border-t border-slate-200 bg-slate-50">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-slate-50">
+      <div className="max-w-7xl mx-auto space-y-14">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-black text-amber-800 uppercase tracking-widest bg-amber-100/90 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm">
-            Our Core Automotive Services
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">
-            SALE • PURCHASE • <span className="text-gradient-amber">EXCHANGE</span> • BROKERAGE
+        <div className="text-center max-w-2xl mx-auto space-y-3">
+          <p className="section-eyebrow">Our Core Automotive Services</p>
+          <h2 className="section-headline">
+            Sale, purchase, exchange, brokerage
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          <p className="text-sm text-slate-500">
             Whether you want to buy, sell, exchange, or place your car on brokerage in Kalaburagi, KM Car Deals provides complete transparency and peace of mind.
           </p>
         </div>
@@ -73,30 +71,30 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white rounded-3xl p-6 flex flex-col justify-between border border-slate-200 shadow-sm hover:border-amber-500/60 transition-all duration-300 hover:shadow-lg hover:-translate-y-2 group"
+              className="bg-white rounded-3xl p-7 flex flex-col justify-between shadow-card hover:shadow-premium transition-shadow duration-300"
             >
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center shadow-sm">
+                  <div className="w-11 h-11 rounded-2xl bg-slate-100 flex items-center justify-center">
                     {service.icon}
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-amber-900 bg-amber-100/80 px-2.5 py-1 rounded-lg border border-amber-200">
+                  <span className="text-[10px] font-medium text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full">
                     {service.badge}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-black text-slate-900 group-hover:text-amber-600 transition-colors">
+                <h3 className="text-lg font-semibold text-slate-900">
                   {service.title}
                 </h3>
 
-                <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                <p className="text-[13px] text-slate-500 leading-relaxed">
                   {service.description}
                 </p>
 
-                <div className="space-y-2 pt-2 border-t border-slate-100">
+                <div className="space-y-2 pt-3 border-t border-slate-100">
                   {service.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-[11px] text-slate-700 font-semibold">
-                      <CheckCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                    <div key={idx} className="flex items-center gap-2 text-[12px] text-slate-600">
+                      <CheckCircle className="w-3.5 h-3.5 text-slate-400 shrink-0" strokeWidth={1.75} />
                       <span>{feature}</span>
                     </div>
                   ))}
@@ -109,10 +107,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
                     navigate(service.route);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="w-full py-3 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs rounded-2xl transition-all duration-300 shadow-md border border-amber-300/60 flex items-center justify-center gap-2"
+                  className="btn-primary-apple w-full !text-[13px]"
                 >
                   <span>{service.actionLabel}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-slate-950" />
+                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
                 </button>
               </div>
             </div>
