@@ -44,7 +44,7 @@ export const ContactView: React.FC = () => {
     <div className="pb-28 lg:pb-24 bg-white min-h-screen text-slate-900">
       <div className="apple-container space-y-16">
         {/* Title - light band */}
-        <div className="relative -mx-6 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-6 lg:px-8 pt-32 pb-16">
+        <div className="relative -mx-6 lg:-mx-8 bg-mesh-light border-b border-slate-200 px-6 lg:px-8 pt-32 pb-16">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
             <p className="section-eyebrow">Showroom Location &amp; Direct Contact</p>
             <h1 className="section-headline">

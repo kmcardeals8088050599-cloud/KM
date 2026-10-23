@@ -80,7 +80,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
     <div className="pt-28 pb-28 lg:pb-24 bg-white min-h-screen text-slate-800">
       <div className="apple-container-narrow space-y-10">
         {/* Header */}
-        <div className="relative text-center space-y-4 bg-slate-50 border border-slate-200 rounded-3xl py-14 px-6">
+        <div className="relative text-center space-y-4 highlight-card py-14 px-6">
           <p className="section-eyebrow flex items-center justify-center gap-1.5">
             <RefreshCw className="w-3.5 h-3.5 text-amber-600" /> Instant Vehicle Exchange Program
           </p>

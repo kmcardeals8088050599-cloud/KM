@@ -94,7 +94,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
         </div>
 
         {/* Valuation Result — bold, substantial numeral treatment */}
-        <div className="bg-slate-50 border border-slate-200 p-6 sm:p-7 rounded-2xl flex flex-col justify-between text-slate-900">
+        <div className="highlight-card p-6 sm:p-7 flex flex-col justify-between text-slate-900">
           <div className="space-y-3">
             <span className="section-eyebrow !text-[11px] block">Estimated Trade-In Range</span>
             <div>

@@ -79,6 +79,23 @@
   }
 }
 
+/* Soft, premium mesh-gradient backdrop — Apple-style subtle color bloom,
+   never a photo, never dark. Used behind the hero and other key sections. */
+.bg-mesh-light {
+  background-color: #fbfbfd;
+  background-image:
+    radial-gradient(760px circle at 12% 8%, rgba(176, 141, 74, 0.10), transparent 60%),
+    radial-gradient(640px circle at 88% 18%, rgba(47, 154, 102, 0.07), transparent 55%),
+    radial-gradient(900px circle at 50% 100%, rgba(29, 29, 31, 0.045), transparent 60%);
+}
+
+.text-gradient-amber {
+  background: linear-gradient(120deg, #94733a, #cba15f 45%, #94733a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 :root {
   --theme-accent: #b08d4a;
   --theme-accent-hover: #94733a;
@@ -139,6 +156,15 @@
   transform: translateY(-3px);
 }
 
+/* Premium floating highlight card — used for the hero's visual anchor and
+   other "stat panel" moments. Soft gradient surface, no photography. */
+.highlight-card {
+  background: linear-gradient(165deg, #ffffff 0%, #fbfbfd 60%, #f5f5f7 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 1.75rem;
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.18), 0 2px 8px -2px rgba(0, 0, 0, 0.06);
+}
+
 .executive-badge {
   background: #f5f5f7;
   color: #1d1d1f;
@@ -181,15 +207,18 @@
   background: #a97f3f;
   color: #ffffff;
   font-size: 0.9rem;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: -0.01em;
   padding: 0.7rem 1.4rem;
   min-height: 44px;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 6px 16px -6px rgba(169, 127, 63, 0.45);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .btn-accent-apple:hover {
   background: #8c6a35;
+  box-shadow: 0 10px 22px -6px rgba(169, 127, 63, 0.55);
+  transform: translateY(-1px);
 }
 
 .btn-secondary-apple {

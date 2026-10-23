@@ -236,7 +236,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
           {/* Inquiry card — hidden on mobile (replaced by sticky CTA bar) */}
           <div className="lg:col-span-4 space-y-6 hidden md:block">
-            <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-5 shadow-premium sticky top-32">
+            <div className="highlight-card p-6 space-y-5 sticky top-32">
               <div className="space-y-4">
                 <h4 className="section-eyebrow">Inquire / Book Test Drive</h4>
 
