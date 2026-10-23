@@ -58,7 +58,7 @@ export const Testimonials: React.FC = () => {
           </div>
 
           <div className="executive-card px-6 py-4 rounded-3xl flex items-center gap-4 shrink-0">
-            <div className="text-3xl font-extrabold text-gradient-amber">{DEALERSHIP_INFO.googleRating}.0</div>
+            <div className="text-3xl font-extrabold text-amber-600">{DEALERSHIP_INFO.googleRating}.0</div>
             <div>
               <div className="flex items-center gap-1 text-amber-500">
                 {[...Array(5)].map((_, i) => (

@@ -31,7 +31,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
   return (
     <div className="executive-card rounded-3xl p-6 sm:p-8">
       <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
-        <div className="w-12 h-12 rounded-full bg-gradient-gold flex items-center justify-center text-amber-950 shadow-md">
+        <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
           <Calculator className="w-5 h-5" strokeWidth={1.75} />
         </div>
         <div>
@@ -113,34 +113,34 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
         </div>
 
         {/* Breakdown Card — bold, substantial output figures */}
-        <div className="bg-gradient-obsidian p-6 sm:p-7 rounded-2xl flex flex-col justify-between text-white shadow-premium">
+        <div className="bg-slate-50 border border-slate-200 p-6 sm:p-7 rounded-2xl flex flex-col justify-between text-slate-900">
           <div className="space-y-4">
-            <span className="section-eyebrow-light !text-[11px] block">Calculated Monthly EMI</span>
+            <span className="section-eyebrow !text-[11px] block">Calculated Monthly EMI</span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gradient-amber">
+              <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-amber-600">
                 ₹{Math.round(monthlyEmi).toLocaleString('en-IN')}
               </span>
               <span className="text-slate-400 text-xs">/month</span>
             </div>
 
-            <div className="pt-4 border-t border-white/10 space-y-2.5 text-xs">
-              <div className="flex justify-between text-slate-300">
+            <div className="pt-4 border-t border-slate-200 space-y-2.5 text-xs">
+              <div className="flex justify-between text-slate-600">
                 <span>Principal Loan Amount</span>
-                <span className="font-bold text-white">₹ {Math.round(loanAmount).toLocaleString('en-IN')}</span>
+                <span className="font-bold text-slate-900">₹ {Math.round(loanAmount).toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between text-slate-300">
+              <div className="flex justify-between text-slate-600">
                 <span>Total Interest Payable</span>
-                <span className="font-bold text-white">₹ {Math.round(totalInterest).toLocaleString('en-IN')}</span>
+                <span className="font-bold text-slate-900">₹ {Math.round(totalInterest).toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between text-slate-300">
+              <div className="flex justify-between text-slate-600">
                 <span>Total Cost of Vehicle</span>
-                <span className="font-bold text-white">₹ {Math.round(totalPayment).toLocaleString('en-IN')}</span>
+                <span className="font-bold text-slate-900">₹ {Math.round(totalPayment).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-white/10 flex items-center gap-2 text-[11px] text-amber-200 bg-white/5 p-3 rounded-xl">
-            <ShieldCheck className="w-4 h-4 shrink-0 text-amber-400" strokeWidth={1.75} />
+          <div className="mt-6 pt-4 border-t border-slate-200 flex items-center gap-2 text-[11px] text-amber-700 bg-amber-50 p-3 rounded-xl">
+            <ShieldCheck className="w-4 h-4 shrink-0 text-amber-600" strokeWidth={1.75} />
             <span>Instant loan approval support via HDFC, SBI, ICICI &amp; Axis Bank at KM Car Deals.</span>
           </div>
         </div>

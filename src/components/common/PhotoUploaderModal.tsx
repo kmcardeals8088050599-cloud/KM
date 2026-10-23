@@ -122,7 +122,7 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
                 }`}
               >
                 <div className="flex items-center gap-3.5 flex-1">
-                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-200 shrink-0 relative">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 relative">
                     {hasCustom ? (
                       <img
                         src={currentPhotos[opt.key]}

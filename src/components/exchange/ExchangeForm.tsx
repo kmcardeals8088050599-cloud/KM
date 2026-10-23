@@ -79,14 +79,14 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
     <div className="pt-28 pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Header */}
-        <div className="relative text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6">
-          <p className="section-eyebrow-light flex items-center justify-center gap-1.5">
-            <RefreshCw className="w-3.5 h-3.5 text-amber-400" /> Instant Vehicle Exchange Program
+        <div className="relative text-center space-y-4 bg-slate-50 border border-slate-200 rounded-3xl py-14 px-6">
+          <p className="section-eyebrow flex items-center justify-center gap-1.5">
+            <RefreshCw className="w-3.5 h-3.5 text-amber-600" /> Instant Vehicle Exchange Program
           </p>
-          <h1 className="section-headline-light">
-            Exchange your car at <span className="text-gradient-amber">KM Car Deals</span>
+          <h1 className="section-headline">
+            Exchange your car at <span className="text-amber-600">KM Car Deals</span>
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
             Upgrade your existing car easily. Get a fair market valuation, doorstep evaluation in Kalaburagi, and instant paper transfer.
           </p>
         </div>

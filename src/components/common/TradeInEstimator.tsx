@@ -32,7 +32,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
   return (
     <div className="executive-card rounded-3xl p-6 sm:p-8">
       <div className="flex items-center gap-4 mb-8 pb-6 border-b border-slate-200">
-        <div className="w-12 h-12 rounded-full bg-gradient-gold flex items-center justify-center text-amber-950 shadow-md">
+        <div className="w-12 h-12 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
           <RefreshCw className="w-5 h-5" strokeWidth={1.75} />
         </div>
         <div>
@@ -94,22 +94,22 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
         </div>
 
         {/* Valuation Result — bold, substantial numeral treatment */}
-        <div className="bg-gradient-obsidian p-6 sm:p-7 rounded-2xl flex flex-col justify-between text-white shadow-premium">
+        <div className="bg-slate-50 border border-slate-200 p-6 sm:p-7 rounded-2xl flex flex-col justify-between text-slate-900">
           <div className="space-y-3">
-            <span className="section-eyebrow-light !text-[11px] block">Estimated Trade-In Range</span>
+            <span className="section-eyebrow !text-[11px] block">Estimated Trade-In Range</span>
             <div>
-              <div className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gradient-amber">
+              <div className="text-4xl sm:text-5xl font-extrabold tracking-tight text-amber-600">
                 ₹{estimatedPriceLakhs}L
               </div>
-              <p className="text-[11px] text-slate-400 mt-1.5">Based on Kalaburagi market trends &amp; condition</p>
+              <p className="text-[11px] text-slate-500 mt-1.5">Based on Kalaburagi market trends &amp; condition</p>
             </div>
 
-            <div className="pt-3 border-t border-white/10 space-y-1.5 text-xs text-slate-300">
+            <div className="pt-3 border-t border-slate-200 space-y-1.5 text-xs text-slate-600">
               <p className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" strokeWidth={1.75} /> Free door-step physical evaluation
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" strokeWidth={1.75} /> Free door-step physical evaluation
               </p>
               <p className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" strokeWidth={1.75} /> Instant payment &amp; same-day transfer
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" strokeWidth={1.75} /> Instant payment &amp; same-day transfer
               </p>
             </div>
           </div>

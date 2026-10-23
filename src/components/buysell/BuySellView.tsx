@@ -35,14 +35,14 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
   return (
     <div className="pb-28 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
       <div className="max-w-7xl mx-auto space-y-20">
-        {/* Header - dark hero band for bold presence */}
-        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-20">
+        {/* Header - light band */}
+        <div className="relative -mx-4 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-4 lg:px-8 pt-32 pb-20">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
-            <p className="section-eyebrow-light">Buy, Sell, Exchange &amp; Brokerage</p>
-            <h1 className="section-headline-light">
-              Buy &amp; sell pre-owned cars with <span className="text-gradient-amber">confidence</span>
+            <p className="section-eyebrow">Buy, Sell, Exchange &amp; Brokerage</p>
+            <h1 className="section-headline">
+              Buy &amp; sell pre-owned cars with <span className="text-amber-600">confidence</span>
             </h1>
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
               Whether you want to purchase a certified car with bank loan assistance, sell your existing vehicle for same-day cash, or exchange for an upgrade in Kalaburagi, we guarantee transparent deals.
             </p>
           </div>
