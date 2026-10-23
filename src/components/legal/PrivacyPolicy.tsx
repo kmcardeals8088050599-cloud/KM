@@ -15,8 +15,8 @@ const Section = ({ icon: Icon, title, children }: { icon: any; title: string; ch
 export function PrivacyPolicy() {
   return (
     <div className="bg-white min-h-screen">
-      <div className="pt-32 pb-24 px-4 lg:px-8">
-        <div className="max-w-3xl mx-auto space-y-14">
+      <div className="pt-32 pb-24">
+        <div className="apple-container-narrow max-w-3xl space-y-14">
           {/* Header */}
           <div className="text-center space-y-4 bg-slate-50 border border-slate-200 rounded-3xl py-14 px-6 -mx-4 sm:mx-0">
             <p className="section-eyebrow flex items-center justify-center gap-1.5">
@@ -32,7 +32,7 @@ export function PrivacyPolicy() {
             <strong className="text-slate-800 font-medium">Md Nadeem Khan</strong>, located opposite Hyundai Showroom,
             Humnabad Road, Kapnoor, Kalaburagi - 585104. This policy explains how we collect, use, and protect your
             personal information when you use our website{' '}
-            <Link to="/" className="text-amber-700 font-medium hover:underline">kmcardeals.com</Link>, contact us by
+            <Link to="/" className="text-amber-700 font-medium hover:underline focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm">kmcardeals.com</Link>, contact us by
             phone or WhatsApp, or use our vehicle buying / selling / exchange services.
           </p>
 
@@ -103,7 +103,7 @@ export function PrivacyPolicy() {
           </section>
 
           <div className="flex justify-center">
-            <Link to="/terms" className="text-sm font-medium text-amber-700 hover:underline">
+            <Link to="/terms" className="text-sm font-medium text-amber-700 hover:underline transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm">
               Read our Terms &amp; Conditions →
             </Link>
           </div>

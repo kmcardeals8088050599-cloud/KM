@@ -95,7 +95,7 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 hover:bg-slate-200 flex items-center justify-center transition-colors shrink-0"
+            className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 hover:bg-slate-200 flex items-center justify-center transition-colors duration-300 shrink-0 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
           >
             <X className="w-4.5 h-4.5" strokeWidth={1.75} />
           </button>
@@ -115,7 +115,7 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
             return (
               <div
                 key={opt.key}
-                className={`p-4 rounded-2xl border transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                className={`p-4 rounded-2xl border transition-colors duration-300 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
                   selectedKey === opt.key
                     ? 'bg-amber-50/60 border-amber-300'
                     : 'bg-slate-50 border-slate-200 hover:border-slate-300'
@@ -153,7 +153,7 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
                 </div>
 
                 <div className="shrink-0 w-full sm:w-auto">
-                  <label className="cursor-pointer px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs rounded-full transition-colors flex items-center justify-center gap-2">
+                  <label className="cursor-pointer px-4 py-2.5 min-h-[36px] bg-amber-600 hover:bg-amber-700 text-white font-medium text-xs rounded-full transition-colors duration-300 flex items-center justify-center gap-2 focus-within:ring-2 focus-within:ring-slate-900/20">
                     <Upload className="w-3.5 h-3.5" strokeWidth={1.75} />
                     <span>{hasCustom ? 'Replace Photo' : 'Upload Image'}</span>
                     <input
@@ -173,7 +173,7 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
         <div className="pt-5 border-t border-slate-200 flex items-center justify-between text-sm">
           <button
             onClick={handleResetAll}
-            className="text-slate-400 hover:text-slate-700 font-medium flex items-center gap-1.5 transition-colors"
+            className="text-slate-400 hover:text-slate-700 font-medium flex items-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm"
           >
             <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.75} />
             <span>Reset all to defaults</span>
@@ -181,7 +181,7 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
 
           <button
             onClick={onClose}
-            className="btn-secondary-apple"
+            className="btn-secondary-apple focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
           >
             Done
           </button>

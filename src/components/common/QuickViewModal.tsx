@@ -47,7 +47,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               <button
                 key={idx}
                 onClick={() => setActiveImgIndex(idx)}
-                className={`relative w-16 h-12 rounded-lg overflow-hidden transition-all shrink-0 ${
+                className={`relative w-16 h-12 rounded-lg overflow-hidden transition-all duration-300 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 ${
                   activeImgIndex === idx ? 'ring-2 ring-amber-500 scale-105 shadow-md' : 'opacity-60 hover:opacity-100'
                 }`}
               >
@@ -61,8 +61,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       <div className="w-full md:w-1/2 p-6 flex flex-col justify-between overflow-y-auto bg-white">
         <div className="space-y-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wide text-amber-600">{car.brand}</span>
-            <h2 className="text-xl font-bold text-slate-900 tracking-tight">{car.title}</h2>
+            <span className="text-xs font-semibold uppercase tracking-wide text-amber-600">{car.brand}</span>
+            <h2 className="text-xl font-semibold text-slate-900 tracking-tight">{car.title}</h2>
             <p className="text-xs text-slate-500 mt-1">{car.model}</p>
           </div>
 
@@ -77,7 +77,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             ].map(d => (
               <div key={d.label} className="bg-slate-50 p-1.5 rounded-xl text-center">
                 <span className="text-slate-500 block text-[9px] uppercase font-semibold">{d.label}</span>
-                <span className="font-bold text-slate-900 text-[11px]">{d.value}</span>
+                <span className="font-semibold text-slate-900 text-[11px]">{d.value}</span>
               </div>
             ))}
           </div>
@@ -89,7 +89,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-full flex items-center justify-center gap-1.5"
+              className="min-h-[36px] py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-[0.8125rem] rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
               <span>Inquire WhatsApp</span>
@@ -100,7 +100,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 onClose();
                 onExchangeSelect(car);
               }}
-              className="btn-secondary-apple !px-3 !py-2.5 text-xs"
+              className="btn-secondary-apple btn-sm"
             >
               <span>Exchange For This</span>
             </button>
@@ -111,7 +111,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               onClose();
               onFullDetails(car);
             }}
-            className="btn-primary-apple w-full !py-2.5 text-xs"
+            className="btn-primary-apple btn-sm w-full"
           >
             <span>Full Specifications &amp; Gallery</span>
             <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
@@ -128,7 +128,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
         <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-row">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 text-slate-700 hover:text-slate-900 hover:bg-white transition-all shadow-sm"
+            className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 text-slate-700 hover:text-slate-900 hover:bg-white transition-all duration-300 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
           >
             <X className="w-5 h-5" strokeWidth={1.75} />
           </button>
@@ -143,7 +143,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           <div className="bottom-sheet-handle" />
           <button
             onClick={onClose}
-            className="absolute top-3 right-4 z-20 p-2 rounded-full bg-slate-100 text-slate-700"
+            className="absolute top-3 right-4 z-20 p-2 rounded-full bg-slate-100 text-slate-700 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
           >
             <X className="w-4 h-4" strokeWidth={1.75} />
           </button>

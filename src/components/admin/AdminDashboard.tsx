@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { KmLogo } from '../common/KmLogo';
 import { ImageUploader } from '../common/ImageUploader';
 import { AIOpsPanel } from './AIOpsPanel';
@@ -264,7 +264,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <p className="text-sm font-medium text-red-600">{error}</p>
           <button
             onClick={() => { clearAuthToken(); onLogout(); }}
-            className="btn-primary-apple"
+            className="btn-primary-apple focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
           >
             Sign In Again
           </button>
@@ -282,8 +282,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   ];
 
   return (
-    <div className="py-20 sm:py-24 px-3 sm:px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+    <div className="py-20 sm:py-24 bg-slate-50 min-h-screen text-slate-800">
+      <div className="apple-container space-y-6 sm:space-y-8">
         {/* Top Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 bg-white rounded-2xl executive-card">
           <div className="flex items-center gap-4">
@@ -296,7 +296,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <button
             onClick={() => { clearAuthToken(); onLogout(); }}
-            className="btn-secondary-apple text-xs flex items-center gap-2 w-fit min-h-[44px] self-end sm:self-auto"
+            className="btn-secondary-apple text-xs flex items-center gap-2 w-fit min-h-[44px] self-end sm:self-auto focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -309,7 +309,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button
               key={item.key}
               onClick={() => setActiveTab(item.key)}
-              className={`swipe-item px-4 sm:px-5 py-2.5 min-h-[44px] rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
+              className={`swipe-item px-4 sm:px-5 py-2.5 min-h-[44px] rounded-xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none ${
                 activeTab === item.key ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -326,7 +326,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <button
             onClick={() => setActiveTab2('alerts')}
-            className={`swipe-item px-4 sm:px-5 py-2.5 min-h-[44px] rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
+            className={`swipe-item px-4 sm:px-5 py-2.5 min-h-[44px] rounded-xl transition-all duration-300 flex items-center gap-2 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none ${
               activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges'
                 ? 'bg-slate-900 text-white shadow-sm'
                 : 'bg-white text-slate-600 hover:bg-slate-100'
@@ -375,7 +375,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                 <button
                   onClick={() => handleOpenCarModal()}
-                  className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
+                  className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add New Car Listing</span>
@@ -383,7 +383,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <button
                   onClick={() => setActiveTab('leads')}
-                  className="btn-secondary-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
+                  className="btn-secondary-apple text-xs flex items-center justify-center gap-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                 >
                   <Users className="w-3.5 h-3.5 text-amber-700" />
                   <span>View Customer Leads ({newLeadsCount} New)</span>
@@ -391,7 +391,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <button
                   onClick={() => setActiveTab('exchanges')}
-                  className="btn-secondary-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
+                  className="btn-secondary-apple text-xs flex items-center justify-center gap-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                 >
                   <RefreshCw className="w-3.5 h-3.5 text-emerald-700" />
                   <span>View Vehicle Exchanges ({newExchangesCount} New)</span>
@@ -408,7 +408,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <h2 className="text-lg font-bold tracking-tight text-slate-900">Car Inventory Catalog</h2>
               <button
                 onClick={() => handleOpenCarModal()}
-                className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
+                className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px] focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add New Vehicle</span>
@@ -424,7 +424,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   placeholder="Search RTO code..."
                   value={adminRtoFilter}
                   onChange={e => setAdminRtoFilter(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 transition-colors duration-300"
                 />
               </div>
               <div className="flex-1 min-w-[160px]">
@@ -432,7 +432,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <select
                   value={adminStatusFilter}
                   onChange={e => setAdminStatusFilter(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                  className="select-plain w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] text-sm text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 transition-colors duration-300"
                 >
                   <option value="All">All Statuses</option>
                   <option value="Available">Available</option>
@@ -443,7 +443,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex items-end">
                 <button
                   onClick={() => { setAdminRtoFilter('All'); setAdminStatusFilter('All'); }}
-                  className="btn-secondary-apple px-3 py-2.5 min-h-[44px] text-xs"
+                  className="btn-secondary-apple btn-sm text-xs focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                 >
                   Reset
                 </button>
@@ -487,7 +487,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         <select
                           value={car.status}
                           onChange={e => handleToggleCarStatus(car.id, e.target.value as CarStatus)}
-                          className={`px-2.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border-0 focus:outline-none focus:ring-2 focus:ring-amber-500/30 ${
+                          className={`select-plain px-2.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 transition-colors duration-300 ${
                             car.status === 'Available'
                               ? 'bg-emerald-50 text-emerald-700'
                               : car.status === 'Reserved'
@@ -503,14 +503,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <td className="p-4 text-right space-x-2">
                         <button
                           onClick={() => handleOpenCarModal(car)}
-                          className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors"
+                          className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                           title="Edit Car"
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDeleteCar(car.id)}
-                          className="p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-lg transition-colors"
+                          className="p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-lg transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                           title="Delete Car"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -538,7 +538,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <select
                       value={car.status}
                       onChange={e => handleToggleCarStatus(car.id, e.target.value as CarStatus)}
-                      className={`px-2.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border-0 focus:outline-none focus:ring-2 focus:ring-amber-500/30 ${
+                      className={`select-plain px-2.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 transition-colors duration-300 ${
                         car.status === 'Available'
                           ? 'bg-emerald-50 text-emerald-700'
                           : car.status === 'Reserved'
@@ -554,13 +554,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <div className="flex items-center gap-2 pt-1">
                     <button
                       onClick={() => handleOpenCarModal(car)}
-                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl transition-colors"
+                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                     >
                       <Edit className="w-3.5 h-3.5" /> Edit
                     </button>
                     <button
                       onClick={() => handleDeleteCar(car.id)}
-                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-semibold rounded-xl transition-colors"
+                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-semibold rounded-xl transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> Delete
                     </button>
@@ -602,7 +602,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <select
                             value={lead.status}
                             onChange={e => handleUpdateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                            className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                            className="select-plain bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 transition-colors duration-300"
                           >
                             <option value="New">New</option>
                             <option value="Contacted">Contacted</option>
@@ -615,14 +615,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             href={waUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg inline-flex items-center transition-colors"
+                            className="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg inline-flex items-center transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                             title="WhatsApp Customer"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                           </a>
                           <a
                             href={`tel:${lead.phone}`}
-                            className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg inline-flex items-center transition-colors"
+                            className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg inline-flex items-center transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                             title="Call Customer"
                           >
                             <Phone className="w-3.5 h-3.5" />
@@ -649,7 +649,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <select
                         value={lead.status}
                         onChange={e => handleUpdateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                        className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                        className="select-plain bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] text-slate-900 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 transition-colors duration-300"
                       >
                         <option value="New">New</option>
                         <option value="Contacted">Contacted</option>
@@ -666,13 +666,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         href={waUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-xl transition-colors"
+                        className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-xl transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                       >
                         <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
                       </a>
                       <a
                         href={`tel:${lead.phone}`}
-                        className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl transition-colors"
+                        className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                       >
                         <Phone className="w-3.5 h-3.5" /> Call
                       </a>
@@ -705,7 +705,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <select
                         value={ex.status}
                         onChange={e => handleUpdateExchangeStatus(ex.id, e.target.value as ExchangeStatus)}
-                        className="bg-slate-50 border border-slate-200 text-amber-800 font-semibold rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                        className="select-plain bg-slate-50 border border-slate-200 text-amber-800 font-semibold rounded-lg px-2 py-1.5 text-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 transition-colors duration-300"
                       >
                         <option value="New">New</option>
                         <option value="Reviewing">Reviewing</option>
@@ -759,7 +759,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <a
                         href={`tel:${ex.phone}`}
-                        className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-colors"
+                        className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                         title="Call Customer"
                       >
                         <Phone className="w-4 h-4" />
@@ -775,7 +775,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       {/* Tab Content: ALERTS & REPORTS */}
       {activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges' && (
-        <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 mt-6 sm:mt-8">
+        <div className="apple-container space-y-5 sm:space-y-6 mt-6 sm:mt-8">
           <h2 className="text-lg font-bold tracking-tight text-slate-900">Alerts &amp; Automated Reports</h2>
 
           {/* Daily Report */}
@@ -787,7 +787,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <button
               onClick={handleDailyReport}
               disabled={reportLoading}
-              className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px] disabled:opacity-50"
+              className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px] disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
             >
               <Send className="w-3.5 h-3.5" />
               {reportLoading ? 'Generating...' : 'Send Daily Report Now'}
@@ -807,7 +807,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="relative w-full sm:max-w-2xl bg-white rounded-t-3xl sm:rounded-2xl p-6 sm:p-8 space-y-6 executive-card max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setCarModalOpen(false)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
             >
               <X className="w-4 h-4" />
             </button>
@@ -825,7 +825,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   placeholder="e.g. Hyundai Creta 1.5 SX (O) Diesel Automatic"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                 />
               </div>
 
@@ -835,7 +835,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <select
                     value={brand}
                     onChange={e => setBrand(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="select-plain w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   >
                     {Object.keys(INDIAN_CAR_BRANDS).map(b => (
                       <option key={b} value={b}>{b}</option>
@@ -852,7 +852,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     placeholder="e.g. Creta / Thar"
                     value={model}
                     onChange={e => setModel(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   />
                 </div>
 
@@ -862,7 +862,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     type="number"
                     value={year}
                     onChange={e => setYear(parseInt(e.target.value) || 2022)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   />
                 </div>
               </div>
@@ -873,7 +873,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <select
                     value={fuelType}
                     onChange={e => setFuelType(e.target.value as FuelType)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="select-plain w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   >
                     <option value="Petrol">Petrol</option>
                     <option value="Diesel">Diesel</option>
@@ -890,7 +890,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <select
                     value={transmission}
                     onChange={e => setTransmission(e.target.value as Transmission)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="select-plain w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   >
                     <option value="Manual">Manual</option>
                     <option value="Automatic">Automatic</option>
@@ -904,7 +904,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     placeholder="e.g. SUV, Sedan, Hatchback, Luxury"
                     value={bodyType}
                     onChange={e => setBodyType(e.target.value as BodyType)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   />
                 </div>
 
@@ -913,7 +913,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <select
                     value={status}
                     onChange={e => setStatus(e.target.value as CarStatus)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="select-plain w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   >
                     <option value="Available">Available</option>
                     <option value="Reserved">Reserved</option>
@@ -932,7 +932,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     placeholder="e.g. KA-32 (Kalaburagi)"
                     value={rtoStr}
                     onChange={e => setRtoStr(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
                   />
                 </div>
               </div>
@@ -948,13 +948,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <button
                     type="button"
                     onClick={() => setCarModalOpen(false)}
-                    className="btn-secondary-apple text-sm min-h-[44px] order-2 sm:order-1"
+                    className="btn-secondary-apple text-sm min-h-[44px] order-2 sm:order-1 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="btn-accent-apple text-sm min-h-[44px] order-1 sm:order-2"
+                    className="btn-accent-apple text-sm min-h-[44px] order-1 sm:order-2 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                   >
                     Save Car Listing
                   </button>

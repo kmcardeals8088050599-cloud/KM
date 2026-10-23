@@ -68,7 +68,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               <button
                 type="button"
                 onClick={() => handleRemove(url)}
-                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-slate-900/60 text-white flex items-center justify-center hover:bg-slate-900 transition-colors"
+                className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-slate-900/60 text-white flex items-center justify-center hover:bg-slate-900 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:outline-none"
               >
                 <X className="w-3.5 h-3.5" strokeWidth={1.75} />
               </button>
@@ -78,7 +78,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       )}
 
       {images.length < maxImages && (
-        <label className="flex items-center justify-center gap-2 p-5 border border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-amber-400 hover:bg-amber-50/30 transition-colors text-slate-500 text-sm font-medium">
+        <label className="flex items-center justify-center gap-2 p-5 border border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-slate-400 hover:bg-slate-50 transition-colors duration-300 text-slate-500 text-sm font-medium focus-within:ring-2 focus-within:ring-slate-900/20">
           {uploading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" strokeWidth={1.75} />

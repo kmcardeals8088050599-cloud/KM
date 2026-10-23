@@ -22,7 +22,7 @@ const ServiceCardBody: React.FC<{ service: Service }> = ({ service }) => (
       {service.icon}
     </div>
 
-    <h3 className="text-lg font-bold text-slate-900">
+    <h3 className="text-lg font-semibold text-slate-900">
       {service.title}
     </h3>
 
@@ -84,8 +84,8 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
   ];
 
   return (
-    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-slate-50">
-      <div className="max-w-7xl mx-auto space-y-14">
+    <section className="section-pad relative z-10 bg-slate-50">
+      <div className="apple-container space-y-14">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <p className="section-eyebrow">Our Core Automotive Services</p>
@@ -111,7 +111,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
                     navigate(service.route);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="btn-primary-apple w-full !text-[13px]"
+                  className="btn-primary-apple btn-sm w-full"
                 >
                   <span>{service.actionLabel}</span>
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
@@ -134,7 +134,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
                     navigate(service.route);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="btn-primary-apple w-full !text-[13px]"
+                  className="btn-primary-apple btn-sm w-full"
                 >
                   <span>{service.actionLabel}</span>
                   <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />

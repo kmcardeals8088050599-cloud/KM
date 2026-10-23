@@ -79,13 +79,13 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="pt-6 md:pt-28 pb-28 md:pb-16 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900"
+      className="pt-6 md:pt-28 pb-28 md:pb-16 bg-slate-50 min-h-screen text-slate-900"
     >
-      <div className="max-w-7xl mx-auto space-y-8 md:space-y-10">
+      <div className="apple-container space-y-8 md:space-y-10">
         <div className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors w-fit"
+            className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors duration-300 w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 rounded"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
             <span>Back to Inventory</span>
@@ -94,7 +94,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           <div className="flex items-center gap-3">
             <button
               onClick={handleShare}
-              className="btn-secondary-apple !px-4 !py-2 text-sm"
+              className="btn-secondary-apple btn-sm"
             >
               <Share2 className="w-3.5 h-3.5" strokeWidth={1.75} />
               <span>Share</span>
@@ -102,7 +102,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
             <button
               onClick={() => onOpenExchangeModal(car)}
-              className="btn-accent-apple !px-4 !py-2 text-sm"
+              className="btn-accent-apple btn-sm"
             >
               <RefreshCw className="w-3.5 h-3.5" strokeWidth={1.75} />
               <span>Exchange Your Car</span>
@@ -114,14 +114,14 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         <div className="md:hidden flex items-center justify-between -mt-2">
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-600"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-600 transition-colors duration-300 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 rounded"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
             <span>Back</span>
           </button>
           <button
             onClick={handleShare}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm"
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
           >
             <Share2 className="w-4 h-4" strokeWidth={1.75} />
           </button>
@@ -177,14 +177,14 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                 <>
                   <button
                     onClick={() => setActiveImageIndex(prev => (prev - 1 + car.images.length) % car.images.length)}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                     aria-label="Previous image"
                   >
                     <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
                   </button>
                   <button
                     onClick={() => setActiveImageIndex(prev => (prev + 1) % car.images.length)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-lg transition-all hover:scale-105"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 hover:bg-white text-slate-800 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                     aria-label="Next image"
                   >
                     <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
@@ -200,7 +200,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`swipe-item relative w-24 h-16 rounded-xl overflow-hidden transition-all shrink-0 mr-3 md:mr-0 ${
+                    className={`swipe-item relative w-24 h-16 rounded-xl overflow-hidden transition-all duration-300 shrink-0 mr-3 md:mr-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 ${
                       activeImageIndex === idx
                         ? 'ring-2 ring-amber-500 scale-105 shadow-md'
                         : 'opacity-60 hover:opacity-100'
@@ -227,7 +227,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                 ].map(d => (
                   <div key={d.label} className="executive-card p-4 rounded-2xl">
                     <span className="text-slate-500 block text-[11px] uppercase tracking-wide font-semibold">{d.label}</span>
-                    <span className="text-sm font-bold text-slate-900 mt-1 block">{d.value}</span>
+                    <span className="text-sm font-semibold text-slate-900 mt-1 block">{d.value}</span>
                   </div>
                 ))}
               </div>
@@ -254,7 +254,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                         required
                         value={buyerName}
                         onChange={e => setBuyerName(e.target.value)}
-                        className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                        className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                       />
                     </div>
 
@@ -265,14 +265,14 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                         required
                         value={buyerPhone}
                         onChange={e => setBuyerPhone(e.target.value)}
-                        className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                        className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="btn-primary-apple w-full !py-3 text-sm"
+                      className="btn-primary-apple w-full"
                     >
                       {submitting ? 'Submitting...' : 'Request Callback'}
                     </button>
@@ -283,7 +283,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-full transition-all flex items-center justify-center gap-2 block text-center"
+                  className="w-full min-h-[44px] bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-[0.9rem] rounded-full transition-colors duration-300 flex items-center justify-center gap-2 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                 >
                   <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
                   <span>Chat on WhatsApp</span>
@@ -291,7 +291,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
 
                 <a
                   href="tel:+918123991847"
-                  className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 py-1"
+                  className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 py-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 rounded"
                 >
                   <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
                   +91 81239 91847
@@ -317,7 +317,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                     required
                     value={buyerName}
                     onChange={e => setBuyerName(e.target.value)}
-                    className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                    className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                   />
                   <input
                     type="tel"
@@ -325,12 +325,12 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                     required
                     value={buyerPhone}
                     onChange={e => setBuyerPhone(e.target.value)}
-                    className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                    className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                   />
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="btn-primary-apple w-full !py-3 text-sm"
+                    className="btn-primary-apple w-full"
                   >
                     {submitting ? 'Submitting...' : 'Request Callback'}
                   </button>
@@ -342,15 +342,15 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       </div>
 
       {relatedCars && relatedCars.length > 0 && (
-        <div className="max-w-7xl mx-auto space-y-6 mt-16">
+        <div className="apple-container space-y-6 mt-16">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Similar {car.brand} Cars</h2>
+              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Similar {car.brand} Cars</h2>
               <p className="text-sm text-slate-500 mt-0.5">Other {car.brand} vehicles available at KM Car Deals</p>
             </div>
             <button
               onClick={onBack}
-              className="hidden md:flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900"
+              className="hidden md:flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 rounded"
             >
               View All <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.75} />
             </button>
@@ -387,26 +387,26 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       <div className="mobile-sticky-cta md:hidden grid grid-cols-3 gap-2">
         <a
           href="tel:+918123991847"
-          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-slate-100 text-slate-900"
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-slate-100 text-slate-900 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
         >
           <Phone className="w-4 h-4" strokeWidth={1.75} />
-          <span className="text-[10px] font-bold">Call</span>
+          <span className="text-[10px] font-semibold">Call</span>
         </a>
         <a
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-emerald-600 text-white shadow-md"
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-emerald-600 text-white shadow-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
         >
           <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
-          <span className="text-[10px] font-bold">WhatsApp</span>
+          <span className="text-[10px] font-semibold">WhatsApp</span>
         </a>
         <button
           onClick={() => onOpenExchangeModal(car)}
-          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-amber-600 text-white shadow-md"
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-amber-600 text-white shadow-md transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
         >
           <RefreshCw className="w-4 h-4" strokeWidth={1.75} />
-          <span className="text-[10px] font-bold">Exchange</span>
+          <span className="text-[10px] font-semibold">Exchange</span>
         </button>
       </div>
     </motion.div>

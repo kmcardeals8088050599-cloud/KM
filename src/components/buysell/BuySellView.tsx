@@ -30,13 +30,13 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
     setTimeout(() => setSubmitted(false), 5000);
   };
 
-  const inputClasses = "p-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
+  const inputClasses = "p-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none focus:border-slate-900 transition-shadow duration-300";
 
   return (
-    <div className="pb-28 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-20">
+    <div className="pb-28 bg-white min-h-screen text-slate-800">
+      <div className="apple-container space-y-20">
         {/* Header - light band */}
-        <div className="relative -mx-4 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-4 lg:px-8 pt-32 pb-20">
+        <div className="relative -mx-6 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-6 lg:px-8 section-pad">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
             <p className="section-eyebrow">Buy, Sell, Exchange &amp; Brokerage</p>
             <h1 className="section-headline">
@@ -80,7 +80,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                 setActiveTab('inventory');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="btn-primary-apple w-full flex items-center justify-center gap-2"
+              className="btn-primary-apple w-full flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
             >
               <span>Explore available inventory</span>
               <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
@@ -154,7 +154,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
                 </div>
                 <button
                   type="submit"
-                  className="btn-accent-apple w-full"
+                  className="btn-accent-apple w-full focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                 >
                   Submit car for valuation
                 </button>

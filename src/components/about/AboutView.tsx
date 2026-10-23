@@ -22,8 +22,8 @@ export const AboutView: React.FC = () => {
   const executiveTeam = photos[4]?.imageUrl;
 
   return (
-    <div className="py-20 px-4 lg:px-8 bg-white min-h-screen text-slate-900 pt-32">
-      <div className="max-w-7xl mx-auto space-y-20">
+    <div className="section-pad pt-32 bg-white min-h-screen text-slate-900">
+      <div className="apple-container space-y-20">
         {/* Story Banner */}
         <div className="text-center max-w-3xl mx-auto space-y-5">
           <div className="flex justify-center mb-2">

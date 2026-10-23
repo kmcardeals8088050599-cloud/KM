@@ -22,39 +22,40 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
 
   return (
     <section className="bg-white">
-      <div className="max-w-[1000px] mx-auto px-6 pt-28 pb-16 text-center">
+      <div className="apple-container-narrow pt-24 sm:pt-32 pb-14 sm:pb-20 text-center">
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="section-eyebrow mb-4"
+          className="section-eyebrow mb-3"
         >
           Kalaburagi · Multi-brand showroom
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.06 }}
-          className="section-headline"
+          className="hero-headline"
         >
-          Pre-owned cars, held to a higher standard.
+          Pre-owned cars,
+          <br className="hidden sm:block" /> held to a higher standard.
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.12 }}
-          className="mt-5 text-lg text-slate-500 max-w-xl mx-auto leading-relaxed"
+          className="hero-subline mt-5 max-w-lg mx-auto"
         >
           Every vehicle passes a 150-point inspection with a non-accidental guarantee and verified odometer reading.
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 14 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.18 }}
-          className="mt-8 flex flex-wrap items-center justify-center gap-4"
+          className="mt-9 flex flex-wrap items-center justify-center gap-3"
         >
           <button
             onClick={() => {
@@ -80,27 +81,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
         <motion.a
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.24 }}
+          transition={{ duration: 0.6, delay: 0.26 }}
           href="tel:+918123991847"
-          className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors"
+          className="mt-6 inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-900 transition-colors"
         >
           <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
           +91 81239 91847
         </motion.a>
       </div>
 
-      {/* Minimal single-row search bar */}
+      {/* Apple-style configurator bar: plain, bordered, no card chrome */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+        transition={{ duration: 0.5, delay: 0.32 }}
         className="border-y border-slate-200 bg-slate-50"
       >
         <form
           onSubmit={handleQuickSearch}
-          className="max-w-[1000px] mx-auto px-6 py-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3"
+          className="apple-container-narrow py-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6"
         >
-          <span className="hidden sm:flex items-center gap-2 text-sm font-medium text-slate-500 shrink-0">
+          <span className="hidden sm:flex items-center gap-2 text-sm text-slate-500 shrink-0">
             <Search className="w-4 h-4" strokeWidth={1.75} />
             Find a car
           </span>
@@ -108,7 +109,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
           <select
             value={selectedBrand}
             onChange={e => setSelectedBrand(e.target.value)}
-            className="bg-transparent border-0 sm:border-l sm:border-slate-200 sm:pl-4 text-slate-900 text-sm font-medium focus:outline-none"
+            className="select-plain bg-transparent border-0 sm:border-l sm:border-slate-200 sm:pl-6 text-slate-900 text-sm focus:outline-none"
           >
             <option value="All">All Brands</option>
             <option value="Maruti Suzuki">Maruti Suzuki</option>
@@ -138,7 +139,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
           <select
             value={selectedBodyType}
             onChange={e => setSelectedBodyType(e.target.value)}
-            className="bg-transparent border-0 sm:border-l sm:border-slate-200 sm:pl-4 text-slate-900 text-sm font-medium focus:outline-none"
+            className="select-plain bg-transparent border-0 sm:border-l sm:border-slate-200 sm:pl-6 text-slate-900 text-sm focus:outline-none"
           >
             <option value="All">All Body Types</option>
             <option value="Hatchback">Hatchback</option>
@@ -151,7 +152,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch }) => {
             <option value="Pickup">Pickup / Truck</option>
           </select>
 
-          <button type="submit" className="btn-primary-apple sm:ml-auto !py-2.5 !px-6 !text-[13px]">
+          <button type="submit" className="btn-primary-apple btn-sm sm:ml-auto">
             Search
           </button>
         </form>

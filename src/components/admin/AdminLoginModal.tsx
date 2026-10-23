@@ -63,7 +63,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
                 placeholder="Enter admin username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 focus:bg-white transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
               />
             </div>
 
@@ -76,14 +76,14 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
                 placeholder="Enter admin password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 focus:bg-white transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white transition-colors duration-300"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-accent-apple w-full flex items-center justify-center gap-2 disabled:opacity-50 mt-2"
+              className="btn-accent-apple w-full flex items-center justify-center gap-2 disabled:opacity-50 mt-2 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
             >
               <Lock className="w-3.5 h-3.5" />
               <span>{loading ? 'Authenticating...' : 'Sign In to Dashboard'}</span>
@@ -94,7 +94,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
           <div className="pt-5 border-t border-slate-100 text-center">
             <button
               onClick={onCancel}
-              className="text-xs text-slate-500 hover:text-slate-900 font-medium transition-colors"
+              className="text-xs text-slate-500 hover:text-slate-900 font-medium transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm"
             >
               Return to Public Website
             </button>

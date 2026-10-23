@@ -31,7 +31,7 @@ const TestimonialBody: React.FC<{ item: TestimonialItem }> = ({ item }) => (
 
     <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
       <div>
-        <h4 className="font-bold text-slate-900">{item.name}</h4>
+        <h4 className="font-semibold text-slate-900">{item.name}</h4>
         <p className="text-[11px] text-slate-500">{item.location}</p>
       </div>
       <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center gap-1 whitespace-nowrap">
@@ -44,8 +44,8 @@ const TestimonialBody: React.FC<{ item: TestimonialItem }> = ({ item }) => (
 
 export const Testimonials: React.FC = () => {
   return (
-    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-slate-50">
-      <div className="max-w-7xl mx-auto space-y-14">
+    <section className="section-pad relative z-10 bg-slate-50">
+      <div className="apple-container space-y-14">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-3">
             <p className="section-eyebrow">Verified Buyer Feedback</p>

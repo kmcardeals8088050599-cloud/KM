@@ -36,7 +36,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
           <RefreshCw className="w-5 h-5" strokeWidth={1.75} />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-slate-900">Instant Car Exchange Valuation</h3>
+          <h3 className="text-lg font-semibold text-slate-900">Instant Car Exchange Valuation</h3>
           <p className="text-xs text-slate-500">Estimate market trade-in value for your existing car in 10 seconds</p>
         </div>
       </div>
@@ -48,7 +48,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
             <select
               value={brand}
               onChange={e => setBrand(e.target.value)}
-              className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+              className="select-plain w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
             >
               {['Hyundai', 'Maruti Suzuki', 'Mahindra', 'Tata', 'Toyota', 'Honda', 'Kia', 'BMW', 'Mercedes-Benz'].map(b => (
                 <option key={b} value={b}>{b}</option>
@@ -63,7 +63,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
               value={model}
               onChange={e => setModel(e.target.value)}
               placeholder="e.g. Creta SX / Swift ZXI"
-              className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+              className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
             />
           </div>
 
@@ -73,7 +73,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
               <select
                 value={year}
                 onChange={e => setYear(parseInt(e.target.value))}
-                className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                className="select-plain w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
               >
                 {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015].map(y => (
                   <option key={y} value={y}>{y}</option>
@@ -87,7 +87,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
                 type="number"
                 value={km}
                 onChange={e => setKm(parseInt(e.target.value) || 0)}
-                className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
               />
             </div>
           </div>
@@ -98,7 +98,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
           <div className="space-y-3">
             <span className="section-eyebrow !text-[11px] block">Estimated Trade-In Range</span>
             <div>
-              <div className="text-4xl sm:text-5xl font-extrabold tracking-tight text-amber-600">
+              <div className="text-4xl sm:text-5xl font-semibold tracking-tight text-amber-600">
                 ₹{estimatedPriceLakhs}L
               </div>
               <p className="text-[11px] text-slate-500 mt-1.5">Based on Kalaburagi market trends &amp; condition</p>
@@ -116,7 +116,7 @@ export const TradeInEstimator: React.FC<TradeInEstimatorProps> = ({ onProceedExc
 
           <button
             onClick={() => onProceedExchange({ brand, model, year, km })}
-            className="btn-accent-apple w-full mt-6 !py-3 text-xs"
+            className="btn-accent-apple w-full mt-6"
           >
             <span>Submit Full Exchange Request</span>
             <ArrowRight className="w-4 h-4" strokeWidth={1.75} />

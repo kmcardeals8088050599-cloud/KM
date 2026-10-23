@@ -35,7 +35,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
           <Calculator className="w-5 h-5" strokeWidth={1.75} />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-slate-900">Car Loan &amp; EMI Calculator</h3>
+          <h3 className="text-lg font-semibold text-slate-900">Car Loan &amp; EMI Calculator</h3>
           <p className="text-xs text-slate-500">Estimate monthly installment with instant bank tie-ups at KM Car Deals</p>
         </div>
       </div>
@@ -47,7 +47,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
           <div>
             <div className="flex justify-between mb-2 text-slate-600">
               <span className="font-medium">Vehicle Value</span>
-              <span className="text-slate-900 font-bold">₹ {carPriceLakhs.toFixed(2)} Lakhs</span>
+              <span className="text-slate-900 font-semibold">₹ {carPriceLakhs.toFixed(2)} Lakhs</span>
             </div>
             <input
               type="range"
@@ -64,7 +64,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
           <div>
             <div className="flex justify-between mb-2 text-slate-600">
               <span className="font-medium">Down Payment ({downPaymentPercent}%)</span>
-              <span className="text-slate-900 font-bold">₹ {Math.round(downPaymentAmount).toLocaleString('en-IN')}</span>
+              <span className="text-slate-900 font-semibold">₹ {Math.round(downPaymentAmount).toLocaleString('en-IN')}</span>
             </div>
             <input
               type="range"
@@ -81,7 +81,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
           <div>
             <div className="flex justify-between mb-2 text-slate-600">
               <span className="font-medium">Interest Rate (p.a.)</span>
-              <span className="text-slate-900 font-bold">{interestRate}%</span>
+              <span className="text-slate-900 font-semibold">{interestRate}%</span>
             </div>
             <input
               type="range"
@@ -98,7 +98,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
           <div>
             <div className="flex justify-between mb-2 text-slate-600">
               <span className="font-medium">Loan Tenure</span>
-              <span className="text-slate-900 font-bold">{tenureYears} Years ({totalMonths} Months)</span>
+              <span className="text-slate-900 font-semibold">{tenureYears} Years ({totalMonths} Months)</span>
             </div>
             <input
               type="range"
@@ -117,7 +117,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
           <div className="space-y-4">
             <span className="section-eyebrow !text-[11px] block">Calculated Monthly EMI</span>
             <div className="flex items-baseline gap-1.5">
-              <span className="text-4xl sm:text-5xl font-extrabold tracking-tight text-amber-600">
+              <span className="text-4xl sm:text-5xl font-semibold tracking-tight text-amber-600">
                 ₹{Math.round(monthlyEmi).toLocaleString('en-IN')}
               </span>
               <span className="text-slate-400 text-xs">/month</span>
@@ -126,15 +126,15 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
             <div className="pt-4 border-t border-slate-200 space-y-2.5 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>Principal Loan Amount</span>
-                <span className="font-bold text-slate-900">₹ {Math.round(loanAmount).toLocaleString('en-IN')}</span>
+                <span className="font-semibold text-slate-900">₹ {Math.round(loanAmount).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Total Interest Payable</span>
-                <span className="font-bold text-slate-900">₹ {Math.round(totalInterest).toLocaleString('en-IN')}</span>
+                <span className="font-semibold text-slate-900">₹ {Math.round(totalInterest).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between text-slate-600">
                 <span>Total Cost of Vehicle</span>
-                <span className="font-bold text-slate-900">₹ {Math.round(totalPayment).toLocaleString('en-IN')}</span>
+                <span className="font-semibold text-slate-900">₹ {Math.round(totalPayment).toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>

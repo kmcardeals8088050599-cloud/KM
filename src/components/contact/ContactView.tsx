@@ -38,13 +38,13 @@ export const ContactView: React.FC = () => {
     setTimeout(() => setSubmitted(false), 5000);
   };
 
-  const inputClasses = "w-full p-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
+  const inputClasses = "w-full p-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 transition-shadow duration-300";
 
   return (
-    <div className="pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-900">
-      <div className="max-w-7xl mx-auto space-y-16">
+    <div className="pb-28 lg:pb-24 bg-white min-h-screen text-slate-900">
+      <div className="apple-container space-y-16">
         {/* Title - light band */}
-        <div className="relative -mx-4 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-4 lg:px-8 pt-32 pb-16">
+        <div className="relative -mx-6 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-6 lg:px-8 pt-32 pb-16">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
             <p className="section-eyebrow">Showroom Location &amp; Direct Contact</p>
             <h1 className="section-headline">
@@ -66,10 +66,10 @@ export const ContactView: React.FC = () => {
               <User className="w-4 h-4 text-amber-600" strokeWidth={1.5} />
               Md Nadeem Khan
             </span>
-            <a href="tel:+918123991847" className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900">
+            <a href="tel:+918123991847" className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm">
               <Phone className="w-4 h-4" strokeWidth={1.5} /> +91 81239 91847
             </a>
-            <a href="tel:+918088050599" className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900">
+            <a href="tel:+918088050599" className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm">
               <Phone className="w-4 h-4" strokeWidth={1.5} /> +91 80880 50599
             </a>
           </div>
@@ -142,7 +142,7 @@ export const ContactView: React.FC = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-accent-apple w-full flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="btn-accent-apple w-full flex items-center justify-center gap-2 disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                 >
                   <Send className="w-4 h-4" strokeWidth={1.75} />
                   <span>{submitting ? 'Sending message...' : 'Send message'}</span>
@@ -155,7 +155,7 @@ export const ContactView: React.FC = () => {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full flex items-center justify-center gap-1.5 transition-colors"
+                className="flex-1 min-h-[44px] py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
               >
                 <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
                 <span>WhatsApp</span>
@@ -163,7 +163,7 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918123991847"
-                className="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-full flex items-center justify-center gap-1.5 transition-colors"
+                className="flex-1 min-h-[44px] py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium text-sm rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
               >
                 <Phone className="w-4 h-4" strokeWidth={1.75} />
                 Call now
@@ -171,7 +171,7 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918088050599"
-                className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-full flex items-center justify-center gap-1.5 transition-colors"
+                className="flex-1 min-h-[44px] py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-sm rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
               >
                 <Phone className="w-4 h-4 text-slate-500" strokeWidth={1.75} />
                 <span>+91 80880 50599</span>
@@ -191,7 +191,7 @@ export const ContactView: React.FC = () => {
                   href={DEALERSHIP_INFO.googleMapLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-amber-600 hover:text-amber-700 flex items-center gap-1 transition-colors"
+                  className="text-amber-600 hover:text-amber-700 flex items-center gap-1 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none rounded-sm"
                 >
                   <span>Open Maps</span>
                   <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.75} />
@@ -226,7 +226,7 @@ export const ContactView: React.FC = () => {
       <div className="mobile-sticky-cta lg:hidden flex items-center gap-2">
         <a
           href="tel:+918123991847"
-          className="flex-1 py-3 bg-amber-600 text-white font-bold text-xs rounded-full flex items-center justify-center gap-1.5"
+          className="flex-1 min-h-[44px] py-3 bg-amber-600 text-white font-medium text-xs rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
         >
           <Phone className="w-4 h-4" strokeWidth={1.75} />
           <span>Call</span>
@@ -235,7 +235,7 @@ export const ContactView: React.FC = () => {
           href={whatsappUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-3 bg-emerald-600 text-white font-bold text-xs rounded-full flex items-center justify-center gap-1.5 shadow-[0_6px_16px_-4px_rgba(16,185,129,0.5)]"
+          className="flex-1 min-h-[44px] py-3 bg-emerald-600 text-white font-medium text-xs rounded-full flex items-center justify-center gap-1.5 shadow-[0_6px_16px_-4px_rgba(16,185,129,0.5)] transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
         >
           <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
           <span>WhatsApp</span>
@@ -244,7 +244,7 @@ export const ContactView: React.FC = () => {
           href={DEALERSHIP_INFO.googleMapLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold text-xs rounded-full flex items-center justify-center gap-1.5"
+          className="flex-1 min-h-[44px] py-3 bg-slate-100 text-slate-700 font-medium text-xs rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
         >
           <MapPin className="w-4 h-4" strokeWidth={1.75} />
           <span>Directions</span>

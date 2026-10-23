@@ -56,8 +56,8 @@ export const WhyChooseUs: React.FC = () => {
   };
 
   return (
-    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-white">
-      <div className="max-w-7xl mx-auto space-y-14">
+    <section className="section-pad relative z-10 bg-white">
+      <div className="apple-container space-y-14">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export const WhyChooseUs: React.FC = () => {
               <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
                 {item.icon}
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">{item.title}</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
               <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -106,7 +106,7 @@ export const WhyChooseUs: React.FC = () => {
               <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
                 {item.icon}
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">{item.title}</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
               <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
