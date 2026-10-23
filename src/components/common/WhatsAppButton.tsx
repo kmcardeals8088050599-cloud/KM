@@ -14,10 +14,11 @@ export const WhatsAppButton: React.FC = () => {
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-40 w-12 h-12 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-lg transition-colors flex items-center justify-center"
+      className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full shadow-[0_8px_24px_-4px_rgba(16,185,129,0.6)] hover:shadow-[0_10px_30px_-4px_rgba(16,185,129,0.8)] hover:scale-105 transition-all flex items-center justify-center"
       aria-label="WhatsApp Contact"
     >
-      <MessageCircle className="w-6 h-6" strokeWidth={1.75} />
+      <span className="absolute inset-0 rounded-full bg-emerald-500/60 animate-ping" style={{ animationDuration: '2.2s' }} />
+      <MessageCircle className="w-7 h-7 relative z-10" strokeWidth={1.75} />
     </a>
   );
 };

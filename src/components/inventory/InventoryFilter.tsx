@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FilterState } from '../../types';
-import { Search, RotateCcw, Grid, List } from 'lucide-react';
+import { Search, RotateCcw, Grid, List, SlidersHorizontal, X } from 'lucide-react';
 
 // Comprehensive Indian car brand → models map
 export const INDIAN_CAR_BRANDS: Record<string, string[]> = {
@@ -152,6 +152,8 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
   setViewMode,
   totalResults
 }) => {
+  const [sheetOpen, setSheetOpen] = useState(false);
+
   const handleReset = () => {
     setFilters({
       search: '',
@@ -175,60 +177,27 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
     setFilters(prev => ({ ...prev, brand, model: 'All' }));
   };
 
-  return (
-    <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 space-y-7 shadow-card">
-      {/* Top Search & Layout Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-5 pb-6 border-b border-slate-200">
-        {/* Search Bar */}
-        <div className="relative w-full md:w-96">
-          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" strokeWidth={1.75} />
-          <input
-            type="text"
-            placeholder="Search by model, brand, colour..."
-            value={filters.search}
-            onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
-            className="w-full bg-slate-50 border border-transparent rounded-full pl-11 pr-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:bg-white transition-all"
-          />
-        </div>
+  const activeFilterCount = [
+    filters.brand !== 'All',
+    filters.model !== 'All',
+    filters.bodyType !== 'All',
+    filters.fuelType !== 'All',
+    filters.transmission !== 'All',
+    filters.rto !== 'All',
+    filters.ownerCount !== 'All'
+  ].filter(Boolean).length;
 
-        {/* View Toggle & Result Count */}
-        <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-          <span className="text-sm text-slate-500">
-            <strong className="text-slate-900 font-semibold">{totalResults}</strong> vehicles
-          </span>
-
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-full transition-all ${
-                viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
-              }`}
-              title="Grid View"
-            >
-              <Grid className="w-4 h-4" strokeWidth={1.75} />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-full transition-all ${
-                viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'
-              }`}
-              title="List View"
-            >
-              <List className="w-4 h-4" strokeWidth={1.75} />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Filter Select Controls — Row 1 */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
-        {/* Brand */}
+  // Shared select controls — rendered once, used inside both the desktop
+  // inline panel and the mobile bottom-sheet.
+  const selectControls = (
+    <>
+      <div className="grid grid-cols-2 gap-3 text-sm">
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">Brand</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Brand</label>
           <select
             value={filters.brand}
             onChange={e => handleBrandChange(e.target.value)}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400"
           >
             <option value="All">All Brands</option>
             {Object.keys(INDIAN_CAR_BRANDS).map(brand => (
@@ -237,14 +206,13 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* Model — dynamic based on selected brand */}
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">Model</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Model</label>
           <select
             value={filters.model}
             onChange={e => setFilters(prev => ({ ...prev, model: e.target.value }))}
             disabled={filters.brand === 'All' || availableModels.length === 0}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <option value="All">All Models</option>
             {availableModels.map(model => (
@@ -253,13 +221,12 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* Body Type */}
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">Body Style</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Body Style</label>
           <select
             value={filters.bodyType}
             onChange={e => setFilters(prev => ({ ...prev, bodyType: e.target.value }))}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400"
           >
             <option value="All">All Styles</option>
             <option value="Hatchback">Hatchback</option>
@@ -273,13 +240,12 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* Fuel Type */}
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">Fuel Type</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Fuel Type</label>
           <select
             value={filters.fuelType}
             onChange={e => setFilters(prev => ({ ...prev, fuelType: e.target.value }))}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400"
           >
             <option value="All">All Fuels</option>
             <option value="Petrol">Petrol</option>
@@ -289,17 +255,13 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
             <option value="Hybrid">Hybrid</option>
           </select>
         </div>
-      </div>
 
-      {/* Filter Select Controls — Row 2 */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
-        {/* Transmission */}
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">Gearbox</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Gearbox</label>
           <select
             value={filters.transmission}
             onChange={e => setFilters(prev => ({ ...prev, transmission: e.target.value }))}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400"
           >
             <option value="All">All Transmission</option>
             <option value="Automatic">Automatic</option>
@@ -307,17 +269,16 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* RTO */}
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">RTO</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">RTO</label>
           <select
             value={filters.rto}
             onChange={e => setFilters(prev => ({ ...prev, rto: e.target.value }))}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400"
           >
             <option value="All">All RTOs</option>
             {KARNATAKA_RTO_CODES.map(rto => {
-              const code = rto.split(' ')[0]; // e.g. "KA-32"
+              const code = rto.split(' ')[0];
               return (
                 <option key={code} value={code}>{rto}</option>
               );
@@ -325,13 +286,12 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* Owner Count filter */}
         <div>
-          <label className="block text-[11px] font-medium text-slate-500 uppercase tracking-wide mb-1.5">Owner</label>
+          <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Owner</label>
           <select
             value={filters.ownerCount}
             onChange={e => setFilters(prev => ({ ...prev, ownerCount: e.target.value }))}
-            className="w-full bg-slate-50 border border-transparent rounded-xl p-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-400"
           >
             <option value="All">All Owners</option>
             <option value="1st Owner">1st Owner</option>
@@ -340,17 +300,135 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           </select>
         </div>
 
-        {/* Reset */}
         <div className="flex items-end">
           <button
             onClick={handleReset}
-            className="w-full py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 text-sm rounded-xl border border-transparent transition-all flex items-center justify-center gap-1.5"
+            className="w-full py-3 px-3 bg-slate-900 hover:bg-black text-white font-semibold text-sm rounded-2xl transition-all flex items-center justify-center gap-1.5"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-500" strokeWidth={1.75} />
+            <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.75} />
             <span>Reset Filters</span>
           </button>
         </div>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* ===== Desktop / tablet — bold inline panel with real depth ===== */}
+      <div className="hidden md:block bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 space-y-7 shadow-premium">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-5 pb-6 border-b border-slate-200">
+          <div className="relative w-full md:w-96">
+            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" strokeWidth={1.75} />
+            <input
+              type="text"
+              placeholder="Search by model, brand, colour..."
+              value={filters.search}
+              onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+              className="w-full bg-slate-50 border border-slate-200 rounded-full pl-11 pr-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:bg-white transition-all font-medium"
+            />
+          </div>
+
+          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
+            <span className="text-sm text-slate-500">
+              <strong className="text-slate-900 font-bold text-base">{totalResults}</strong> vehicles
+            </span>
+
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-full">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2.5 rounded-full transition-all ${
+                  viewMode === 'grid' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-slate-900'
+                }`}
+                title="Grid View"
+              >
+                <Grid className="w-4 h-4" strokeWidth={1.75} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2.5 rounded-full transition-all ${
+                  viewMode === 'list' ? 'bg-slate-900 text-white shadow-md' : 'text-slate-500 hover:text-slate-900'
+                }`}
+                title="List View"
+              >
+                <List className="w-4 h-4" strokeWidth={1.75} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {selectControls}
+      </div>
+
+      {/* ===== Mobile — persistent trigger bar + bottom sheet ===== */}
+      <div className="md:hidden sticky top-16 z-30 -mx-4 px-4 py-3 bg-slate-50/95 backdrop-blur-lg border-b border-slate-200/80 flex items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" strokeWidth={1.75} />
+          <input
+            type="text"
+            placeholder="Search cars..."
+            value={filters.search}
+            onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+            className="w-full bg-white border border-slate-200 rounded-full pl-10 pr-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 shadow-sm"
+          />
+        </div>
+
+        <button
+          onClick={() => setSheetOpen(true)}
+          className="relative shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 text-white rounded-full text-xs font-semibold shadow-md"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5" strokeWidth={1.75} />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-600 text-[10px] font-bold text-white flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+          className="shrink-0 w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-full text-slate-700 shadow-sm"
+        >
+          {viewMode === 'grid' ? <List className="w-4 h-4" strokeWidth={1.75} /> : <Grid className="w-4 h-4" strokeWidth={1.75} />}
+        </button>
+      </div>
+
+      <div className="md:hidden -mt-1 flex items-center justify-between text-xs text-slate-500 px-1">
+        <span><strong className="text-slate-900 font-bold">{totalResults}</strong> vehicles found</span>
+      </div>
+
+      {sheetOpen && (
+        <div className="fixed inset-0 z-[60] md:hidden">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setSheetOpen(false)}
+          />
+          <div className="bottom-sheet animate-sheet-up">
+            <div className="bottom-sheet-handle" />
+            <div className="px-5 pb-6 pt-1">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">Filter Vehicles</h3>
+                <button
+                  onClick={() => setSheetOpen(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 text-slate-600"
+                >
+                  <X className="w-4 h-4" strokeWidth={1.75} />
+                </button>
+              </div>
+
+              {selectControls}
+
+              <button
+                onClick={() => setSheetOpen(false)}
+                className="btn-accent-apple w-full mt-5 !py-3.5 text-sm"
+              >
+                Show {totalResults} Vehicles
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };

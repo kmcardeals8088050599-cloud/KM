@@ -273,22 +273,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     );
   }
 
+  const navItems: { key: typeof activeTab; label: string; shortLabel: string; icon: React.ReactNode; count?: number; badge?: number }[] = [
+    { key: 'overview', label: 'Overview & Stats', shortLabel: 'Overview', icon: <TrendingUp className="w-3.5 h-3.5" /> },
+    { key: 'cars', label: `Cars Inventory (${cars.length})`, shortLabel: `Cars (${cars.length})`, icon: <CarIcon className="w-3.5 h-3.5" /> },
+    { key: 'leads', label: `Customer Leads (${leads.length})`, shortLabel: `Leads (${leads.length})`, icon: <Users className="w-3.5 h-3.5" />, badge: newLeadsCount },
+    { key: 'exchanges', label: `Exchange Requests (${exchangeRequests.length})`, shortLabel: `Exchanges (${exchangeRequests.length})`, icon: <RefreshCw className="w-3.5 h-3.5" />, badge: newExchangesCount },
+    { key: 'aiops', label: 'AI Operations', shortLabel: 'AI Ops', icon: <Bot className="w-3.5 h-3.5" /> }
+  ];
+
   return (
-    <div className="py-24 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="py-20 sm:py-24 px-3 sm:px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-800">
+      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
         {/* Top Header Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 bg-white rounded-2xl executive-card">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 bg-white rounded-2xl executive-card">
           <div className="flex items-center gap-4">
             <KmLogo variant="dark" size="lg" />
             <div className="border-l border-slate-200 pl-4">
-              <span className="text-[10px] font-semibold tracking-wide bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full uppercase">Admin Portal</span>
-              <p className="text-xs text-slate-500 mt-1">Manage vehicle inventory, customer leads, and exchange requests</p>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Admin Portal</span>
+              <p className="text-xs text-slate-500 mt-1 hidden sm:block">Manage vehicle inventory, customer leads, and exchange requests</p>
             </div>
           </div>
 
           <button
             onClick={() => { clearAuthToken(); onLogout(); }}
-            className="btn-secondary-apple text-xs flex items-center gap-2 w-fit"
+            className="btn-secondary-apple text-xs flex items-center gap-2 w-fit min-h-[44px] self-end sm:self-auto"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -296,77 +304,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         </div>
 
         {/* Dashboard Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-medium">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
-              activeTab === 'overview' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <TrendingUp className="w-3.5 h-3.5" />
-            <span>Overview &amp; Stats</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('cars')}
-            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
-              activeTab === 'cars' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <CarIcon className="w-3.5 h-3.5" />
-            <span>Cars Inventory ({cars.length})</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('leads')}
-            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
-              activeTab === 'leads' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>Customer Leads ({leads.length})</span>
-            {newLeadsCount > 0 && (
-              <span className="px-1.5 py-0.5 text-[9px] bg-amber-500 text-white font-semibold rounded-full">
-                {newLeadsCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('exchanges')}
-            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
-              activeTab === 'exchanges' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span>Exchange Requests ({exchangeRequests.length})</span>
-            {newExchangesCount > 0 && (
-              <span className="px-1.5 py-0.5 text-[9px] bg-amber-500 text-white font-semibold rounded-full">
-                {newExchangesCount}
-              </span>
-            )}
-          </button>
+        <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-semibold swipe-row">
+          {navItems.map(item => (
+            <button
+              key={item.key}
+              onClick={() => setActiveTab(item.key)}
+              className={`swipe-item px-4 sm:px-5 py-2.5 min-h-[44px] rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
+                activeTab === item.key ? 'bg-slate-900 text-white shadow-sm' : 'bg-white text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {item.icon}
+              <span className="hidden sm:inline">{item.label}</span>
+              <span className="sm:hidden">{item.shortLabel}</span>
+              {!!item.badge && item.badge > 0 && (
+                <span className="px-1.5 py-0.5 text-[9px] bg-amber-500 text-white font-bold rounded-full">
+                  {item.badge}
+                </span>
+              )}
+            </button>
+          ))}
 
           <button
             onClick={() => setActiveTab2('alerts')}
-            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
+            className={`swipe-item px-4 sm:px-5 py-2.5 min-h-[44px] rounded-xl transition-all flex items-center gap-2 whitespace-nowrap ${
               activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges'
-                ? 'bg-slate-900 text-white'
+                ? 'bg-slate-900 text-white shadow-sm'
                 : 'bg-white text-slate-600 hover:bg-slate-100'
             }`}
           >
             <Bell className="w-3.5 h-3.5" />
             <span>Alerts &amp; Reports</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('aiops')}
-            className={`px-5 py-2.5 rounded-xl transition-all flex items-center gap-2 ${
-              activeTab === 'aiops' ? 'bg-slate-900 text-white' : 'bg-white text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            <Bot className="w-3.5 h-3.5" />
-            <span>AI Operations</span>
           </button>
         </div>
 
@@ -375,40 +342,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
         {/* Tab Content: OVERVIEW */}
         {activeTab === 'overview' && (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-6 rounded-2xl executive-card flex flex-col justify-between">
-                <span className="text-xs text-slate-500 font-medium">Total Inventory</span>
-                <div className="text-3xl font-semibold tracking-tight text-slate-900 mt-2">{cars.length} Cars</div>
-                <div className="text-[11px] text-emerald-700 mt-2 font-medium">{availableCarsCount} Available in Showroom</div>
+          <div className="space-y-6 sm:space-y-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              <div className="bg-white p-5 sm:p-6 rounded-2xl executive-card flex flex-col justify-between">
+                <span className="text-[11px] sm:text-xs text-slate-500 font-semibold">Total Inventory</span>
+                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-2">{cars.length} <span className="text-base font-semibold text-slate-400">Cars</span></div>
+                <div className="text-[11px] text-emerald-700 mt-2 font-semibold">{availableCarsCount} Available in Showroom</div>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl executive-card flex flex-col justify-between">
-                <span className="text-xs text-slate-500 font-medium">Sold Cars</span>
-                <div className="text-3xl font-semibold tracking-tight text-amber-700 mt-2">{soldCarsCount} Cars</div>
-                <div className="text-[11px] text-slate-500 mt-2">Delivered to Kalaburagi Buyers</div>
+              <div className="bg-white p-5 sm:p-6 rounded-2xl executive-card flex flex-col justify-between">
+                <span className="text-[11px] sm:text-xs text-slate-500 font-semibold">Sold Cars</span>
+                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-2">{soldCarsCount} <span className="text-base font-semibold text-slate-400">Cars</span></div>
+                <div className="text-[11px] text-slate-500 mt-2 font-medium">Delivered to Kalaburagi Buyers</div>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl executive-card flex flex-col justify-between">
-                <span className="text-xs text-slate-500 font-medium">Inquiries &amp; Leads</span>
-                <div className="text-3xl font-semibold tracking-tight text-slate-900 mt-2">{leads.length} Leads</div>
-                <div className="text-[11px] text-amber-700 mt-2 font-medium">{newLeadsCount} Pending Review</div>
+              <div className="bg-white p-5 sm:p-6 rounded-2xl executive-card flex flex-col justify-between">
+                <span className="text-[11px] sm:text-xs text-slate-500 font-semibold">Inquiries &amp; Leads</span>
+                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-2">{leads.length} <span className="text-base font-semibold text-slate-400">Leads</span></div>
+                <div className="text-[11px] text-amber-700 mt-2 font-semibold">{newLeadsCount} Pending Review</div>
               </div>
 
-              <div className="bg-white p-6 rounded-2xl executive-card flex flex-col justify-between">
-                <span className="text-xs text-slate-500 font-medium">Exchange Trade-Ins</span>
-                <div className="text-3xl font-semibold tracking-tight text-emerald-700 mt-2">{exchangeRequests.length} Submitted</div>
-                <div className="text-[11px] text-emerald-700 mt-2 font-medium">{newExchangesCount} New Trade-In Requests</div>
+              <div className="bg-white p-5 sm:p-6 rounded-2xl executive-card flex flex-col justify-between">
+                <span className="text-[11px] sm:text-xs text-slate-500 font-semibold">Exchange Trade-Ins</span>
+                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-emerald-700 mt-2">{exchangeRequests.length} <span className="text-base font-semibold text-slate-400">Submitted</span></div>
+                <div className="text-[11px] text-emerald-700 mt-2 font-semibold">{newExchangesCount} New Trade-In Requests</div>
               </div>
             </div>
 
             {/* Quick Actions Bar */}
-            <div className="bg-white rounded-2xl executive-card p-6 space-y-4">
-              <h3 className="text-sm font-semibold text-slate-900">Quick Management Actions</h3>
-              <div className="flex flex-wrap gap-3">
+            <div className="bg-white rounded-2xl executive-card p-5 sm:p-6 space-y-4">
+              <h3 className="text-sm font-bold text-slate-900">Quick Management Actions</h3>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                 <button
                   onClick={() => handleOpenCarModal()}
-                  className="btn-primary-apple text-xs flex items-center gap-2"
+                  className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add New Car Listing</span>
@@ -416,7 +383,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <button
                   onClick={() => setActiveTab('leads')}
-                  className="btn-secondary-apple text-xs flex items-center gap-2"
+                  className="btn-secondary-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
                 >
                   <Users className="w-3.5 h-3.5 text-amber-700" />
                   <span>View Customer Leads ({newLeadsCount} New)</span>
@@ -424,7 +391,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                 <button
                   onClick={() => setActiveTab('exchanges')}
-                  className="btn-secondary-apple text-xs flex items-center gap-2"
+                  className="btn-secondary-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
                 >
                   <RefreshCw className="w-3.5 h-3.5 text-emerald-700" />
                   <span>View Vehicle Exchanges ({newExchangesCount} New)</span>
@@ -436,12 +403,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
         {/* Tab Content: CARS MANAGEMENT */}
         {activeTab === 'cars' && (
-          <div className="space-y-6">
+          <div className="space-y-5 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold tracking-tight text-slate-900">Car Inventory Catalog</h2>
+              <h2 className="text-lg font-bold tracking-tight text-slate-900">Car Inventory Catalog</h2>
               <button
                 onClick={() => handleOpenCarModal()}
-                className="btn-primary-apple text-xs flex items-center gap-2"
+                className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px]"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add New Vehicle</span>
@@ -450,22 +417,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
             {/* Admin Filter Bar */}
             <div className="bg-white executive-card rounded-2xl p-4 flex flex-wrap gap-3 text-xs">
-              <div>
-                <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wide mb-1">Filter by RTO</label>
+              <div className="flex-1 min-w-[160px]">
+                <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Filter by RTO</label>
                 <input
                   type="text"
                   placeholder="Search RTO code..."
                   value={adminRtoFilter}
                   onChange={e => setAdminRtoFilter(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 min-w-[200px]"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
                 />
               </div>
-              <div>
-                <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-wide mb-1">Filter by Status</label>
+              <div className="flex-1 min-w-[160px]">
+                <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Filter by Status</label>
                 <select
                   value={adminStatusFilter}
                   onChange={e => setAdminStatusFilter(e.target.value)}
-                  className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 min-h-[44px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
                 >
                   <option value="All">All Statuses</option>
                   <option value="Available">Available</option>
@@ -476,22 +443,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <div className="flex items-end">
                 <button
                   onClick={() => { setAdminRtoFilter('All'); setAdminStatusFilter('All'); }}
-                  className="btn-secondary-apple px-3 py-2 text-xs"
+                  className="btn-secondary-apple px-3 py-2.5 min-h-[44px] text-xs"
                 >
                   Reset
                 </button>
               </div>
               <div className="flex items-end ml-auto">
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Showing <strong className="text-slate-900 font-semibold">{filteredAdminCars.length}</strong> of {cars.length} cars
+                <span className="text-[11px] text-slate-500 font-semibold">
+                  Showing <strong className="text-slate-900 font-bold">{filteredAdminCars.length}</strong> of {cars.length} cars
                 </span>
               </div>
             </div>
 
-            {/* Cars Table */}
-            <div className="bg-white executive-card rounded-2xl overflow-x-auto">
+            {/* Cars Table — desktop */}
+            <div className="hidden md:block bg-white executive-card rounded-2xl overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-700">
-                <thead className="bg-slate-50 text-slate-500 font-medium uppercase text-[10px] tracking-wide border-b border-slate-100">
+                <thead className="bg-slate-50 text-slate-500 font-semibold uppercase text-[10px] tracking-wide border-b border-slate-100">
                   <tr>
                     <th className="p-4">Car Details</th>
                     <th className="p-4">Year</th>
@@ -506,21 +473,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <td className="p-4 flex items-center gap-3">
                         <img src={car.images[0]} alt="" className="w-14 h-10 object-cover rounded-lg shrink-0 border border-slate-100" referrerPolicy="no-referrer" />
                         <div>
-                          <p className="font-semibold text-slate-900 line-clamp-1">{car.title}</p>
+                          <p className="font-bold text-slate-900 line-clamp-1">{car.title}</p>
                           <p className="text-[10px] text-slate-500">{car.brand} • {car.year} • {car.fuelType} • {car.transmission}</p>
                         </div>
                       </td>
                       <td className="p-4">
-                        <span className="font-medium text-slate-800">{car.year}</span>
+                        <span className="font-semibold text-slate-800">{car.year}</span>
                       </td>
                       <td className="p-4">
-                        <span className="font-medium text-slate-600 text-[11px]">{car.specs?.rto || '—'}</span>
+                        <span className="font-semibold text-slate-600 text-[11px]">{car.specs?.rto || '—'}</span>
                       </td>
                       <td className="p-4">
                         <select
                           value={car.status}
                           onChange={e => handleToggleCarStatus(car.id, e.target.value as CarStatus)}
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-wide border-0 focus:outline-none focus:ring-2 focus:ring-amber-500/30 ${
+                          className={`px-2.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border-0 focus:outline-none focus:ring-2 focus:ring-amber-500/30 ${
                             car.status === 'Available'
                               ? 'bg-emerald-50 text-emerald-700'
                               : car.status === 'Reserved'
@@ -536,14 +503,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <td className="p-4 text-right space-x-2">
                         <button
                           onClick={() => handleOpenCarModal(car)}
-                          className="p-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors"
+                          className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors"
                           title="Edit Car"
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDeleteCar(car.id)}
-                          className="p-1.5 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-lg transition-colors"
+                          className="p-2 bg-slate-50 hover:bg-red-50 text-slate-500 hover:text-red-600 rounded-lg transition-colors"
                           title="Delete Car"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -554,17 +521,65 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </tbody>
               </table>
             </div>
+
+            {/* Cars list — mobile stacked cards */}
+            <div className="md:hidden space-y-3">
+              {filteredAdminCars.map(car => (
+                <div key={car.id} className="bg-white executive-card rounded-2xl p-4 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <img src={car.images[0]} alt="" className="w-20 h-14 object-cover rounded-lg shrink-0 border border-slate-100" referrerPolicy="no-referrer" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-slate-900 line-clamp-1 text-sm">{car.title}</p>
+                      <p className="text-[11px] text-slate-500">{car.brand} • {car.year} • {car.fuelType} • {car.transmission}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                    <span className="text-[11px] font-semibold text-slate-600">RTO: {car.specs?.rto || '—'}</span>
+                    <select
+                      value={car.status}
+                      onChange={e => handleToggleCarStatus(car.id, e.target.value as CarStatus)}
+                      className={`px-2.5 py-1.5 rounded-full text-[10px] font-semibold uppercase tracking-wide border-0 focus:outline-none focus:ring-2 focus:ring-amber-500/30 ${
+                        car.status === 'Available'
+                          ? 'bg-emerald-50 text-emerald-700'
+                          : car.status === 'Reserved'
+                          ? 'bg-amber-50 text-amber-700'
+                          : 'bg-slate-100 text-slate-500'
+                      }`}
+                    >
+                      <option value="Available">Available</option>
+                      <option value="Reserved">Reserved</option>
+                      <option value="Sold">Sold</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      onClick={() => handleOpenCarModal(car)}
+                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-xl transition-colors"
+                    >
+                      <Edit className="w-3.5 h-3.5" /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteCar(car.id)}
+                      className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-semibold rounded-xl transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {/* Tab Content: LEADS */}
         {activeTab === 'leads' && (
-          <div className="space-y-6">
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900">Customer Inquiries &amp; Test Drive Leads</h2>
+          <div className="space-y-5 sm:space-y-6">
+            <h2 className="text-lg font-bold tracking-tight text-slate-900">Customer Inquiries &amp; Test Drive Leads</h2>
 
-            <div className="bg-white executive-card rounded-2xl overflow-x-auto">
+            {/* Desktop table */}
+            <div className="hidden md:block bg-white executive-card rounded-2xl overflow-x-auto">
               <table className="w-full text-left text-xs text-slate-700">
-                <thead className="bg-slate-50 text-slate-500 font-medium uppercase text-[10px] tracking-wide border-b border-slate-100">
+                <thead className="bg-slate-50 text-slate-500 font-semibold uppercase text-[10px] tracking-wide border-b border-slate-100">
                   <tr>
                     <th className="p-4">Customer Name</th>
                     <th className="p-4">Phone</th>
@@ -579,15 +594,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     const waUrl = createWhatsAppLink(lead.phone, `Hi ${lead.name}, this is KM Car Deals regarding your inquiry for ${lead.carTitle || 'pre-owned vehicles'}.`);
                     return (
                       <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="p-4 font-semibold text-slate-900">{lead.name}</td>
-                        <td className="p-4 font-medium text-slate-600">{lead.phone}</td>
+                        <td className="p-4 font-bold text-slate-900">{lead.name}</td>
+                        <td className="p-4 font-semibold text-slate-600">{lead.phone}</td>
                         <td className="p-4 text-slate-700">{lead.carTitle || 'General Showroom Inquiry'}</td>
                         <td className="p-4 text-slate-500 max-w-xs truncate">{lead.message}</td>
                         <td className="p-4">
                           <select
                             value={lead.status}
                             onChange={e => handleUpdateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                            className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                            className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/30"
                           >
                             <option value="New">New</option>
                             <option value="Contacted">Contacted</option>
@@ -600,14 +615,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             href={waUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg inline-flex items-center transition-colors"
+                            className="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg inline-flex items-center transition-colors"
                             title="WhatsApp Customer"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                           </a>
                           <a
                             href={`tel:${lead.phone}`}
-                            className="p-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg inline-flex items-center transition-colors"
+                            className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg inline-flex items-center transition-colors"
                             title="Call Customer"
                           >
                             <Phone className="w-3.5 h-3.5" />
@@ -619,31 +634,78 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile stacked cards */}
+            <div className="md:hidden space-y-3">
+              {leads.map(lead => {
+                const waUrl = createWhatsAppLink(lead.phone, `Hi ${lead.name}, this is KM Car Deals regarding your inquiry for ${lead.carTitle || 'pre-owned vehicles'}.`);
+                return (
+                  <div key={lead.id} className="bg-white executive-card rounded-2xl p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="font-bold text-slate-900 text-sm">{lead.name}</p>
+                        <p className="text-[11px] text-slate-500 font-medium">{lead.phone}</p>
+                      </div>
+                      <select
+                        value={lead.status}
+                        onChange={e => handleUpdateLeadStatus(lead.id, e.target.value as LeadStatus)}
+                        className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 text-[11px] text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                      >
+                        <option value="New">New</option>
+                        <option value="Contacted">Contacted</option>
+                        <option value="Test Drive Scheduled">Test Drive Scheduled</option>
+                        <option value="Closed">Closed</option>
+                      </select>
+                    </div>
+                    <div className="text-xs text-slate-600 space-y-1 bg-slate-50 rounded-xl p-3">
+                      <p><span className="text-slate-400 font-semibold">Car: </span>{lead.carTitle || 'General Showroom Inquiry'}</p>
+                      {lead.message && <p className="text-slate-500">{lead.message}</p>}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-xl transition-colors"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
+                      </a>
+                      <a
+                        href={`tel:${lead.phone}`}
+                        className="flex-1 min-h-[44px] flex items-center justify-center gap-2 bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl transition-colors"
+                      >
+                        <Phone className="w-3.5 h-3.5" /> Call
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
         {/* Tab Content: EXCHANGE REQUESTS */}
         {activeTab === 'exchanges' && (
-          <div className="space-y-6">
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900">Vehicle Exchange Submissions</h2>
+          <div className="space-y-5 sm:space-y-6">
+            <h2 className="text-lg font-bold tracking-tight text-slate-900">Vehicle Exchange Submissions</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
               {exchangeRequests.map(ex => {
                 const waText = `Hi ${ex.customerName}, this is KM Car Deals regarding your vehicle exchange request for your ${ex.currentBrand} ${ex.currentModel} (${ex.currentYear}). We have reviewed your request.`;
                 const waUrl = createWhatsAppLink(ex.phone, waText);
 
                 return (
-                  <div key={ex.id} className="bg-white executive-card rounded-2xl p-6 space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div key={ex.id} className="bg-white executive-card rounded-2xl p-5 sm:p-6 space-y-4">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-3 gap-3">
                       <div>
-                        <h3 className="text-base font-semibold text-slate-900">{ex.customerName}</h3>
+                        <h3 className="text-base font-bold text-slate-900">{ex.customerName}</h3>
                         <p className="text-xs text-slate-500">{ex.phone}</p>
                       </div>
 
                       <select
                         value={ex.status}
                         onChange={e => handleUpdateExchangeStatus(ex.id, e.target.value as ExchangeStatus)}
-                        className="bg-slate-50 border border-slate-200 text-amber-800 font-medium rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                        className="bg-slate-50 border border-slate-200 text-amber-800 font-semibold rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/30"
                       >
                         <option value="New">New</option>
                         <option value="Reviewing">Reviewing</option>
@@ -654,22 +716,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     </div>
 
                     <div className="p-4 bg-slate-50 rounded-xl space-y-2 text-xs">
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-3">
                         <span className="text-slate-500">Trade-In Vehicle:</span>
-                        <span className="font-semibold text-slate-900">{ex.currentBrand} {ex.currentModel} ({ex.currentYear})</span>
+                        <span className="font-bold text-slate-900 text-right">{ex.currentBrand} {ex.currentModel} ({ex.currentYear})</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-3">
                         <span className="text-slate-500">Kilometers &amp; Fuel:</span>
-                        <span className="font-medium text-slate-700">{ex.currentKilometers.toLocaleString('en-IN')} km • {ex.fuelType} {ex.transmission}</span>
+                        <span className="font-semibold text-slate-700 text-right">{ex.currentKilometers.toLocaleString('en-IN')} km • {ex.fuelType} {ex.transmission}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between gap-3">
                         <span className="text-slate-500">Customer Expected Price:</span>
-                        <span className="font-semibold text-amber-700">₹ {ex.expectedPrice} Lakhs</span>
+                        <span className="font-bold text-amber-700 text-right">₹ {ex.expectedPrice} Lakhs</span>
                       </div>
                       {ex.targetCarTitle && (
-                        <div className="flex justify-between pt-1 border-t border-slate-200 text-emerald-700">
+                        <div className="flex justify-between gap-3 pt-1 border-t border-slate-200 text-emerald-700">
                           <span>Target Upgrade Vehicle:</span>
-                          <span className="font-semibold">{ex.targetCarTitle}</span>
+                          <span className="font-bold text-right">{ex.targetCarTitle}</span>
                         </div>
                       )}
                     </div>
@@ -684,12 +746,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                     )}
 
-                    <div className="pt-2 flex items-center justify-between">
+                    <div className="pt-2 flex items-center justify-between gap-3">
                       <a
                         href={waUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-primary-apple text-xs flex items-center gap-1.5"
+                        className="btn-primary-apple text-xs flex-1 flex items-center justify-center gap-1.5 min-h-[44px]"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
                         <span>Chat Valuation on WhatsApp</span>
@@ -697,7 +759,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                       <a
                         href={`tel:${ex.phone}`}
-                        className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-colors"
+                        className="p-3 min-h-[44px] min-w-[44px] flex items-center justify-center bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-colors"
                         title="Call Customer"
                       >
                         <Phone className="w-4 h-4" />
@@ -713,22 +775,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
       {/* Tab Content: ALERTS & REPORTS */}
       {activeTab2 === 'alerts' && activeTab !== 'overview' && activeTab !== 'cars' && activeTab !== 'leads' && activeTab !== 'exchanges' && (
-        <div className="max-w-7xl mx-auto space-y-6 mt-8">
-          <h2 className="text-lg font-semibold tracking-tight text-slate-900">Alerts &amp; Automated Reports</h2>
+        <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6 mt-6 sm:mt-8">
+          <h2 className="text-lg font-bold tracking-tight text-slate-900">Alerts &amp; Automated Reports</h2>
 
           {/* Daily Report */}
-          <div className="bg-white executive-card rounded-2xl p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <Send className="w-4 h-4 text-amber-600" />
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900">Daily Summary Report</h3>
-                <p className="text-[11px] text-slate-500">Sends today's inventory, leads, and exchange stats to admin WhatsApp</p>
-              </div>
+          <div className="bg-white executive-card rounded-2xl p-5 sm:p-6 space-y-4">
+            <div>
+              <h3 className="text-sm font-bold text-slate-900">Daily Summary Report</h3>
+              <p className="text-[11px] text-slate-500">Sends today's inventory, leads, and exchange stats to admin WhatsApp</p>
             </div>
             <button
               onClick={handleDailyReport}
               disabled={reportLoading}
-              className="btn-accent-apple text-xs flex items-center gap-2 disabled:opacity-50"
+              className="btn-accent-apple text-xs flex items-center justify-center gap-2 min-h-[44px] disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
               {reportLoading ? 'Generating...' : 'Send Daily Report Now'}
@@ -739,15 +798,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
             )}
           </div>
-
-
         </div>
       )}
 
       {/* Add / Edit Car Modal */}
       {carModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-md overflow-y-auto">
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl p-6 sm:p-8 space-y-6 executive-card max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-950/50 backdrop-blur-md overflow-y-auto">
+          <div className="relative w-full sm:max-w-2xl bg-white rounded-t-3xl sm:rounded-2xl p-6 sm:p-8 space-y-6 executive-card max-h-[92vh] overflow-y-auto">
             <button
               onClick={() => setCarModalOpen(false)}
               className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors"
@@ -755,30 +812,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <X className="w-4 h-4" />
             </button>
 
-            <h2 className="text-xl font-semibold tracking-tight text-slate-900">
+            <h2 className="text-xl font-bold tracking-tight text-slate-900">
               {editingCarId ? 'Edit Vehicle Listing' : 'Add New Vehicle Listing'}
             </h2>
 
             <form onSubmit={handleSaveCar} className="space-y-4 text-sm">
               <div>
-                <label className="block text-slate-600 text-xs font-medium mb-1.5">Car Title *</label>
+                <label className="block text-slate-600 text-xs font-semibold mb-1.5">Car Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Hyundai Creta 1.5 SX (O) Diesel Automatic"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                 />
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Brand *</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Brand *</label>
                   <select
                     value={brand}
                     onChange={e => setBrand(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   >
                     {Object.keys(INDIAN_CAR_BRANDS).map(b => (
                       <option key={b} value={b}>{b}</option>
@@ -788,35 +845,35 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Model Name *</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Model Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Creta / Thar"
                     value={model}
                     onChange={e => setModel(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Year</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Year</label>
                   <input
                     type="number"
                     value={year}
                     onChange={e => setYear(parseInt(e.target.value) || 2022)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Fuel Type</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Fuel Type</label>
                   <select
                     value={fuelType}
                     onChange={e => setFuelType(e.target.value as FuelType)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   >
                     <option value="Petrol">Petrol</option>
                     <option value="Diesel">Diesel</option>
@@ -829,11 +886,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Transmission</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Transmission</label>
                   <select
                     value={transmission}
                     onChange={e => setTransmission(e.target.value as Transmission)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   >
                     <option value="Manual">Manual</option>
                     <option value="Automatic">Automatic</option>
@@ -841,22 +898,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Body Type</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Body Type</label>
                   <input
                     type="text"
                     placeholder="e.g. SUV, Sedan, Hatchback, Luxury"
                     value={bodyType}
                     onChange={e => setBodyType(e.target.value as BodyType)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">Availability</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">Availability</label>
                   <select
                     value={status}
                     onChange={e => setStatus(e.target.value as CarStatus)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   >
                     <option value="Available">Available</option>
                     <option value="Reserved">Reserved</option>
@@ -869,13 +926,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-600 text-xs font-medium mb-1.5">RTO</label>
+                  <label className="block text-slate-600 text-xs font-semibold mb-1.5">RTO</label>
                   <input
                     type="text"
                     placeholder="e.g. KA-32 (Kalaburagi)"
                     value={rtoStr}
                     onChange={e => setRtoStr(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white transition-colors"
                   />
                 </div>
               </div>
@@ -887,17 +944,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <span>{saveError}</span>
                   </div>
                 )}
-                <div className="flex justify-end gap-3">
+                <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setCarModalOpen(false)}
-                    className="btn-secondary-apple text-sm"
+                    className="btn-secondary-apple text-sm min-h-[44px] order-2 sm:order-1"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="btn-primary-apple text-sm"
+                    className="btn-accent-apple text-sm min-h-[44px] order-1 sm:order-2"
                   >
                     Save Car Listing
                   </button>

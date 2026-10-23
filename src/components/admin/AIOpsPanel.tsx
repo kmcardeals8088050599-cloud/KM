@@ -174,25 +174,25 @@ export const AIOpsPanel: React.FC = () => {
       {/* Header + status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center">
-            <Bot className="w-4 h-4 text-amber-400" />
+          <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
+            <Bot className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900">AI Vehicle Operations</h2>
+            <h2 className="text-lg font-bold tracking-tight text-slate-900">AI Vehicle Operations</h2>
             <p className="text-xs text-slate-500">WhatsApp intake, drafts, approval &amp; publishing</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={refresh}
-            className="btn-secondary-apple text-xs flex items-center gap-2 w-fit"
+            className="btn-secondary-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px]"
           >
             <RefreshCw className="w-3.5 h-3.5" /> Refresh
           </button>
           <button
             onClick={handleExport}
             disabled={busy}
-            className="btn-accent-apple text-xs flex items-center gap-2 w-fit disabled:opacity-40"
+            className="btn-accent-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] disabled:opacity-40"
             title="Admin-only CSV with product ids + asking prices"
           >
             <Download className="w-3.5 h-3.5" /> Export Catalogue (Excel)
@@ -201,7 +201,7 @@ export const AIOpsPanel: React.FC = () => {
       </div>
 
       {/* Integration readiness */}
-      <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <StatusCard label="AI Provider" ok={status ? aiProviderReady(status) : undefined} hint={aiProviderHint(status)} />
         <StatusCard label="WhatsApp API" ok={status?.whatsappConfigured} />
         <StatusCard label="Instagram" ok={status?.instagramConfigured} />
@@ -210,12 +210,12 @@ export const AIOpsPanel: React.FC = () => {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-50 rounded-xl text-sm font-medium text-red-700">{error}</div>
+        <div className="p-4 bg-red-50 rounded-xl text-sm font-semibold text-red-700">{error}</div>
       )}
 
       {/* Manual intake (fast path for admin, no WhatsApp needed) */}
       <div className="p-5 bg-white executive-card rounded-2xl space-y-3">
-        <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 uppercase tracking-wide">
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wide">
           <Send className="w-3.5 h-3.5 text-amber-600" /> Manual Intake
         </div>
         <p className="text-xs text-slate-500">
@@ -234,27 +234,27 @@ export const AIOpsPanel: React.FC = () => {
         <button
           onClick={handleIntake}
           disabled={busy || !intakeText.trim()}
-          className="btn-primary-apple text-xs flex items-center gap-2 w-fit disabled:opacity-40"
+          className="btn-primary-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] disabled:opacity-40"
         >
           <Bot className="w-3.5 h-3.5" /> Run AI Intake
         </button>
       </div>
 
       {actionMsg && (
-        <div className="p-3 bg-amber-50 rounded-xl text-xs font-medium text-amber-800">{actionMsg}</div>
+        <div className="p-3 bg-amber-50 rounded-xl text-xs font-semibold text-amber-800">{actionMsg}</div>
       )}
 
       {/* Draft filters */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold text-slate-600">State:</span>
+      <div className="flex flex-wrap items-center gap-2 swipe-row">
+        <span className="text-xs font-bold text-slate-600 shrink-0">State:</span>
         {['All', 'READY_FOR_REVIEW', 'INCOMPLETE', 'PROCESSING', 'PUBLISHED', 'PUBLISH_FAILED', 'SOLD', 'ARCHIVED', 'PROCESSING_FAILED'].map(s => (
           <button
             key={s}
             onClick={() => setStateFilter(s)}
-            className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-colors ${
+            className={`swipe-item px-3 py-1.5 min-h-[32px] rounded-full text-[11px] font-semibold transition-colors whitespace-nowrap ${
               stateFilter === s
-                ? 'bg-amber-500 text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-100'
+                ? 'bg-slate-900 text-white'
+                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
             {s}
@@ -279,17 +279,17 @@ export const AIOpsPanel: React.FC = () => {
               <div key={d.id} className="p-4 bg-white executive-card rounded-2xl flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium uppercase tracking-wide ${badge.bg} ${badge.text}`}>{d.state}</span>
-                    <span className="text-sm font-semibold text-slate-900 truncate">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide ${badge.bg} ${badge.text}`}>{d.state}</span>
+                    <span className="text-sm font-bold text-slate-900 truncate">
                       {d.data.brand || '?'} {d.data.model || ''} {d.data.variant ? `· ${d.data.variant}` : ''} {d.data.manufacturingYear ? `(${d.data.manufacturingYear})` : ''}
                     </span>
                   </div>
-                  <div className="mt-1 text-[11px] font-medium text-slate-500 space-x-3">
+                  <div className="mt-1 text-[11px] font-medium text-slate-500 flex flex-wrap gap-x-3 gap-y-0.5">
                     {d.data.fuelType && <span>{d.data.fuelType}</span>}
                     {d.data.transmission && <span>{d.data.transmission}</span>}
                     {d.data.bodyType && <span>{d.data.bodyType}</span>}
                     {d.data.odometerKm && <span>{d.data.odometerKm.toLocaleString('en-IN')} km</span>}
-                    {d.data.price ? <span className="text-emerald-700">{priceLakh(d.data.price)}</span> : null}
+                    {d.data.price ? <span className="text-amber-700 font-semibold">{priceLakh(d.data.price)}</span> : null}
                   </div>
                   <div className="mt-1 text-[10px] text-slate-400 truncate">
                     {d.id} · {d.images?.length || 0} images · {d.source || 'whatsapp'} · {new Date(d.createdAt).toLocaleString('en-IN')}
@@ -297,17 +297,17 @@ export const AIOpsPanel: React.FC = () => {
                   {d.publishResult?.entries?.length ? (
                     <div className="mt-1.5 flex flex-wrap gap-1.5">
                       {d.publishResult.entries.map(e => (
-                        <span key={e.channel} className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium uppercase ${e.status === 'success' ? 'bg-emerald-50 text-emerald-700' : e.status === 'failed' ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-500'}`}>
+                        <span key={e.channel} className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold uppercase ${e.status === 'success' ? 'bg-emerald-50 text-emerald-700' : e.status === 'failed' ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-500'}`}>
                           {e.channel}: {e.status}{e.error ? ` (${e.error.slice(0, 40)})` : ''}
                         </span>
                       ))}
                     </div>
                   ) : null}
                 </div>
-                <div className="flex sm:flex-col gap-2 sm:shrink-0">
+                <div className="flex sm:flex-col gap-2 sm:shrink-0 sm:w-56">
                   <button
                     onClick={() => openDetail(d.id)}
-                    className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 text-[11px] font-medium rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="flex-1 sm:flex-none min-h-[40px] px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 text-[11px] font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <Eye className="w-3.5 h-3.5" /> Review
                   </button>
@@ -315,17 +315,17 @@ export const AIOpsPanel: React.FC = () => {
                     const gates = draftPublishGates(d);
                     return (
                       <>
-                        <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-1.5">
                           {gates.missing.length > 0 && (
-                            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-medium uppercase bg-red-50 text-red-700">
+                            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-red-50 text-red-700">
                               Missing: {gates.missing.join(', ')}
                             </span>
                           )}
-                          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-medium uppercase ${gates.photos.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
+                          <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold uppercase ${gates.photos.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
                             {gates.photos.count} / {MIN_PHOTOS_FOR_PUBLISH} photos
                           </span>
                           {gates.blocked && (
-                            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-medium uppercase bg-amber-50 text-amber-700">
+                            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-amber-50 text-amber-700">
                               Remaining required fields: {gates.missing.length + (gates.photos.ok ? 0 : 1)}
                             </span>
                           )}
@@ -336,7 +336,7 @@ export const AIOpsPanel: React.FC = () => {
                           title={gates.blocked
                             ? `Cannot publish yet — missing: ${gates.missing.length ? gates.missing.join(', ') : 'none'}; photos ${gates.photos.count}/3`
                             : 'Publish to catalogue'}
-                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold rounded-lg flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                          className="min-h-[44px] px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-lg flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
                         >
                           <ThumbsUp className="w-3.5 h-3.5" /> Approve {gates.blocked ? '(blocked)' : ''}
                         </button>
@@ -360,13 +360,13 @@ export const AIOpsPanel: React.FC = () => {
             {/* Header */}
             <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between gap-4 z-10">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center text-xs font-semibold shrink-0">{detail.draft.id.slice(0, 4)}</div>
+                <div className="w-10 h-10 rounded-xl bg-slate-900 text-amber-400 flex items-center justify-center text-xs font-bold shrink-0">{detail.draft.id.slice(0, 4)}</div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 truncate">{detail.draft.data.brand} {detail.draft.data.model} {detail.draft.data.manufacturingYear}</p>
-                  <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wide">{detail.draft.state}</p>
+                  <p className="text-sm font-bold text-slate-900 truncate">{detail.draft.data.brand} {detail.draft.data.model} {detail.draft.data.manufacturingYear}</p>
+                  <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">{detail.draft.state}</p>
                 </div>
               </div>
-              <button onClick={() => setDetail(null)} className="p-1.5 bg-slate-100 rounded-full">
+              <button onClick={() => setDetail(null)} className="p-2 min-h-[40px] min-w-[40px] flex items-center justify-center bg-slate-100 rounded-full">
                 <X className="w-4 h-4 text-slate-600" />
               </button>
             </div>
@@ -445,29 +445,29 @@ export const AIOpsPanel: React.FC = () => {
               <div className="flex flex-wrap gap-2">
                 {detail.draft.state === 'READY_FOR_REVIEW' && (
                   <>
-                    <button onClick={() => runAction(async () => aiApproveDraft(detail.draft.id), '✅ Approved & published.')} disabled={busy} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl flex items-center gap-2 disabled:opacity-40 transition-colors">
+                    <button onClick={() => runAction(async () => aiApproveDraft(detail.draft.id), '✅ Approved & published.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors">
                       <Check className="w-3.5 h-3.5" /> Approve &amp; Publish
                     </button>
-                    <button onClick={() => runAction(async () => aiRejectDraft(detail.draft.id), 'Draft archived.')} disabled={busy} className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-semibold rounded-xl flex items-center gap-2 disabled:opacity-40 transition-colors">
+                    <button onClick={() => runAction(async () => aiRejectDraft(detail.draft.id), 'Draft archived.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors">
                       <ThumbsDown className="w-3.5 h-3.5" /> Reject
                     </button>
                   </>
                 )}
                 {detail.draft.publishedCarId && (
-                  <button onClick={() => runAction(async () => aiMarkSold(detail.draft.id), 'Marked SOLD.')} disabled={busy} className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl disabled:opacity-40 transition-colors">
+                  <button onClick={() => runAction(async () => aiMarkSold(detail.draft.id), 'Marked SOLD.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl disabled:opacity-40 transition-colors">
                     Mark Sold
                   </button>
                 )}
-                <button onClick={() => runAction(async () => aiRegenerate(detail.draft.id), '🔄 Regenerated.')} disabled={busy} className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-2 disabled:opacity-40 transition-colors">
+                <button onClick={() => runAction(async () => aiRegenerate(detail.draft.id), '🔄 Regenerated.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors">
                   <RotateCcw className="w-3.5 h-3.5" /> Regenerate
                 </button>
-                <div className="flex items-center gap-2 px-2 py-1 bg-white border border-slate-200 rounded-xl">
-                  <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+                <div className="flex items-center gap-2 px-3 py-1 min-h-[44px] bg-white border border-slate-200 rounded-xl flex-1 sm:flex-none">
+                  <DollarSign className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <input
                     value={priceInput}
                     onChange={e => setPriceInput(e.target.value)}
                     placeholder="New price in Lakh (e.g. 31.75)"
-                    className="w-32 text-xs font-medium outline-none"
+                    className="flex-1 sm:w-32 text-xs font-medium outline-none min-w-0"
                   />
                   <button
                     onClick={() => {
@@ -475,7 +475,7 @@ export const AIOpsPanel: React.FC = () => {
                       if (!isNaN(lakh) && lakh > 0) runAction(async () => aiUpdatePrice(detail.draft.id, Math.round(lakh * 100000)), '✅ Price updated.');
                     }}
                     disabled={busy || !priceInput}
-                    className="px-3 py-1.5 bg-slate-900 text-white text-[11px] font-semibold rounded-lg disabled:opacity-40"
+                    className="px-3 py-1.5 min-h-[36px] bg-slate-900 text-white text-[11px] font-bold rounded-lg disabled:opacity-40 shrink-0"
                   >
                     Update
                   </button>
@@ -483,7 +483,7 @@ export const AIOpsPanel: React.FC = () => {
               </div>
 
               {detail.draft.error && (
-                <div className="p-3 bg-red-50 rounded-xl text-xs text-red-700 font-medium whitespace-pre-wrap">
+                <div className="p-3 bg-red-50 rounded-xl text-xs text-red-700 font-semibold whitespace-pre-wrap">
                   {JSON.stringify(detail.draft.error)}
                 </div>
               )}
@@ -512,13 +512,13 @@ function aiProviderHint(status: any): string | undefined {
 
 function StatusCard({ label, ok, hint, count }: { label: string; ok?: boolean; hint?: string; count?: number }) {
   return (
-    <div className="p-4 bg-white executive-card rounded-2xl flex items-center gap-3">
-      <div className={`w-7 h-7 rounded-full flex items-center justify-center ${ok === undefined ? 'bg-slate-100' : ok ? 'bg-emerald-50' : 'bg-red-50'}`}>
+    <div className="p-3.5 sm:p-4 bg-white executive-card rounded-2xl flex items-center gap-3">
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${ok === undefined ? 'bg-slate-100' : ok ? 'bg-emerald-50' : 'bg-red-50'}`}>
         {ok === undefined ? <Clock className="w-3.5 h-3.5 text-slate-400" /> : ok ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <X className="w-3.5 h-3.5 text-red-600" />}
       </div>
-      <div>
-        <p className="text-xs font-semibold text-slate-700">{label}</p>
-        <p className="text-[10px] font-medium text-slate-400">{hint ?? (count !== undefined ? count : ok ? 'Ready' : 'Not configured')}</p>
+      <div className="min-w-0">
+        <p className="text-xs font-bold text-slate-700 truncate">{label}</p>
+        <p className="text-[10px] font-medium text-slate-400 truncate">{hint ?? (count !== undefined ? count : ok ? 'Ready' : 'Not configured')}</p>
       </div>
     </div>
   );
@@ -527,7 +527,7 @@ function StatusCard({ label, ok, hint, count }: { label: string; ok?: boolean; h
 function Section({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="bg-white executive-card rounded-2xl p-4 space-y-3">
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 uppercase tracking-wide">
+      <div className="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase tracking-wide">
         {icon} {title}
       </div>
       {children}
@@ -542,9 +542,9 @@ function Field({ k, v, locked, conf }: { k: string; v: string | number | boolean
     <div className="p-2.5 rounded-xl bg-slate-50">
       <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide flex items-center gap-1">
         {label}
-        {locked && <span className="text-[9px] bg-slate-900 text-white px-1 rounded">LOCKED</span>}
+        {locked && <span className="text-[9px] bg-slate-900 text-white px-1 rounded font-bold">LOCKED</span>}
       </p>
-      <p className="text-xs font-medium text-slate-800 truncate" title={String(display)}>{String(display)}</p>
+      <p className="text-xs font-semibold text-slate-800 truncate" title={String(display)}>{String(display)}</p>
       {conf !== undefined && <p className="text-[9px] text-slate-400 font-medium">confidence {Math.round(conf * 100)}%</p>}
     </div>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, MapPin, Phone, Clock, Star } from 'lucide-react';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 import { createWhatsAppLink } from '../../lib/api';
 import { KmLogo } from '../common/KmLogo';
@@ -38,28 +38,32 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-slate-100 text-slate-600 border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-5 lg:px-8 py-10">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pb-8 border-b border-slate-300/70">
-          <div className="col-span-2 sm:col-span-1 space-y-3">
-            <Link to="/" className="inline-block">
-              <KmLogo variant="amber" size="sm" />
-            </Link>
-            <p className="text-[13px] leading-relaxed text-slate-500 max-w-xs">
-              Kalaburagi's multi-brand pre-owned car dealership. 150-point inspected, non-accidental guaranteed.
+    <footer className="bg-slate-950 text-slate-400">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-16 pb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+          <div className="col-span-2 space-y-4">
+            <KmLogo variant="white" size="sm" />
+            <p className="text-[13.5px] leading-relaxed text-slate-400 max-w-xs">
+              Kalaburagi's premier multi-brand pre-owned car dealership, managed by{' '}
+              <span className="text-white font-semibold">Md Nadeem Khan</span>. 150-point inspected, non-accidental
+              guaranteed.
             </p>
+            <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3.5 py-1.5 text-xs font-semibold text-amber-300">
+              <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+              5.0 Rated on Google
+            </div>
           </div>
 
           {columns.map(col => (
-            <div key={col.title} className="space-y-3">
-              <h4 className="text-[13px] font-semibold text-slate-900">{col.title}</h4>
+            <div key={col.title} className="space-y-3.5">
+              <h4 className="text-[13px] font-bold text-white tracking-wide">{col.title}</h4>
               <ul className="space-y-2.5">
                 {col.links.map(link => (
                   <li key={link.path}>
                     <Link
                       to={link.path}
                       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      className="text-[13px] text-slate-500 hover:text-slate-900 transition-colors"
+                      className="text-[13.5px] text-slate-400 hover:text-amber-300 transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -68,30 +72,42 @@ export const Footer: React.FC = () => {
               </ul>
             </div>
           ))}
+
+          <div className="space-y-3.5 col-span-2 sm:col-span-1">
+            <h4 className="text-[13px] font-bold text-white tracking-wide">Visit us</h4>
+            <div className="space-y-3 text-[13px]">
+              <p className="flex items-start gap-2 text-slate-400">
+                <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>
+                  {DEALERSHIP_INFO.address}, {DEALERSHIP_INFO.city}
+                </span>
+              </p>
+              <p className="flex items-center gap-2 text-slate-400">
+                <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+                {DEALERSHIP_INFO.workingHours}
+              </p>
+              {DEALERSHIP_INFO.phones.map((p, idx) => (
+                <a key={idx} href={`tel:${p}`} className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors font-medium">
+                  <Phone className="w-4 h-4 text-amber-400 shrink-0" />
+                  {p}
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-slate-500">
-          <p>
-            Copyright © {new Date().getFullYear()} KM Car Deals. {DEALERSHIP_INFO.address}, {DEALERSHIP_INFO.city},{' '}
-            {DEALERSHIP_INFO.state} {DEALERSHIP_INFO.pincode}.
-          </p>
+        <div className="pt-7 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] text-slate-500">
+          <p>Copyright © {new Date().getFullYear()} KM Car Deals. All rights reserved.</p>
 
-          <div className="flex items-center gap-4">
-            {DEALERSHIP_INFO.phones.map((p, idx) => (
-              <a key={idx} href={`tel:${p}`} className="hover:text-slate-900 transition-colors">
-                {p}
-              </a>
-            ))}
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-emerald-600 hover:text-emerald-700 transition-colors font-medium"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-              <span>WhatsApp</span>
-            </a>
-          </div>
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition-colors font-semibold"
+          >
+            <MessageCircle className="w-3.5 h-3.5" />
+            <span>Chat on WhatsApp</span>
+          </a>
         </div>
       </div>
     </footer>

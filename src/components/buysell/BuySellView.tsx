@@ -33,26 +33,28 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
   const inputClasses = "p-3 bg-white border border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
 
   return (
-    <div className="py-28 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
+    <div className="pb-28 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
       <div className="max-w-7xl mx-auto space-y-20">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <p className="section-eyebrow">Buy, Sell, Exchange &amp; Brokerage</p>
-          <h1 className="section-headline text-slate-900">
-            Buy &amp; sell pre-owned cars with confidence
-          </h1>
-          <p className="text-sm sm:text-base text-slate-500 leading-relaxed">
-            Whether you want to purchase a certified car with bank loan assistance, sell your existing vehicle for same-day cash, or exchange for an upgrade in Kalaburagi, we guarantee transparent deals.
-          </p>
+        {/* Header - dark hero band for bold presence */}
+        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-20">
+          <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
+            <p className="section-eyebrow-light">Buy, Sell, Exchange &amp; Brokerage</p>
+            <h1 className="section-headline-light">
+              Buy &amp; sell pre-owned cars with <span className="text-gradient-amber">confidence</span>
+            </h1>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+              Whether you want to purchase a certified car with bank loan assistance, sell your existing vehicle for same-day cash, or exchange for an upgrade in Kalaburagi, we guarantee transparent deals.
+            </p>
+          </div>
         </div>
 
         {/* 2-Column Grid: Buy vs Sell */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Buy Card */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-10 space-y-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+          <div className="executive-card rounded-3xl p-10 space-y-8 flex flex-col justify-between">
             <div className="space-y-5">
               <ShoppingBag className="w-7 h-7 text-amber-600" strokeWidth={1.5} />
-              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Buy a certified pre-owned car</h2>
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Buy a certified pre-owned car</h2>
               <p className="text-sm text-slate-500 leading-relaxed">
                 Browse our multi-brand inventory featuring Hyundai, Maruti, Mahindra, Toyota, Tata, Kia, and luxury cars.
               </p>
@@ -86,10 +88,10 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
           </div>
 
           {/* Sell / Brokerage Card */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-10 space-y-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
+          <div className="executive-card rounded-3xl p-10 space-y-8 flex flex-col justify-between">
             <div className="space-y-5">
               <Tag className="w-7 h-7 text-amber-600" strokeWidth={1.5} />
-              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Sell / commission brokerage</h2>
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Sell / commission brokerage</h2>
               <p className="text-sm text-slate-500 leading-relaxed">
                 Get maximum market value for your vehicle with direct showroom display or instant cash sale.
               </p>

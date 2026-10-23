@@ -79,14 +79,16 @@ export const PhotoUploaderModal: React.FC<PhotoUploaderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-      <div className="bg-white max-w-2xl w-full rounded-3xl overflow-hidden border border-slate-200 shadow-2xl relative p-6 sm:p-8 space-y-6">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-slate-950/60 backdrop-blur-sm">
+      {/* Mobile: bottom-sheet. Desktop: centered modal */}
+      <div className="bg-white w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl overflow-hidden border border-slate-200 shadow-2xl relative p-6 sm:p-8 space-y-6 bottom-sheet sm:static sm:max-h-none animate-sheet-up sm:animate-none">
+        <div className="bottom-sheet-handle sm:hidden" />
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-5">
           <div className="flex items-center gap-3.5">
             <Camera className="w-6 h-6 text-amber-600 shrink-0" strokeWidth={1.5} />
             <div>
-              <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Upload Official Photos</h3>
+              <h3 className="text-lg font-bold text-slate-900 tracking-tight">Upload Official Photos</h3>
               <p className="text-sm text-slate-500">Upload exact high-res photographs for Md Nawaz Khan &amp; Team</p>
             </div>
           </div>

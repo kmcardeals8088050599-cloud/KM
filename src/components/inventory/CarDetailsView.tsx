@@ -79,10 +79,10 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="py-28 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900"
+      className="pt-6 md:pt-28 pb-28 md:pb-16 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900"
     >
-      <div className="max-w-7xl mx-auto space-y-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto space-y-8 md:space-y-10">
+        <div className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
           <button
             onClick={onBack}
             className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors w-fit"
@@ -110,24 +110,35 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
           </div>
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full uppercase tracking-wide">{car.brand}</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
-              {car.status}
-            </span>
-          </div>
+        {/* Mobile top bar — compact back + share */}
+        <div className="md:hidden flex items-center justify-between -mt-2">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-1.5 text-sm text-slate-600"
+          >
+            <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
+            <span>Back</span>
+          </button>
+          <button
+            onClick={handleShare}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-600 shadow-sm"
+          >
+            <Share2 className="w-4 h-4" strokeWidth={1.75} />
+          </button>
+        </div>
 
+        <div className="space-y-3">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{car.brand} · {car.status}</p>
           <h1 className="section-headline !text-3xl sm:!text-5xl">{car.title}</h1>
           <p className="text-sm text-slate-500">
-            Showroom Location: {DEALERSHIP_INFO.address}, Kalaburagi
+            {DEALERSHIP_INFO.address}, Kalaburagi
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-8 space-y-6">
-            <div className="relative aspect-[16/10] bg-slate-900 rounded-3xl overflow-hidden shadow-premium group">
+            {/* Hero gallery — large on desktop, taller full-bleed feel on mobile */}
+            <div className="relative aspect-[4/3] md:aspect-[16/10] bg-slate-900 rounded-2xl md:rounded-3xl overflow-hidden shadow-premium group -mx-4 md:mx-0">
               {mainImage ? (
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -152,13 +163,12 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                 </div>
               )}
               {/* Cinematic bottom gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none"></div>
 
-              {/* Image counter badge */}
+              {/* Image counter */}
               {car.images.length > 0 && (
-                <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/60 text-white text-[11px] font-medium rounded-full backdrop-blur-sm flex items-center gap-1.5">
-                  <Images className="w-3.5 h-3.5 text-amber-400" strokeWidth={1.75} />
-                  <span>{activeImageIndex + 1} / {car.images.length}</span>
+                <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/60 text-white text-[11px] font-semibold rounded-full">
+                  {activeImageIndex + 1} / {car.images.length}
                 </div>
               )}
 
@@ -183,15 +193,16 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
               )}
             </div>
 
+            {/* Thumbnail strip — swipe carousel on mobile, regular row on desktop */}
             {car.images.length > 1 && (
-              <div className="flex items-center gap-3 overflow-x-auto pb-2 pt-1">
+              <div className="swipe-row md:flex md:overflow-x-auto items-center gap-3 pb-2 pt-1 -mx-4 px-4 md:mx-0 md:px-0">
                 {car.images.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setActiveImageIndex(idx)}
-                    className={`relative w-24 h-16 rounded-xl overflow-hidden transition-all shrink-0 ${
+                    className={`swipe-item relative w-24 h-16 rounded-xl overflow-hidden transition-all shrink-0 mr-3 md:mr-0 ${
                       activeImageIndex === idx
-                        ? 'ring-2 ring-slate-900 scale-105 shadow-md'
+                        ? 'ring-2 ring-amber-500 scale-105 shadow-md'
                         : 'opacity-60 hover:opacity-100'
                     }`}
                   >
@@ -214,16 +225,17 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   { label: 'Colour', value: car.color || '—' },
                   { label: 'RTO', value: (car.specs?.rto || car.location || '').split(' ')[0] || '—' },
                 ].map(d => (
-                  <div key={d.label} className="bg-white p-4 rounded-2xl border border-slate-200/80">
-                    <span className="text-slate-500 block text-[11px] uppercase tracking-wide">{d.label}</span>
-                    <span className="text-sm font-semibold text-slate-900 mt-1 block">{d.value}</span>
+                  <div key={d.label} className="executive-card p-4 rounded-2xl">
+                    <span className="text-slate-500 block text-[11px] uppercase tracking-wide font-semibold">{d.label}</span>
+                    <span className="text-sm font-bold text-slate-900 mt-1 block">{d.value}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-4 space-y-6">
+          {/* Inquiry card — hidden on mobile (replaced by sticky CTA bar) */}
+          <div className="lg:col-span-4 space-y-6 hidden md:block">
             <div className="bg-white border border-slate-200/80 rounded-3xl p-6 space-y-5 shadow-premium sticky top-32">
               <div className="space-y-4">
                 <h4 className="section-eyebrow">Inquire / Book Test Drive</h4>
@@ -271,28 +283,59 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm rounded-full transition-all flex items-center justify-center gap-2 block text-center"
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-full transition-all flex items-center justify-center gap-2 block text-center"
                 >
                   <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
-                  <span>Chat on WhatsApp Directly</span>
+                  <span>Chat on WhatsApp</span>
                 </a>
 
                 <a
                   href="tel:+918123991847"
-                  className="btn-accent-apple w-full !py-3 text-sm block text-center"
+                  className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 py-1"
                 >
-                  <Phone className="w-4 h-4 inline mr-1 -mt-0.5" strokeWidth={1.75} />
-                  <span>Call +91 81239 91847</span>
-                </a>
-
-                <a
-                  href="tel:+918088050599"
-                  className="btn-secondary-apple w-full !py-3 text-sm block text-center"
-                >
-                  <Phone className="w-4 h-4 inline mr-1 -mt-0.5" strokeWidth={1.75} />
-                  <span>Call +91 80880 50599</span>
+                  <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
+                  +91 81239 91847
                 </a>
               </div>
+            </div>
+          </div>
+
+          {/* Mobile-only inquiry form (inline, below gallery/specs — CTA actions live in sticky bar) */}
+          <div className="lg:col-span-4 md:hidden">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-card">
+              <h4 className="section-eyebrow">Inquire / Book Test Drive</h4>
+              {submitted ? (
+                <div className="p-4 bg-emerald-50 text-emerald-800 rounded-2xl text-sm flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" strokeWidth={1.75} />
+                  <span>Inquiry submitted! Our showroom team will contact you shortly.</span>
+                </div>
+              ) : (
+                <form onSubmit={handleInquirySubmit} className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Your Full Name"
+                    required
+                    value={buyerName}
+                    onChange={e => setBuyerName(e.target.value)}
+                    className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Mobile Phone Number (+91)"
+                    required
+                    value={buyerPhone}
+                    onChange={e => setBuyerPhone(e.target.value)}
+                    className="w-full bg-slate-50 border border-transparent rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900/10"
+                  />
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-primary-apple w-full !py-3 text-sm"
+                  >
+                    {submitting ? 'Submitting...' : 'Request Callback'}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         </div>
@@ -302,17 +345,18 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         <div className="max-w-7xl mx-auto space-y-6 mt-16">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">Similar {car.brand} Cars</h2>
+              <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Similar {car.brand} Cars</h2>
               <p className="text-sm text-slate-500 mt-0.5">Other {car.brand} vehicles available at KM Car Deals</p>
             </div>
             <button
               onClick={onBack}
-              className="flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900"
+              className="hidden md:flex items-center gap-1 text-sm text-slate-600 hover:text-slate-900"
             >
               View All <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.75} />
             </button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Desktop grid */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedCars.slice(0, 3).map(rc => (
               <CarCard
                 key={rc.id}
@@ -323,8 +367,48 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
               />
             ))}
           </div>
+          {/* Mobile swipe carousel */}
+          <div className="swipe-row md:hidden -mx-4 px-4 gap-4">
+            {relatedCars.slice(0, 5).map(rc => (
+              <div key={rc.id} className="swipe-item w-[78%] mr-4">
+                <CarCard
+                  car={rc}
+                  onSelectCar={onSelectCar}
+                  onQuickView={onSelectCar}
+                  onExchangeSelect={onOpenExchangeModal}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
+
+      {/* Mobile persistent action bar */}
+      <div className="mobile-sticky-cta md:hidden grid grid-cols-3 gap-2">
+        <a
+          href="tel:+918123991847"
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-slate-100 text-slate-900"
+        >
+          <Phone className="w-4 h-4" strokeWidth={1.75} />
+          <span className="text-[10px] font-bold">Call</span>
+        </a>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-emerald-600 text-white shadow-md"
+        >
+          <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
+          <span className="text-[10px] font-bold">WhatsApp</span>
+        </a>
+        <button
+          onClick={() => onOpenExchangeModal(car)}
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-gradient-gold text-amber-950 shadow-md"
+        >
+          <RefreshCw className="w-4 h-4" strokeWidth={1.75} />
+          <span className="text-[10px] font-bold">Exchange</span>
+        </button>
+      </div>
     </motion.div>
   );
 };
