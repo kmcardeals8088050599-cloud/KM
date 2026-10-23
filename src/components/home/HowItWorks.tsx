@@ -50,8 +50,8 @@ export const HowItWorks: React.FC = () => {
   };
 
   return (
-    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-slate-50">
-      <div className="max-w-7xl mx-auto space-y-14">
+    <section className="section-pad relative z-10 bg-slate-50">
+      <div className="apple-container space-y-14">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -81,7 +81,7 @@ export const HowItWorks: React.FC = () => {
               <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center mb-5 relative z-10">
                 {React.cloneElement(step.icon, { className: 'w-5 h-5 text-amber-400', strokeWidth: 1.75 })}
               </div>
-              <h3 className="text-base font-bold text-slate-900 mb-2 relative z-10">{step.title}</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-2 relative z-10">{step.title}</h3>
               <p className="text-[13px] text-slate-500 leading-relaxed relative z-10">{step.desc}</p>
             </div>
           ))}
@@ -108,7 +108,7 @@ export const HowItWorks: React.FC = () => {
                 {React.cloneElement(step.icon, { className: 'w-5 h-5 text-amber-400', strokeWidth: 1.75 })}
               </div>
 
-              <h3 className="text-base font-bold text-slate-900 mb-2 relative z-10">{step.title}</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-2 relative z-10">{step.title}</h3>
               <p className="text-[13px] text-slate-500 leading-relaxed relative z-10">{step.desc}</p>
             </motion.div>
           ))}

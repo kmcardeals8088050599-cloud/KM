@@ -64,11 +64,11 @@ function CarDetailsRoute({
   if (!car) {
     return (
       <div className="py-32 px-4 text-center space-y-4 max-w-md mx-auto">
-        <h2 className="text-2xl font-black text-slate-900">Vehicle Not Found</h2>
+        <h2 className="text-2xl font-semibold text-slate-900">Vehicle Not Found</h2>
         <p className="text-xs text-slate-500 font-medium">The pre-owned car you are looking for may have been sold or removed from inventory.</p>
         <button
           onClick={() => navigate('/inventory')}
-          className="px-5 py-2.5 bg-amber-600 text-white font-extrabold text-xs rounded-xl shadow-xs"
+          className="btn-accent-apple btn-sm"
         >
           Browse Active Inventory
         </button>
@@ -228,7 +228,7 @@ function MainAppContent() {
           <Route
             path="/inventory"
             element={
-              <div className="py-10 md:py-16 px-4 lg:px-8 max-w-7xl mx-auto space-y-8 md:space-y-10 min-h-screen">
+              <div className="section-pad apple-container space-y-8 md:space-y-10 min-h-screen">
                 <div className="space-y-3 text-center max-w-2xl mx-auto">
                   <span className="section-eyebrow">Inventory</span>
                   <h1 className="section-headline mt-1 !text-3xl md:!text-5xl">
@@ -267,13 +267,13 @@ function MainAppContent() {
                           status: 'Available'
                         })
                       }
-                      className="btn-accent-apple !px-5 !py-2.5 text-sm mt-2"
+                      className="btn-accent-apple btn-sm mt-2"
                     >
                       Clear All Filters
                     </button>
                   </div>
                 ) : viewMode === 'grid' ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredCars.map(car => (
                       <CarCard
                         key={car.id}
@@ -292,9 +292,9 @@ function MainAppContent() {
                       <div
                         key={car.id}
                         onClick={() => handleSelectCar(car)}
-                        className="bg-white border border-slate-200/80 rounded-2xl p-4 cursor-pointer transition-all flex flex-col md:flex-row gap-6 items-center hover:shadow-premium hover:-translate-y-1"
+                        className="bg-white border border-slate-200/80 rounded-2xl p-4 cursor-pointer transition-all duration-300 flex flex-col md:flex-row gap-6 items-center hover:shadow-premium hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                       >
-                        <div className="relative w-full md:w-56 h-40 md:h-36 shrink-0 overflow-hidden rounded-xl group/img">
+                        <div className="relative w-full md:w-56 aspect-[4/3] shrink-0 overflow-hidden rounded-xl group/img">
                           {car.images[0] ? (
                             <img
                               src={car.images[0]}
@@ -315,14 +315,14 @@ function MainAppContent() {
                           <p className="text-xs text-slate-500">
                             {car.brand} · {car.year}
                           </p>
-                          <h3 className="text-lg font-bold text-slate-900 tracking-tight">{car.title}</h3>
+                          <h3 className="text-lg font-semibold text-slate-900 tracking-tight">{car.title}</h3>
                           <p className="text-[12px] text-slate-500">
                             {car.fuelType} · {car.transmission} · {car.bodyType}
                             {typeof car.odometerKm === 'number' && ` · ${car.odometerKm.toLocaleString('en-IN')} km`}
                           </p>
                         </div>
                         <div className="text-right shrink-0 w-full md:w-auto">
-                          <button className="btn-primary-apple w-full md:w-auto !px-4 !py-2 text-xs">
+                          <button className="btn-primary-apple btn-sm w-full md:w-auto">
                             View Details
                           </button>
                         </div>

@@ -44,7 +44,7 @@ export const CarCard: React.FC<CarCardProps> = ({
       whileHover={{ y: -6, transition: { duration: 0.25, ease: 'easeOut' } }}
       className="group relative executive-card rounded-3xl flex flex-col overflow-hidden"
     >
-      <div className="relative aspect-[16/10] bg-slate-100 overflow-hidden cursor-pointer" onClick={handleCardClick}>
+      <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden cursor-pointer" onClick={handleCardClick}>
         {car.images[0] ? (
           <motion.img
             src={car.images[0]}
@@ -52,7 +52,7 @@ export const CarCard: React.FC<CarCardProps> = ({
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover"
             whileHover={{ scale: 1.06 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             loading="lazy"
           />
         ) : (
@@ -95,7 +95,7 @@ export const CarCard: React.FC<CarCardProps> = ({
             e.stopPropagation();
             onQuickView(car);
           }}
-          className="absolute bottom-3 right-3 p-2.5 bg-white/90 backdrop-blur hover:bg-white text-slate-700 rounded-full shadow-sm transition-all opacity-0 group-hover:opacity-100"
+          className="absolute bottom-3 right-3 p-2.5 bg-white/90 backdrop-blur hover:bg-white text-slate-700 rounded-full shadow-sm transition-all duration-300 opacity-0 group-hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:opacity-100"
           title="Quick Inspect"
         >
           <Eye className="w-4 h-4" strokeWidth={1.75} />
@@ -110,7 +110,7 @@ export const CarCard: React.FC<CarCardProps> = ({
 
           <h3
             onClick={handleCardClick}
-            className="text-lg font-bold text-slate-900 line-clamp-1 cursor-pointer tracking-tight mt-0.5"
+            className="text-lg font-semibold text-slate-900 line-clamp-1 cursor-pointer tracking-tight mt-0.5"
           >
             {car.title}
           </h3>
@@ -149,7 +149,7 @@ export const CarCard: React.FC<CarCardProps> = ({
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={handleCardClick}
-              className="btn-accent-apple w-full !px-3 !py-2.5 text-[13px]"
+              className="btn-accent-apple btn-sm w-full"
             >
               <span>View Details</span>
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
@@ -159,7 +159,7 @@ export const CarCard: React.FC<CarCardProps> = ({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[13px] rounded-full transition-colors flex items-center justify-center gap-1.5"
+              className="w-full min-h-[36px] py-2 px-3 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-[0.8125rem] rounded-full transition-colors duration-300 flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
               onClick={e => e.stopPropagation()}
             >
               <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.75} />
@@ -170,7 +170,7 @@ export const CarCard: React.FC<CarCardProps> = ({
           {onAddToCompare && (
             <button
               onClick={e => { e.stopPropagation(); onAddToCompare(car); }}
-              className={`w-full py-2 text-[11px] font-medium rounded-full flex items-center justify-center gap-1.5 transition-colors ${
+              className={`w-full py-2 text-[11px] font-medium rounded-full flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 ${
                 isInCompare
                   ? 'bg-amber-100 text-amber-700'
                   : 'bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-900'

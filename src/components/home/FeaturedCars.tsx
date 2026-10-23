@@ -40,8 +40,8 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
   };
 
   return (
-    <section id="featured-cars" className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-white">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <section id="featured-cars" className="section-pad relative z-10 bg-white">
+      <div className="apple-container space-y-12">
         {/* Section Title & Category Tabs */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="space-y-3">
@@ -60,7 +60,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2.5 text-[13px] font-semibold rounded-full transition-all duration-300 shrink-0 ${
+                className={`px-5 py-2.5 text-[13px] font-semibold rounded-full transition-all duration-300 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 ${
                   activeCategory === cat
                     ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -90,7 +90,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
 
         <motion.div
           layout
-          className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8"
+          className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6"
         >
           <AnimatePresence mode="popLayout">
             {featuredList.slice(0, 6).map(car => (

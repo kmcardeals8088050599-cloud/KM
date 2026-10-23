@@ -23,8 +23,8 @@ export const ShowroomGallery: React.FC = () => {
     : photos.filter(p => p.category === selectedCategory);
 
   return (
-    <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 overflow-hidden bg-white">
-      <div className="max-w-7xl mx-auto space-y-12">
+    <section className="section-pad relative z-10 overflow-hidden bg-white">
+      <div className="apple-container space-y-12">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -48,7 +48,7 @@ export const ShowroomGallery: React.FC = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full text-[13px] font-medium transition-all ${
+              className={`px-4 py-2 rounded-full text-[13px] font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 ${
                 selectedCategory === cat
                   ? 'bg-slate-900 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -81,7 +81,7 @@ export const ShowroomGallery: React.FC = () => {
                   </span>
                 </div>
                 <div className="absolute bottom-4 left-4 right-4 space-y-1">
-                  <h3 className="text-lg font-bold text-white text-shadow-hero line-clamp-1">{photo.title}</h3>
+                  <h3 className="text-lg font-semibold text-white text-shadow-hero line-clamp-1">{photo.title}</h3>
                   <div className="text-[11px] text-white/80 font-medium flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 shrink-0" strokeWidth={1.75} />
                     <span className="truncate">{photo.locationTag}</span>
@@ -92,7 +92,7 @@ export const ShowroomGallery: React.FC = () => {
           ))}
         </div>
 
-        <motion.div layout className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div layout className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
             {filteredPhotos.map((photo) => (
               <motion.div
@@ -136,7 +136,7 @@ export const ShowroomGallery: React.FC = () => {
                 </div>
 
                 <div className="p-5 space-y-1.5">
-                  <h3 className="text-base font-bold text-slate-900 line-clamp-1">
+                  <h3 className="text-base font-semibold text-slate-900 line-clamp-1">
                     {photo.title}
                   </h3>
                   <p className="text-[13px] text-slate-500 line-clamp-2">
@@ -168,7 +168,7 @@ export const ShowroomGallery: React.FC = () => {
             >
               <button
                 onClick={() => setActivePhoto(null)}
-                className="absolute top-4 right-4 z-10 p-2.5 bg-white/90 backdrop-blur text-slate-900 hover:bg-white rounded-full transition-colors shadow-sm"
+                className="absolute top-4 right-4 z-10 p-2.5 bg-white/90 backdrop-blur text-slate-900 hover:bg-white rounded-full transition-colors duration-300 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
               >
                 <X className="w-4 h-4" strokeWidth={1.75} />
               </button>
@@ -199,7 +199,7 @@ export const ShowroomGallery: React.FC = () => {
                 <div className="pt-4 flex justify-end">
                   <a
                     href="tel:+918123991847"
-                    className="btn-accent-apple !text-[13px]"
+                    className="btn-accent-apple btn-sm"
                   >
                     <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
                     <span>Call Showroom</span>

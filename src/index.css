@@ -86,6 +86,36 @@
   --theme-card-border: rgba(0, 0, 0, 0.08);
 }
 
+/* Consistent content width + vertical rhythm, matching apple.com's real proportions */
+.apple-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.apple-container-narrow {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.section-pad {
+  padding-top: clamp(3.5rem, 7vw, 6.5rem);
+  padding-bottom: clamp(3.5rem, 7vw, 6.5rem);
+}
+
+@media (min-width: 1024px) {
+  .apple-container,
+  .apple-container-narrow {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
@@ -121,7 +151,7 @@
   border: 1px solid #f0e0b4;
 }
 
-/* ===== Buttons — Apple pill buttons, flat, no gradients/glow ===== */
+/* ===== Buttons — true Apple pill-button metrics (44px tall, 17px type) ===== */
 .btn-primary-apple {
   display: inline-flex;
   align-items: center;
@@ -130,9 +160,12 @@
   border-radius: 980px;
   background: #1d1d1f;
   color: #ffffff;
-  font-weight: 500;
-  padding: 0.85rem 1.75rem;
-  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  padding: 0.7rem 1.4rem;
+  min-height: 44px;
+  transition: background-color 0.3s ease;
 }
 
 .btn-primary-apple:hover {
@@ -145,15 +178,18 @@
   justify-content: center;
   gap: 0.5rem;
   border-radius: 980px;
-  background: #b08d4a;
+  background: #a97f3f;
   color: #ffffff;
-  font-weight: 500;
-  padding: 0.85rem 1.75rem;
-  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  padding: 0.7rem 1.4rem;
+  min-height: 44px;
+  transition: background-color 0.3s ease;
 }
 
 .btn-accent-apple:hover {
-  background: #94733a;
+  background: #8c6a35;
 }
 
 .btn-secondary-apple {
@@ -164,15 +200,18 @@
   border-radius: 980px;
   background: transparent;
   color: #1d1d1f;
-  font-weight: 500;
-  padding: 0.85rem 1.75rem;
-  border: 1px solid #d2d2d7;
-  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  padding: calc(0.7rem - 1px) calc(1.4rem - 1px);
+  min-height: 44px;
+  border: 1px solid #1d1d1f;
+  transition: all 0.3s ease;
 }
 
 .btn-secondary-apple:hover {
-  border-color: #1d1d1f;
-  background: #f5f5f7;
+  background: #1d1d1f;
+  color: #ffffff;
 }
 
 /* Kept for components that still render on a dark/image surface (e.g. modals) */
@@ -184,52 +223,89 @@
   border-radius: 980px;
   background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
-  font-weight: 500;
-  padding: 0.85rem 1.75rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  padding: 0.7rem 1.4rem;
+  min-height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(12px);
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-ghost-light:hover {
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* ===== Typography scale ===== */
+/* Small pill variant — for dense toolbars/filters */
+.btn-primary-apple.btn-sm,
+.btn-accent-apple.btn-sm,
+.btn-secondary-apple.btn-sm {
+  min-height: 36px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.8125rem;
+}
+
+/* ===== Typography scale — Apple's real headline proportions ===== */
 .section-eyebrow {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: #86868b;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: #6e6e73;
 }
 
 .section-eyebrow-light {
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 .section-headline {
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  line-height: 1.07;
+  font-size: clamp(2.25rem, 5.2vw, 4rem);
+  line-height: 1.05;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   color: #1d1d1f;
 }
 
 .section-headline-light {
-  font-size: clamp(2.25rem, 5vw, 3.75rem);
-  line-height: 1.07;
+  font-size: clamp(2.25rem, 5.2vw, 4rem);
+  line-height: 1.05;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   color: #ffffff;
+}
+
+/* Hero-only: Apple product-page scale, slightly larger than section headlines */
+.hero-headline {
+  font-size: clamp(2.75rem, 6.2vw, 5rem);
+  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #1d1d1f;
+}
+
+.hero-subline {
+  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  line-height: 1.4;
+  font-weight: 400;
+  color: #6e6e73;
 }
 
 .text-shadow-hero {
   text-shadow: none;
+}
+
+/* Custom select chevron so native <select> elements match the flat Apple tone */
+.select-plain {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236e6e73' stroke-width='1.75'%3E%3Cpath d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 18px;
+  padding-right: 1.5rem;
+  cursor: pointer;
 }
 
 /* ===== Custom scrollbar ===== */

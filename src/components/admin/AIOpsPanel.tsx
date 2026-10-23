@@ -185,14 +185,14 @@ export const AIOpsPanel: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={refresh}
-            className="btn-secondary-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px]"
+            className="btn-secondary-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
           >
             <RefreshCw className="w-3.5 h-3.5" /> Refresh
           </button>
           <button
             onClick={handleExport}
             disabled={busy}
-            className="btn-accent-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] disabled:opacity-40"
+            className="btn-accent-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
             title="Admin-only CSV with product ids + asking prices"
           >
             <Download className="w-3.5 h-3.5" /> Export Catalogue (Excel)
@@ -228,13 +228,13 @@ export const AIOpsPanel: React.FC = () => {
             onChange={e => setIntakeText(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) handleIntake(); }}
             placeholder="Vehicle details (text)..."
-            className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:bg-white min-h-[70px] transition-colors"
+            className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 focus:bg-white min-h-[70px] transition-colors duration-300"
           />
         </div>
         <button
           onClick={handleIntake}
           disabled={busy || !intakeText.trim()}
-          className="btn-primary-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] disabled:opacity-40"
+          className="btn-primary-apple text-xs flex items-center justify-center gap-2 w-fit min-h-[44px] disabled:opacity-40 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
         >
           <Bot className="w-3.5 h-3.5" /> Run AI Intake
         </button>
@@ -251,7 +251,7 @@ export const AIOpsPanel: React.FC = () => {
           <button
             key={s}
             onClick={() => setStateFilter(s)}
-            className={`swipe-item px-3 py-1.5 min-h-[32px] rounded-full text-[11px] font-semibold transition-colors whitespace-nowrap ${
+            className={`swipe-item px-3 py-1.5 min-h-[32px] rounded-full text-[11px] font-semibold transition-colors duration-300 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none ${
               stateFilter === s
                 ? 'bg-slate-900 text-white'
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
@@ -307,7 +307,7 @@ export const AIOpsPanel: React.FC = () => {
                 <div className="flex sm:flex-col gap-2 sm:shrink-0 sm:w-56">
                   <button
                     onClick={() => openDetail(d.id)}
-                    className="flex-1 sm:flex-none min-h-[40px] px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 text-[11px] font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                    className="flex-1 sm:flex-none min-h-[40px] px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 text-[11px] font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                   >
                     <Eye className="w-3.5 h-3.5" /> Review
                   </button>
@@ -336,7 +336,7 @@ export const AIOpsPanel: React.FC = () => {
                           title={gates.blocked
                             ? `Cannot publish yet — missing: ${gates.missing.length ? gates.missing.join(', ') : 'none'}; photos ${gates.photos.count}/3`
                             : 'Publish to catalogue'}
-                          className="min-h-[44px] px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-lg flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                          className="min-h-[44px] px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-lg flex items-center justify-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                         >
                           <ThumbsUp className="w-3.5 h-3.5" /> Approve {gates.blocked ? '(blocked)' : ''}
                         </button>
@@ -366,7 +366,7 @@ export const AIOpsPanel: React.FC = () => {
                   <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wide">{detail.draft.state}</p>
                 </div>
               </div>
-              <button onClick={() => setDetail(null)} className="p-2 min-h-[40px] min-w-[40px] flex items-center justify-center bg-slate-100 rounded-full">
+              <button onClick={() => setDetail(null)} className="p-2 min-h-[40px] min-w-[40px] flex items-center justify-center bg-slate-100 hover:bg-slate-200 rounded-full transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none">
                 <X className="w-4 h-4 text-slate-600" />
               </button>
             </div>
@@ -445,20 +445,20 @@ export const AIOpsPanel: React.FC = () => {
               <div className="flex flex-wrap gap-2">
                 {detail.draft.state === 'READY_FOR_REVIEW' && (
                   <>
-                    <button onClick={() => runAction(async () => aiApproveDraft(detail.draft.id), '✅ Approved & published.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors">
+                    <button onClick={() => runAction(async () => aiApproveDraft(detail.draft.id), '✅ Approved & published.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none">
                       <Check className="w-3.5 h-3.5" /> Approve &amp; Publish
                     </button>
-                    <button onClick={() => runAction(async () => aiRejectDraft(detail.draft.id), 'Draft archived.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors">
+                    <button onClick={() => runAction(async () => aiRejectDraft(detail.draft.id), 'Draft archived.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none">
                       <ThumbsDown className="w-3.5 h-3.5" /> Reject
                     </button>
                   </>
                 )}
                 {detail.draft.publishedCarId && (
-                  <button onClick={() => runAction(async () => aiMarkSold(detail.draft.id), 'Marked SOLD.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl disabled:opacity-40 transition-colors">
+                  <button onClick={() => runAction(async () => aiMarkSold(detail.draft.id), 'Marked SOLD.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl disabled:opacity-40 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none">
                     Mark Sold
                   </button>
                 )}
-                <button onClick={() => runAction(async () => aiRegenerate(detail.draft.id), '🔄 Regenerated.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors">
+                <button onClick={() => runAction(async () => aiRegenerate(detail.draft.id), '🔄 Regenerated.')} disabled={busy} className="min-h-[44px] px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none">
                   <RotateCcw className="w-3.5 h-3.5" /> Regenerate
                 </button>
                 <div className="flex items-center gap-2 px-3 py-1 min-h-[44px] bg-white border border-slate-200 rounded-xl flex-1 sm:flex-none">
@@ -467,7 +467,7 @@ export const AIOpsPanel: React.FC = () => {
                     value={priceInput}
                     onChange={e => setPriceInput(e.target.value)}
                     placeholder="New price in Lakh (e.g. 31.75)"
-                    className="flex-1 sm:w-32 text-xs font-medium outline-none min-w-0"
+                    className="flex-1 sm:w-32 text-xs font-medium text-slate-900 placeholder:text-slate-400 outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 rounded-sm min-w-0"
                   />
                   <button
                     onClick={() => {
@@ -475,7 +475,7 @@ export const AIOpsPanel: React.FC = () => {
                       if (!isNaN(lakh) && lakh > 0) runAction(async () => aiUpdatePrice(detail.draft.id, Math.round(lakh * 100000)), '✅ Price updated.');
                     }}
                     disabled={busy || !priceInput}
-                    className="px-3 py-1.5 min-h-[36px] bg-slate-900 text-white text-[11px] font-bold rounded-lg disabled:opacity-40 shrink-0"
+                    className="px-3 py-1.5 min-h-[36px] bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold rounded-lg disabled:opacity-40 shrink-0 transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
                   >
                     Update
                   </button>

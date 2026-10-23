@@ -62,7 +62,8 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
     if (onSuccess) onSuccess();
   };
 
-  const inputClasses = "w-full bg-white border border-slate-300 rounded-xl px-4 py-3.5 text-slate-900 font-normal focus:outline-none focus:ring-2 focus:ring-amber-400/50 focus:border-amber-400 transition-shadow";
+  const inputClasses = "w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-sm text-slate-900 font-normal placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 focus:border-slate-900 transition-shadow duration-300";
+  const selectClasses = `${inputClasses} select-plain`;
 
   const stepHeading = (num: string, label: string) => (
     <div className="flex items-center gap-3">
@@ -76,8 +77,8 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
   );
 
   return (
-    <div className="pt-28 pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
-      <div className="max-w-4xl mx-auto space-y-10">
+    <div className="pt-28 pb-28 lg:pb-24 bg-white min-h-screen text-slate-800">
+      <div className="apple-container-narrow space-y-10">
         {/* Header */}
         <div className="relative text-center space-y-4 bg-slate-50 border border-slate-200 rounded-3xl py-14 px-6">
           <p className="section-eyebrow flex items-center justify-center gap-1.5">
@@ -114,7 +115,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
             </p>
             <button
               onClick={() => setSubmitted(false)}
-              className="btn-secondary-apple"
+              className="btn-secondary-apple focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
             >
               Submit another exchange request
             </button>
@@ -161,7 +162,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                   <select
                     value={currentBrand}
                     onChange={e => setCurrentBrand(e.target.value)}
-                    className={inputClasses}
+                    className={selectClasses}
                   >
                     {['Hyundai', 'Maruti Suzuki', 'Mahindra', 'Tata', 'Toyota', 'Honda', 'Kia', 'Volkswagen', 'Ford', 'Renault', 'BMW', 'Mercedes-Benz', 'Other'].map(b => (
                       <option key={b} value={b}>{b}</option>
@@ -186,7 +187,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                   <select
                     value={currentYear}
                     onChange={e => setCurrentYear(parseInt(e.target.value))}
-                    className={inputClasses}
+                    className={selectClasses}
                   >
                     {[2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010].map(y => (
                       <option key={y} value={y}>{y}</option>
@@ -201,7 +202,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                   <select
                     value={fuelType}
                     onChange={e => setFuelType(e.target.value as FuelType)}
-                    className={inputClasses}
+                    className={selectClasses}
                   >
                     <option value="Petrol">Petrol</option>
                     <option value="Diesel">Diesel</option>
@@ -215,7 +216,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
                   <select
                     value={transmission}
                     onChange={e => setTransmission(e.target.value as Transmission)}
-                    className={inputClasses}
+                    className={selectClasses}
                   >
                     <option value="Manual">Manual</option>
                     <option value="Automatic">Automatic</option>
@@ -268,7 +269,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-full transition-colors shadow-[0_8px_24px_-6px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full min-h-[44px] py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-full transition-colors duration-300 shadow-[0_8px_24px_-6px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>{loading ? 'Processing...' : 'Submit request & open WhatsApp evaluation'}</span>
@@ -280,7 +281,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm rounded-full transition-colors shadow-[0_8px_24px_-6px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full min-h-[44px] py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm rounded-full transition-colors duration-300 shadow-[0_8px_24px_-6px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2 disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-slate-900/20 focus-visible:outline-none"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>{loading ? 'Processing...' : 'Submit & open WhatsApp'}</span>

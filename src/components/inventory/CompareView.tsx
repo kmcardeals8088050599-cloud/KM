@@ -12,8 +12,8 @@ interface CompareViewProps {
 }
 
 const Row: React.FC<{ label: string; values: (string | number | undefined | null)[] }> = ({ label, values }) => (
-  <tr className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-    <td className="py-3.5 px-4 text-[11px] font-bold text-slate-500 uppercase tracking-wide w-32 shrink-0 bg-slate-50">
+  <tr className="border-b border-slate-100 hover:bg-slate-50 transition-colors duration-300">
+    <td className="py-3.5 px-4 text-[11px] font-semibold text-slate-500 uppercase tracking-wide w-32 shrink-0 bg-slate-50">
       {label}
     </td>
     {values.map((val, i) => (
@@ -40,17 +40,17 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
   ];
 
   return (
-    <div className="pt-8 md:pt-28 pb-16 px-4 lg:px-8 bg-slate-50 min-h-screen text-slate-900">
-      <div className="max-w-7xl mx-auto space-y-8 md:space-y-10">
+    <div className="pt-8 md:pt-28 pb-16 bg-slate-50 min-h-screen text-slate-900">
+      <div className="apple-container space-y-8 md:space-y-10">
         <div className="flex items-center justify-between">
           <button
             onClick={onBack}
-            className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+            className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20 rounded"
           >
             <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
             Back to Inventory
           </button>
-          <h1 className="text-lg md:text-xl font-bold text-slate-900 tracking-tight">Car Comparison</h1>
+          <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">Car Comparison</h1>
         </div>
 
         {/* ===== Desktop: side-by-side cards + full spec table ===== */}
@@ -66,12 +66,12 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
                     <img src={car.images[0]} alt={car.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-slate-900 line-clamp-2">{car.title}</h3>
+                    <h3 className="text-xs font-semibold text-slate-900 line-clamp-2">{car.title}</h3>
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => onSelectCar(car)}
-                      className="flex-1 py-1.5 bg-slate-900 hover:bg-black text-white font-semibold text-[11px] rounded-full"
+                      className="flex-1 py-1.5 bg-slate-900 hover:bg-black text-white font-semibold text-[11px] rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                     >
                       View Details
                     </button>
@@ -79,7 +79,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[11px] rounded-full flex items-center justify-center gap-1"
+                      className="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[11px] rounded-full flex items-center justify-center gap-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                     >
                       <MessageCircle className="w-3 h-3" strokeWidth={1.75} />
                       Inquire
@@ -99,7 +99,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
             <table className="w-full text-sm">
               <tbody>
                 <tr className="border-b border-slate-200">
-                  <td colSpan={4} className="px-4 py-2.5 text-[11px] font-bold text-slate-500 uppercase tracking-wide">Vehicle Details</td>
+                  <td colSpan={4} className="px-4 py-2.5 text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Vehicle Details</td>
                 </tr>
                 {specRows.map(row => (
                   <Row key={row.label} label={row.label} values={row.values} />
@@ -120,12 +120,12 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
                   <img src={car.images[0]} alt={car.title} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                 </div>
                 <div className="p-4 space-y-3">
-                  <h3 className="text-sm font-bold text-slate-900 line-clamp-2">{car.title}</h3>
+                  <h3 className="text-sm font-semibold text-slate-900 line-clamp-2">{car.title}</h3>
 
                   <div className="divide-y divide-slate-100 border-y border-slate-100">
                     {specRows.map((row, i) => (
                       <div key={row.label} className="flex items-center justify-between py-2 text-xs">
-                        <span className="text-slate-500 font-bold uppercase tracking-wide text-[10px]">{row.label}</span>
+                        <span className="text-slate-500 font-semibold uppercase tracking-wide text-[10px]">{row.label}</span>
                         <span className="font-semibold text-slate-900">{row.values[cars.indexOf(car)] ?? '—'}</span>
                       </div>
                     ))}
@@ -134,7 +134,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={() => onSelectCar(car)}
-                      className="flex-1 py-2 bg-slate-900 text-white font-semibold text-xs rounded-full"
+                      className="flex-1 py-2 bg-slate-900 text-white font-semibold text-xs rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                     >
                       View Details
                     </button>
@@ -142,7 +142,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 py-2 bg-emerald-600 text-white font-semibold text-xs rounded-full flex items-center justify-center gap-1"
+                      className="flex-1 py-2 bg-emerald-600 text-white font-semibold text-xs rounded-full flex items-center justify-center gap-1 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
                     >
                       <MessageCircle className="w-3.5 h-3.5" strokeWidth={1.75} />
                       Inquire
