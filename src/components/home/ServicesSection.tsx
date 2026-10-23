@@ -18,7 +18,7 @@ interface Service {
 
 const ServiceCardBody: React.FC<{ service: Service }> = ({ service }) => (
   <div className="space-y-4">
-    <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center">
+    <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center">
       {service.icon}
     </div>
 

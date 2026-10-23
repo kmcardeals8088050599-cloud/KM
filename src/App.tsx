@@ -177,7 +177,7 @@ function MainAppContent() {
       )}
 
       {/* Main Content Area with Routes */}
-      <main className={`${location.pathname.startsWith('/admin') ? '' : 'pt-16 lg:pt-[100px]'} flex-1 relative z-10`}>
+      <main className={`${location.pathname.startsWith('/admin') ? '' : 'pt-14'} flex-1 relative z-10`}>
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

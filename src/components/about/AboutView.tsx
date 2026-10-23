@@ -40,8 +40,8 @@ export const AboutView: React.FC = () => {
 
         {/* Storefront Visual & Core Pillars */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-6 relative rounded-3xl overflow-hidden bg-slate-950 shadow-2xl p-2">
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900">
+          <div className="lg:col-span-6 relative rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 shadow-xl p-2">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-100">
               <img
                 src={storefrontPhoto}
                 alt="KM Car Deals Showroom Storefront"
@@ -110,7 +110,7 @@ export const AboutView: React.FC = () => {
               { img: executiveTeam, tag: 'Core Team', name: '5-Member executive team', quote: '"150 checkpoints, zero shortcuts."', desc: 'Dedicated professionals handling technical inspections, RTO documentation, and bank finance facilitation.' },
             ].map((person, i) => (
               <div key={i} className="swipe-item w-[82%] executive-card rounded-3xl p-5 flex flex-col justify-between">
-                <div className="rounded-2xl overflow-hidden bg-slate-900 mb-4 aspect-[4/5]">
+                <div className="rounded-2xl overflow-hidden bg-slate-100 mb-4 aspect-[4/5]">
                   <img src={person.img} alt={person.name} className="w-full h-full object-cover" />
                 </div>
                 <div>
@@ -125,7 +125,7 @@ export const AboutView: React.FC = () => {
 
           <div className="hidden sm:grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="executive-card rounded-3xl p-6 flex flex-col justify-between">
-              <div className="rounded-2xl overflow-hidden bg-slate-900 mb-4 aspect-[4/5]">
+              <div className="rounded-2xl overflow-hidden bg-slate-100 mb-4 aspect-[4/5]">
                 <img src={nadeemPortrait} alt="Md Nadeem Khan" className="w-full h-full object-cover" />
               </div>
               <div>
@@ -137,7 +137,7 @@ export const AboutView: React.FC = () => {
             </div>
 
             <div className="executive-card rounded-3xl p-6 flex flex-col justify-between">
-              <div className="rounded-2xl overflow-hidden bg-slate-900 mb-4 aspect-[4/5]">
+              <div className="rounded-2xl overflow-hidden bg-slate-100 mb-4 aspect-[4/5]">
                 <img src={nawazPortrait} alt="Md Nawaz Khan" className="w-full h-full object-cover" />
               </div>
               <div>
@@ -149,7 +149,7 @@ export const AboutView: React.FC = () => {
             </div>
 
             <div className="executive-card rounded-3xl p-6 flex flex-col justify-between">
-              <div className="rounded-2xl overflow-hidden bg-slate-900 mb-4 aspect-[4/5]">
+              <div className="rounded-2xl overflow-hidden bg-slate-100 mb-4 aspect-[4/5]">
                 <img src={executiveTeam} alt="KM Car Deals Core Management Team" className="w-full h-full object-cover" />
               </div>
               <div>

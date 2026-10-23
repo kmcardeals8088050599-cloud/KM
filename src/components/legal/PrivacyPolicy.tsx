@@ -18,12 +18,12 @@ export function PrivacyPolicy() {
       <div className="pt-32 pb-24 px-4 lg:px-8">
         <div className="max-w-3xl mx-auto space-y-14">
           {/* Header */}
-          <div className="text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6 -mx-4 sm:mx-0">
-            <p className="section-eyebrow-light flex items-center justify-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Legal
+          <div className="text-center space-y-4 bg-slate-50 border border-slate-200 rounded-3xl py-14 px-6 -mx-4 sm:mx-0">
+            <p className="section-eyebrow flex items-center justify-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-600" /> Legal
             </p>
-            <h1 className="section-headline-light">Privacy Policy</h1>
-            <p className="text-sm text-slate-400">Last updated: September 2026</p>
+            <h1 className="section-headline">Privacy Policy</h1>
+            <p className="text-sm text-slate-500">Last updated: September 2026</p>
           </div>
 
           {/* Intro */}
@@ -90,15 +90,15 @@ export function PrivacyPolicy() {
           </div>
 
           {/* Contact */}
-          <section className="rounded-3xl bg-slate-950 text-white p-8 sm:p-10 space-y-5">
+          <section className="rounded-3xl bg-slate-50 border border-slate-200 text-slate-900 p-8 sm:p-10 space-y-5">
             <div className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-amber-400 shrink-0" strokeWidth={1.5} />
+              <Phone className="w-5 h-5 text-amber-600 shrink-0" strokeWidth={1.5} />
               <h2 className="text-lg font-semibold tracking-tight">9. Contact Us</h2>
             </div>
-            <div className="text-sm text-slate-300 space-y-2.5">
-              <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-amber-400" strokeWidth={1.75} /> +91 81239 91847 &nbsp;/&nbsp; +91 80880 50599</p>
-              <p className="flex items-center gap-2"><Home className="w-4 h-4 text-amber-400" strokeWidth={1.75} /> Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104</p>
-              <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-400" strokeWidth={1.75} /> WhatsApp: +91 73386 86562</p>
+            <div className="text-sm text-slate-600 space-y-2.5">
+              <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-amber-600" strokeWidth={1.75} /> +91 81239 91847 &nbsp;/&nbsp; +91 80880 50599</p>
+              <p className="flex items-center gap-2"><Home className="w-4 h-4 text-amber-600" strokeWidth={1.75} /> Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104</p>
+              <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-amber-600" strokeWidth={1.75} /> WhatsApp: +91 73386 86562</p>
             </div>
           </section>
 

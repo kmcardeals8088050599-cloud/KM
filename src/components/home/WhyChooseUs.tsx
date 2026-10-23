@@ -81,7 +81,7 @@ export const WhyChooseUs: React.FC = () => {
               key={index}
               className="swipe-item w-[80vw] max-w-sm executive-card p-7 rounded-3xl"
             >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center mb-5 shadow-[0_8px_18px_-6px_rgba(176,141,74,0.45)]">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
                 {item.icon}
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-2">{item.title}</h3>
@@ -103,7 +103,7 @@ export const WhyChooseUs: React.FC = () => {
               variants={itemVariants}
               className="executive-card p-7 rounded-3xl"
             >
-              <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center mb-5 shadow-[0_8px_18px_-6px_rgba(176,141,74,0.45)]">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
                 {item.icon}
               </div>
               <h3 className="text-base font-bold text-slate-900 mb-2">{item.title}</h3>

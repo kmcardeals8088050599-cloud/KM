@@ -61,7 +61,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             <div key={url} className="relative group aspect-video rounded-xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm">
               <img src={url} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
               {idx === 0 && (
-                <span className="absolute bottom-1.5 left-1.5 bg-gradient-gold text-slate-950 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow">
+                <span className="absolute bottom-1.5 left-1.5 bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide shadow">
                   Cover
                 </span>
               )}

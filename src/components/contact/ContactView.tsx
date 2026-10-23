@@ -43,14 +43,14 @@ export const ContactView: React.FC = () => {
   return (
     <div className="pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-900">
       <div className="max-w-7xl mx-auto space-y-16">
-        {/* Title - dark band for presence */}
-        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-16">
+        {/* Title - light band */}
+        <div className="relative -mx-4 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-4 lg:px-8 pt-32 pb-16">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
-            <p className="section-eyebrow-light">Showroom Location &amp; Direct Contact</p>
-            <h1 className="section-headline-light">
-              Contact <span className="text-gradient-amber">KM Car Deals</span>
+            <p className="section-eyebrow">Showroom Location &amp; Direct Contact</p>
+            <h1 className="section-headline">
+              Contact <span className="text-amber-600">KM Car Deals</span>
             </h1>
-            <p className="text-sm sm:text-base text-slate-300">
+            <p className="text-sm sm:text-base text-slate-600">
               Have questions about buying, selling, or exchanging a vehicle in Kalaburagi? We are here to help.
             </p>
           </div>
@@ -163,7 +163,7 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918123991847"
-                className="flex-1 py-3 bg-gradient-gold text-slate-950 font-bold rounded-full flex items-center justify-center gap-1.5"
+                className="flex-1 py-3 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded-full flex items-center justify-center gap-1.5 transition-colors"
               >
                 <Phone className="w-4 h-4" strokeWidth={1.75} />
                 Call now
@@ -182,16 +182,16 @@ export const ContactView: React.FC = () => {
           {/* Map Preview */}
           <div className="lg:col-span-6 space-y-6">
             <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xl min-h-[420px] relative flex flex-col">
-              <div className="p-4 bg-gradient-obsidian text-white flex items-center justify-between text-sm font-semibold">
+              <div className="p-4 bg-slate-50 border-b border-slate-200 text-slate-900 flex items-center justify-between text-sm font-semibold">
                 <span className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-amber-400" strokeWidth={1.75} />
+                  <MapPin className="w-4 h-4 text-amber-600" strokeWidth={1.75} />
                   Opposite Hyundai Showroom, Kalaburagi
                 </span>
                 <a
                   href={DEALERSHIP_INFO.googleMapLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-amber-400 hover:text-amber-300 flex items-center gap-1 transition-colors"
+                  className="text-amber-600 hover:text-amber-700 flex items-center gap-1 transition-colors"
                 >
                   <span>Open Maps</span>
                   <ExternalLink className="w-3.5 h-3.5" strokeWidth={1.75} />
@@ -226,7 +226,7 @@ export const ContactView: React.FC = () => {
       <div className="mobile-sticky-cta lg:hidden flex items-center gap-2">
         <a
           href="tel:+918123991847"
-          className="flex-1 py-3 bg-gradient-gold text-slate-950 font-bold text-xs rounded-full flex items-center justify-center gap-1.5 shadow-[0_6px_16px_-4px_rgba(201,169,110,0.5)]"
+          className="flex-1 py-3 bg-amber-600 text-white font-bold text-xs rounded-full flex items-center justify-center gap-1.5"
         >
           <Phone className="w-4 h-4" strokeWidth={1.75} />
           <span>Call</span>

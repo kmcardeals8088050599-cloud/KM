@@ -403,7 +403,7 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         </a>
         <button
           onClick={() => onOpenExchangeModal(car)}
-          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-gradient-gold text-amber-950 shadow-md"
+          className="flex flex-col items-center justify-center gap-1 py-2 rounded-xl bg-amber-600 text-white shadow-md"
         >
           <RefreshCw className="w-4 h-4" strokeWidth={1.75} />
           <span className="text-[10px] font-bold">Exchange</span>
