@@ -1,6 +1,6 @@
 import React from 'react';
 import { Car } from '../../types';
-import { X, BarChart2, Plus } from 'lucide-react';
+import { X, BarChart2 } from 'lucide-react';
 
 interface CompareBarProps {
   compareCars: Car[];
@@ -20,16 +20,11 @@ export const CompareBar: React.FC<CompareBarProps> = ({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-40 glass-dark shadow-[0_-16px_48px_-12px_rgba(0,0,0,0.5)] px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
       <div className="max-w-7xl mx-auto flex items-center gap-3 md:gap-4">
-        <div className="hidden sm:flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <BarChart2 className="w-4 h-4 text-amber-400" strokeWidth={1.75} />
-          <span className="text-xs font-bold text-white uppercase tracking-wide">Compare</span>
-          <span className="text-[10px] bg-gradient-gold text-amber-950 font-bold px-1.5 py-0.5 rounded-full">{compareCars.length}/3</span>
-        </div>
-
-        {/* Mobile compact count badge */}
-        <div className="sm:hidden flex items-center gap-1.5 shrink-0">
-          <BarChart2 className="w-4 h-4 text-amber-400" strokeWidth={1.75} />
-          <span className="text-[10px] bg-gradient-gold text-amber-950 font-bold px-1.5 py-0.5 rounded-full">{compareCars.length}/3</span>
+          <span className="text-xs font-medium text-white">
+            <span className="hidden sm:inline">Compare </span>{compareCars.length}/3
+          </span>
         </div>
 
         <div className="flex items-center gap-2 md:gap-3 flex-1 overflow-x-auto">
@@ -46,12 +41,6 @@ export const CompareBar: React.FC<CompareBarProps> = ({
             </div>
           ))}
 
-          {compareCars.length < 3 && (
-            <div className="hidden sm:flex items-center gap-2 bg-white/5 border border-dashed border-white/20 rounded-full px-3 py-1.5 shrink-0">
-              <Plus className="w-3.5 h-3.5 text-slate-300" strokeWidth={1.75} />
-              <span className="text-[11px] text-slate-300">Add car</span>
-            </div>
-          )}
         </div>
 
         <div className="flex items-center gap-2 shrink-0">

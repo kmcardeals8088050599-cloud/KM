@@ -62,7 +62,7 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
                 onClick={() => setActiveCategory(cat)}
                 className={`px-5 py-2.5 text-[13px] font-semibold rounded-full transition-all duration-300 shrink-0 ${
                   activeCategory === cat
-                    ? 'bg-gradient-gold text-slate-950 shadow-[0_8px_20px_-6px_rgba(176,141,74,0.5)]'
+                    ? 'bg-slate-900 text-white'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >

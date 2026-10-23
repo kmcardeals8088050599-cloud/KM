@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, ArrowRight, AlertCircle, ShieldCheck } from 'lucide-react';
+import { Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { KmLogo } from '../common/KmLogo';
 import { loginApi, setAuthToken } from '../../lib/api';
 
@@ -31,22 +31,11 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ onLoginSuccess
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950 overflow-hidden">
-      {/* Ambient background glow */}
-      <div className="absolute inset-0 bg-gradient-obsidian" />
-      <div className="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-amber-500/10 blur-3xl animate-orb-1" />
-      <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] rounded-full bg-amber-400/10 blur-3xl" />
-      <div className="absolute inset-0 bg-noise opacity-40" />
-
-      <div className="relative w-full max-w-md animate-fade-in-up">
-        <div className="relative rounded-3xl p-8 sm:p-10 space-y-7 glass-dark shadow-premium">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
+      <div className="relative w-full max-w-md">
+        <div className="relative rounded-3xl p-8 sm:p-10 space-y-7 glass-dark border border-white/10">
           {/* Branded header */}
           <div className="text-center space-y-4">
-            <div className="flex justify-center">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-lg shadow-amber-900/30">
-                <ShieldCheck className="w-7 h-7 text-slate-950" />
-              </div>
-            </div>
             <div className="flex justify-center">
               <KmLogo variant="white" size="lg" />
             </div>

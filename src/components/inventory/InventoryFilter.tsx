@@ -380,7 +380,7 @@ export const InventoryFilter: React.FC<InventoryFilterProps> = ({
           <SlidersHorizontal className="w-3.5 h-3.5" strokeWidth={1.75} />
           Filters
           {activeFilterCount > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gradient-gold text-[10px] font-bold text-amber-950 flex items-center justify-center shadow-md">
+            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-600 text-[10px] font-bold text-white flex items-center justify-center">
               {activeFilterCount}
             </span>
           )}

@@ -38,11 +38,8 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="bg-gradient-obsidian text-slate-400 relative overflow-hidden">
-      <div className="absolute top-0 left-1/4 w-[32rem] h-[32rem] bg-amber-500/[0.06] rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[28rem] h-[28rem] bg-emerald-500/[0.05] rounded-full blur-[160px] pointer-events-none" />
-
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-16 pb-8 relative z-10">
+    <footer className="bg-slate-950 text-slate-400">
+      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-16 pb-8">
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-10 pb-12 border-b border-white/10">
           <div className="col-span-2 space-y-4">
             <KmLogo variant="white" size="sm" />

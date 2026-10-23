@@ -75,7 +75,7 @@ export const HowItWorks: React.FC = () => {
               key={idx}
               className="swipe-item w-[78vw] max-w-xs executive-card p-6 rounded-3xl relative overflow-hidden"
             >
-              <div className="text-7xl font-extrabold text-gradient-amber opacity-25 absolute -top-3 right-2 select-none leading-none">
+              <div className="text-7xl font-extrabold text-slate-100 absolute -top-3 right-2 select-none leading-none">
                 {step.num}
               </div>
               <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center mb-5 relative z-10">
@@ -98,9 +98,9 @@ export const HowItWorks: React.FC = () => {
             <motion.div
               key={idx}
               variants={itemVariants}
-              className="executive-card p-6 rounded-3xl relative overflow-hidden group"
+              className="executive-card p-6 rounded-3xl relative overflow-hidden"
             >
-              <div className="text-7xl font-extrabold text-gradient-amber opacity-20 group-hover:opacity-30 transition-opacity absolute -top-3 right-2 select-none leading-none">
+              <div className="text-7xl font-extrabold text-slate-100 absolute -top-3 right-2 select-none leading-none">
                 {step.num}
               </div>
 

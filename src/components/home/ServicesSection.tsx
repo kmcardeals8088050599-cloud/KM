@@ -14,18 +14,12 @@ interface Service {
   features: string[];
   actionLabel: string;
   route: string;
-  badge: string;
 }
 
 const ServiceCardBody: React.FC<{ service: Service }> = ({ service }) => (
   <div className="space-y-4">
-    <div className="flex items-center justify-between">
-      <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-[0_8px_18px_-6px_rgba(176,141,74,0.45)]">
-        {service.icon}
-      </div>
-      <span className="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full whitespace-nowrap">
-        {service.badge}
-      </span>
+    <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center">
+      {service.icon}
     </div>
 
     <h3 className="text-lg font-bold text-slate-900">
@@ -55,41 +49,37 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
       id: 'buy',
       title: 'Buy Pre-Owned Cars',
       icon: <ShoppingBag className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
-      description: 'Explore certified pre-owned multi-brand vehicles with transparent pricing, full service records, and non-accidental guarantees.',
+      description: 'Certified pre-owned multi-brand vehicles with transparent pricing and non-accidental guarantees.',
       features: ['150-Point Quality Inspection', 'Instant RC Name Transfer', 'Bank Finance & Low Interest Rates'],
       actionLabel: 'Browse Inventory',
-      route: '/inventory',
-      badge: 'Certified Quality'
+      route: '/inventory'
     },
     {
       id: 'exchange',
       title: 'Vehicle Exchange (Trade-In)',
       icon: <RefreshCw className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
-      description: 'Submit your existing car to upgrade seamlessly to any vehicle in our showroom with top market exchange valuation.',
+      description: 'Trade in your existing car and upgrade seamlessly with top market exchange valuation.',
       features: ['Instant On-Spot Physical Evaluation', 'Highest Exchange Value Offered', 'Zero Hassle Paperwork'],
       actionLabel: 'Exchange Your Vehicle',
-      route: '/exchange',
-      badge: 'Most Popular'
+      route: '/exchange'
     },
     {
       id: 'sell',
       title: 'Sell Your Car Directly',
       icon: <Tag className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
-      description: 'Get instant cash payment or bank transfer for your car. We offer fair market prices with immediate legal name transfer.',
+      description: 'Get instant cash payment or bank transfer at a fair market price with immediate legal name transfer.',
       features: ['Same-Day Direct Payment', 'Free Vehicle Doorstep Appraisal', 'Safe Legal Transfer Protection'],
       actionLabel: 'Sell My Car',
-      route: '/buy-sell',
-      badge: 'Best Value'
+      route: '/buy-sell'
     },
     {
       id: 'brokerage',
       title: 'Commission Brokerage',
       icon: <Briefcase className="w-5 h-5 text-slate-900" strokeWidth={1.5} />,
-      description: 'Sell your vehicle to genuine end-buyers through our extensive network in Kalaburagi while earning maximum return on minimal commission.',
+      description: 'Sell to genuine end-buyers through our showroom network in Kalaburagi on minimal commission.',
       features: ['Genuine Buyer Verification', 'Professional Showroom Display', 'Safe Escrow & Payment Handling'],
       actionLabel: 'Brokerage Consultation',
-      route: '/buy-sell',
-      badge: 'Trusted Network'
+      route: '/buy-sell'
     }
   ];
 
@@ -103,7 +93,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
             Sale, purchase, exchange, brokerage
           </h2>
           <p className="text-sm text-slate-500">
-            Whether you want to buy, sell, exchange, or place your car on brokerage in Kalaburagi, KM Car Deals provides complete transparency and peace of mind.
+            Buy, sell, exchange, or place your car on brokerage in Kalaburagi with complete transparency.
           </p>
         </div>
 

@@ -253,7 +253,7 @@ export const AIOpsPanel: React.FC = () => {
             onClick={() => setStateFilter(s)}
             className={`swipe-item px-3 py-1.5 min-h-[32px] rounded-full text-[11px] font-semibold transition-colors whitespace-nowrap ${
               stateFilter === s
-                ? 'bg-gradient-gold text-slate-950 shadow-sm'
+                ? 'bg-slate-900 text-white'
                 : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
             }`}
           >
@@ -289,7 +289,7 @@ export const AIOpsPanel: React.FC = () => {
                     {d.data.transmission && <span>{d.data.transmission}</span>}
                     {d.data.bodyType && <span>{d.data.bodyType}</span>}
                     {d.data.odometerKm && <span>{d.data.odometerKm.toLocaleString('en-IN')} km</span>}
-                    {d.data.price ? <span className="text-gradient-amber font-semibold">{priceLakh(d.data.price)}</span> : null}
+                    {d.data.price ? <span className="text-amber-700 font-semibold">{priceLakh(d.data.price)}</span> : null}
                   </div>
                   <div className="mt-1 text-[10px] text-slate-400 truncate">
                     {d.id} · {d.images?.length || 0} images · {d.source || 'whatsapp'} · {new Date(d.createdAt).toLocaleString('en-IN')}

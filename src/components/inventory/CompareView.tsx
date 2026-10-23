@@ -1,6 +1,6 @@
 import React from 'react';
 import { Car } from '../../types';
-import { ArrowLeft, MessageCircle, Phone } from 'lucide-react';
+import { ArrowLeft, MessageCircle } from 'lucide-react';
 import { createWhatsAppLink } from '../../lib/api';
 import { DEALERSHIP_INFO } from '../../data/mockData';
 
@@ -98,27 +98,14 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
           <div className="bg-white border border-slate-200/80 rounded-2xl overflow-x-auto shadow-premium">
             <table className="w-full text-sm">
               <tbody>
-                <tr className="bg-gradient-to-r from-amber-50 to-amber-100/60 border-b border-amber-100">
-                  <td colSpan={4} className="px-4 py-2.5 text-[11px] font-bold text-amber-800 uppercase tracking-wide">Vehicle Details</td>
+                <tr className="border-b border-slate-200">
+                  <td colSpan={4} className="px-4 py-2.5 text-[11px] font-bold text-slate-500 uppercase tracking-wide">Vehicle Details</td>
                 </tr>
                 {specRows.map(row => (
                   <Row key={row.label} label={row.label} values={row.values} />
                 ))}
               </tbody>
             </table>
-          </div>
-
-          <div className="flex flex-wrap gap-4">
-            {cars.map(car => (
-              <a
-                key={car.id}
-                href={`tel:+918123991847`}
-                className="btn-accent-apple flex-1 min-w-[200px] text-sm"
-              >
-                <Phone className="w-4 h-4" strokeWidth={1.75} />
-                <span>Inquire: {car.title.split(' ').slice(0, 2).join(' ')}</span>
-              </a>
-            ))}
           </div>
         </div>
 

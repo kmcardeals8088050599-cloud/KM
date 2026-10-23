@@ -11,10 +11,6 @@ export const LocationSection: React.FC = () => {
 
   return (
     <section className="py-20 sm:py-28 px-4 lg:px-8 relative z-10 bg-gradient-obsidian overflow-hidden">
-      {/* Ambient glow blobs to bookend the page before the footer */}
-      <div className="absolute -top-20 -left-20 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl animate-orb-1 pointer-events-none"></div>
-      <div className="absolute -bottom-32 -right-20 w-[28rem] h-[28rem] bg-amber-400/10 rounded-full blur-3xl pointer-events-none"></div>
-
       <div className="max-w-7xl mx-auto space-y-14 relative z-10">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <p className="section-eyebrow-light">Verified Showroom Location</p>
@@ -37,9 +33,7 @@ export const LocationSection: React.FC = () => {
 
               <div className="space-y-5 text-xs">
                 <div className="flex items-start gap-3.5 text-slate-200">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-gold flex items-center justify-center shrink-0">
-                    <MapPin className="w-4 h-4 text-slate-950" strokeWidth={1.5} />
-                  </div>
+                  <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
                     <span className="text-slate-400 font-medium block text-[11px]">Exact Address</span>
                     <p className="font-medium text-white leading-relaxed mt-0.5 text-sm">
@@ -50,9 +44,7 @@ export const LocationSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-3.5 text-slate-200">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-gold flex items-center justify-center shrink-0">
-                    <Phone className="w-4 h-4 text-slate-950" strokeWidth={1.5} />
-                  </div>
+                  <Phone className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
                     <span className="text-slate-400 font-medium block text-[11px]">Direct Phone Lines</span>
                     <div className="space-y-1 font-medium text-white mt-0.5 text-sm">
@@ -66,9 +58,7 @@ export const LocationSection: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-3.5 text-slate-200">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-gold flex items-center justify-center shrink-0">
-                    <Clock className="w-4 h-4 text-slate-950" strokeWidth={1.5} />
-                  </div>
+                  <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
                     <span className="text-slate-400 font-medium block text-[11px]">Working Hours</span>
                     <p className="font-medium text-white mt-0.5 text-sm">{DEALERSHIP_INFO.workingHours}</p>

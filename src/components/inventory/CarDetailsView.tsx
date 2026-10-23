@@ -128,17 +128,10 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
         </div>
 
         <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full uppercase tracking-wide">{car.brand}</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
-              {car.status}
-            </span>
-          </div>
-
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{car.brand} · {car.status}</p>
           <h1 className="section-headline !text-3xl sm:!text-5xl">{car.title}</h1>
           <p className="text-sm text-slate-500">
-            Showroom Location: {DEALERSHIP_INFO.address}, Kalaburagi
+            {DEALERSHIP_INFO.address}, Kalaburagi
           </p>
         </div>
 
@@ -172,11 +165,10 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
               {/* Cinematic bottom gradient */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none"></div>
 
-              {/* Image counter badge */}
+              {/* Image counter */}
               {car.images.length > 0 && (
-                <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/60 text-white text-[11px] font-semibold rounded-full backdrop-blur-sm flex items-center gap-1.5">
-                  <Images className="w-3.5 h-3.5 text-amber-400" strokeWidth={1.75} />
-                  <span>{activeImageIndex + 1} / {car.images.length}</span>
+                <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/60 text-white text-[11px] font-semibold rounded-full">
+                  {activeImageIndex + 1} / {car.images.length}
                 </div>
               )}
 
@@ -294,23 +286,15 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
                   className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-full transition-all flex items-center justify-center gap-2 block text-center"
                 >
                   <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
-                  <span>Chat on WhatsApp Directly</span>
+                  <span>Chat on WhatsApp</span>
                 </a>
 
                 <a
                   href="tel:+918123991847"
-                  className="btn-accent-apple w-full !py-3 text-sm block text-center"
+                  className="flex items-center justify-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 py-1"
                 >
-                  <Phone className="w-4 h-4 inline mr-1 -mt-0.5" strokeWidth={1.75} />
-                  <span>Call +91 81239 91847</span>
-                </a>
-
-                <a
-                  href="tel:+918088050599"
-                  className="btn-secondary-apple w-full !py-3 text-sm block text-center"
-                >
-                  <Phone className="w-4 h-4 inline mr-1 -mt-0.5" strokeWidth={1.75} />
-                  <span>Call +91 80880 50599</span>
+                  <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
+                  +91 81239 91847
                 </a>
               </div>
             </div>

@@ -44,8 +44,7 @@ export const ContactView: React.FC = () => {
     <div className="pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-900">
       <div className="max-w-7xl mx-auto space-y-16">
         {/* Title - dark band for presence */}
-        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-16 overflow-hidden shadow-xl">
-          <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_80%_15%,rgba(201,169,110,0.35),transparent_55%)]" />
+        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-16">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
             <p className="section-eyebrow-light">Showroom Location &amp; Direct Contact</p>
             <h1 className="section-headline-light">
@@ -57,63 +56,28 @@ export const ContactView: React.FC = () => {
           </div>
         </div>
 
-        {/* Card Template Showcase Banner */}
-        <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-xl max-w-4xl mx-auto relative overflow-hidden">
-          <div className="relative z-10 space-y-6">
-            {/* Top Row: Owner & Phone */}
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                  <User className="w-4 h-4 text-amber-600" strokeWidth={1.75} />
-                </div>
-                <span className="font-bold text-slate-900 text-base">Md Nadeem Khan</span>
-              </div>
+        {/* Owner & Showroom Summary */}
+        <div className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 max-w-4xl mx-auto text-center space-y-5">
+          <KmLogo variant="amber" size="xl" />
+          <p className="text-sm text-slate-500">Sale &middot; Purchase &middot; Exchange &middot; Commission Brokerage</p>
 
-              <div className="flex flex-wrap items-center gap-2">
-                <a
-                  href="tel:+918123991847"
-                  className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-full font-medium text-sm transition-colors"
-                >
-                  <Phone className="w-4 h-4" strokeWidth={1.75} />
-                  <span>+91 81239 91847</span>
-                </a>
-                <a
-                  href="tel:+918088050599"
-                  className="flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-full font-medium text-sm transition-colors"
-                >
-                  <Phone className="w-4 h-4 text-slate-500" strokeWidth={1.75} />
-                  <span>+91 80880 50599</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Center Logo & Title */}
-            <div className="text-center space-y-4 flex flex-col items-center">
-              <KmLogo variant="amber" size="xl" />
-
-              <div className="pt-2 flex items-center justify-center gap-2 text-xs font-medium">
-                <span className="text-slate-700 bg-slate-100 px-3 py-1 rounded-full">SALE</span>
-                <span className="text-slate-300">•</span>
-                <span className="text-slate-700 bg-slate-100 px-3 py-1 rounded-full">PURCHASE</span>
-                <span className="text-slate-300">•</span>
-                <span className="text-slate-700 bg-slate-100 px-3 py-1 rounded-full">EXCHANGE</span>
-              </div>
-
-              <div className="pt-1">
-                <span className="inline-block bg-amber-500 text-white font-medium text-xs uppercase tracking-wide px-4 py-1.5 rounded-full">
-                  Business on commission basis
-                </span>
-              </div>
-            </div>
-
-            {/* Address Row */}
-            <div className="pt-5 border-t border-slate-200 text-center text-sm space-y-1">
-              <p className="font-medium text-slate-900 flex items-center justify-center gap-1.5">
-                <MapPin className="w-4 h-4 text-amber-600 shrink-0" strokeWidth={1.75} />
-                <span>Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104</span>
-              </p>
-            </div>
+          <div className="pt-5 border-t border-slate-200 flex flex-wrap items-center justify-center gap-4 text-sm">
+            <span className="flex items-center gap-1.5 font-medium text-slate-900">
+              <User className="w-4 h-4 text-amber-600" strokeWidth={1.5} />
+              Md Nadeem Khan
+            </span>
+            <a href="tel:+918123991847" className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900">
+              <Phone className="w-4 h-4" strokeWidth={1.5} /> +91 81239 91847
+            </a>
+            <a href="tel:+918088050599" className="flex items-center gap-1.5 text-slate-700 hover:text-slate-900">
+              <Phone className="w-4 h-4" strokeWidth={1.5} /> +91 80880 50599
+            </a>
           </div>
+
+          <p className="pt-4 border-t border-slate-200 text-sm text-slate-600 flex items-center justify-center gap-1.5">
+            <MapPin className="w-4 h-4 text-amber-600 shrink-0" strokeWidth={1.5} />
+            Opposite Hyundai Showroom, Humnabad Road, Kapnoor, Kalaburagi - 585104
+          </p>
         </div>
 
         {/* 2-Column: Form vs Map */}
@@ -191,7 +155,7 @@ export const ContactView: React.FC = () => {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full flex items-center justify-center gap-1.5 transition-colors shadow-[0_8px_20px_-6px_rgba(16,185,129,0.5)]"
+                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full flex items-center justify-center gap-1.5 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
                 <span>WhatsApp</span>
@@ -199,7 +163,7 @@ export const ContactView: React.FC = () => {
 
               <a
                 href="tel:+918123991847"
-                className="flex-1 py-3 bg-gradient-gold text-slate-950 font-bold rounded-full flex items-center justify-center gap-1.5 transition-shadow shadow-[0_8px_20px_-6px_rgba(201,169,110,0.5)] hover:shadow-[0_10px_26px_-6px_rgba(201,169,110,0.65)]"
+                className="flex-1 py-3 bg-gradient-gold text-slate-950 font-bold rounded-full flex items-center justify-center gap-1.5"
               >
                 <Phone className="w-4 h-4" strokeWidth={1.75} />
                 Call now

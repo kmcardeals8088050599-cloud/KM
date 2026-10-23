@@ -66,7 +66,7 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
 
   const stepHeading = (num: string, label: string) => (
     <div className="flex items-center gap-3">
-      <span className="w-8 h-8 rounded-full bg-gradient-gold text-slate-950 font-bold text-sm flex items-center justify-center shrink-0 shadow-[0_4px_14px_-2px_rgba(201,169,110,0.5)]">
+      <span className="w-8 h-8 rounded-full border border-slate-300 text-slate-900 font-bold text-sm flex items-center justify-center shrink-0">
         {num}
       </span>
       <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
@@ -79,16 +79,15 @@ export const ExchangeForm: React.FC<ExchangeFormProps> = ({ targetCar, onSuccess
     <div className="pt-28 pb-28 lg:pb-24 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Header */}
-        <div className="relative text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6 overflow-hidden shadow-xl">
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,rgba(201,169,110,0.35),transparent_60%)]" />
-          <p className="section-eyebrow-light flex items-center justify-center gap-1.5 relative z-10">
+        <div className="relative text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6">
+          <p className="section-eyebrow-light flex items-center justify-center gap-1.5">
             <RefreshCw className="w-3.5 h-3.5 text-amber-400" /> Instant Vehicle Exchange Program
           </p>
-          <h1 className="section-headline-light relative z-10">
+          <h1 className="section-headline-light">
             Exchange your car at <span className="text-gradient-amber">KM Car Deals</span>
           </h1>
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed relative z-10">
-            Upgrade your existing car easily. Get a fair market valuation, doorstep physical evaluation in Kalaburagi, and hassle-free instant paper transfer.
+          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+            Upgrade your existing car easily. Get a fair market valuation, doorstep evaluation in Kalaburagi, and instant paper transfer.
           </p>
         </div>
 

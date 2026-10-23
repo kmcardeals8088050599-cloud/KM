@@ -230,12 +230,12 @@ function MainAppContent() {
             element={
               <div className="py-10 md:py-16 px-4 lg:px-8 max-w-7xl mx-auto space-y-8 md:space-y-10 min-h-screen">
                 <div className="space-y-3 text-center max-w-2xl mx-auto">
-                  <span className="section-eyebrow">Multi-Brand Pre-Owned Showroom</span>
+                  <span className="section-eyebrow">Inventory</span>
                   <h1 className="section-headline mt-1 !text-3xl md:!text-5xl">
-                    Explore all <span className="text-gradient-amber">pre-owned cars</span>
+                    All pre-owned cars
                   </h1>
                   <p className="text-sm text-slate-500">
-                    Search &amp; filter among 150-point inspected multi-brand cars available for immediate delivery in Kalaburagi
+                    150-point inspected, ready for delivery in Kalaburagi.
                   </p>
                 </div>
 
@@ -310,29 +310,16 @@ function MainAppContent() {
                               </div>
                             </div>
                           )}
-                          {car.images.length > 1 && (
-                            <span className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/60 text-white text-[10px] font-medium rounded-full flex items-center gap-1">
-                              <Images className="w-3 h-3 text-amber-400" strokeWidth={1.75} />
-                              {car.images.length} Photos
-                            </span>
-                          )}
                         </div>
                         <div className="flex-1 space-y-2 w-full">
-                          <div className="flex items-center gap-2 text-xs text-slate-500">
-                            <span className="text-amber-600 uppercase tracking-wide font-bold">{car.brand}</span>
-                            <span>•</span>
-                            <span>{car.year}</span>
-                          </div>
+                          <p className="text-xs text-slate-500">
+                            {car.brand} · {car.year}
+                          </p>
                           <h3 className="text-lg font-bold text-slate-900 tracking-tight">{car.title}</h3>
-                          <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-slate-600">
-                            <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.fuelType}</span>
-                            <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.transmission}</span>
-                            <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.bodyType}</span>
-                            {typeof car.odometerKm === 'number' && (
-                              <span className="bg-slate-100 px-2.5 py-1 rounded-full">{car.odometerKm.toLocaleString('en-IN')} km</span>
-                            )}
-                            <span className="bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full font-semibold">{car.specs?.rto}</span>
-                          </div>
+                          <p className="text-[12px] text-slate-500">
+                            {car.fuelType} · {car.transmission} · {car.bodyType}
+                            {typeof car.odometerKm === 'number' && ` · ${car.odometerKm.toLocaleString('en-IN')} km`}
+                          </p>
                         </div>
                         <div className="text-right shrink-0 w-full md:w-auto">
                           <button className="btn-primary-apple w-full md:w-auto !px-4 !py-2 text-xs">

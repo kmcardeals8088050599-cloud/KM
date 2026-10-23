@@ -289,7 +289,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="flex items-center gap-4">
             <KmLogo variant="dark" size="lg" />
             <div className="border-l border-slate-200 pl-4">
-              <span className="text-[10px] font-bold tracking-wide bg-gradient-gold text-slate-950 px-2.5 py-1 rounded-full uppercase shadow-sm">Admin Portal</span>
+              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">Admin Portal</span>
               <p className="text-xs text-slate-500 mt-1 hidden sm:block">Manage vehicle inventory, customer leads, and exchange requests</p>
             </div>
           </div>
@@ -317,7 +317,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <span className="hidden sm:inline">{item.label}</span>
               <span className="sm:hidden">{item.shortLabel}</span>
               {!!item.badge && item.badge > 0 && (
-                <span className="px-1.5 py-0.5 text-[9px] bg-gradient-gold text-slate-950 font-bold rounded-full">
+                <span className="px-1.5 py-0.5 text-[9px] bg-amber-500 text-white font-bold rounded-full">
                   {item.badge}
                 </span>
               )}
@@ -352,7 +352,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
               <div className="bg-white p-5 sm:p-6 rounded-2xl executive-card flex flex-col justify-between">
                 <span className="text-[11px] sm:text-xs text-slate-500 font-semibold">Sold Cars</span>
-                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-gradient-amber mt-2">{soldCarsCount} <span className="text-base font-semibold text-slate-400">Cars</span></div>
+                <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mt-2">{soldCarsCount} <span className="text-base font-semibold text-slate-400">Cars</span></div>
                 <div className="text-[11px] text-slate-500 mt-2 font-medium">Delivered to Kalaburagi Buyers</div>
               </div>
 
@@ -726,7 +726,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       </div>
                       <div className="flex justify-between gap-3">
                         <span className="text-slate-500">Customer Expected Price:</span>
-                        <span className="font-bold text-gradient-amber text-right">₹ {ex.expectedPrice} Lakhs</span>
+                        <span className="font-bold text-amber-700 text-right">₹ {ex.expectedPrice} Lakhs</span>
                       </div>
                       {ex.targetCarTitle && (
                         <div className="flex justify-between gap-3 pt-1 border-t border-slate-200 text-emerald-700">
@@ -780,14 +780,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           {/* Daily Report */}
           <div className="bg-white executive-card rounded-2xl p-5 sm:p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-gold flex items-center justify-center shrink-0">
-                <Send className="w-4 h-4 text-slate-950" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-slate-900">Daily Summary Report</h3>
-                <p className="text-[11px] text-slate-500">Sends today's inventory, leads, and exchange stats to admin WhatsApp</p>
-              </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-900">Daily Summary Report</h3>
+              <p className="text-[11px] text-slate-500">Sends today's inventory, leads, and exchange stats to admin WhatsApp</p>
             </div>
             <button
               onClick={handleDailyReport}

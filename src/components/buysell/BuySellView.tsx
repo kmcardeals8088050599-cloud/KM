@@ -36,8 +36,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
     <div className="pb-28 px-4 lg:px-8 bg-white min-h-screen text-slate-800">
       <div className="max-w-7xl mx-auto space-y-20">
         {/* Header - dark hero band for bold presence */}
-        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-20 overflow-hidden shadow-xl">
-          <div className="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_70%_10%,rgba(201,169,110,0.35),transparent_55%)]" />
+        <div className="relative -mx-4 lg:-mx-8 bg-gradient-obsidian px-4 lg:px-8 pt-32 pb-20">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
             <p className="section-eyebrow-light">Buy, Sell, Exchange &amp; Brokerage</p>
             <h1 className="section-headline-light">
@@ -54,9 +53,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
           {/* Buy Card */}
           <div className="executive-card rounded-3xl p-10 space-y-8 flex flex-col justify-between">
             <div className="space-y-5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-[0_8px_20px_-4px_rgba(201,169,110,0.5)]">
-                <ShoppingBag className="w-6 h-6 text-slate-950" strokeWidth={1.75} />
-              </div>
+              <ShoppingBag className="w-7 h-7 text-amber-600" strokeWidth={1.5} />
               <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Buy a certified pre-owned car</h2>
               <p className="text-sm text-slate-500 leading-relaxed">
                 Browse our multi-brand inventory featuring Hyundai, Maruti, Mahindra, Toyota, Tata, Kia, and luxury cars.
@@ -93,9 +90,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
           {/* Sell / Brokerage Card */}
           <div className="executive-card rounded-3xl p-10 space-y-8 flex flex-col justify-between">
             <div className="space-y-5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-[0_8px_20px_-4px_rgba(201,169,110,0.5)]">
-                <Tag className="w-6 h-6 text-slate-950" strokeWidth={1.75} />
-              </div>
+              <Tag className="w-7 h-7 text-amber-600" strokeWidth={1.5} />
               <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Sell / commission brokerage</h2>
               <p className="text-sm text-slate-500 leading-relaxed">
                 Get maximum market value for your vehicle with direct showroom display or instant cash sale.

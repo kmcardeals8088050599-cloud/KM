@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { getResolvedPhotos, ShowroomPhoto } from '../../data/realImages';
-import { MapPin, Phone, Eye, X, Camera } from 'lucide-react';
+import { MapPin, Phone, Eye, X } from 'lucide-react';
 
 export const ShowroomGallery: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -33,10 +33,7 @@ export const ShowroomGallery: React.FC = () => {
           transition={{ duration: 0.5 }}
           className="text-center max-w-2xl mx-auto space-y-3"
         >
-          <div className="inline-flex items-center gap-2 section-eyebrow">
-            <Camera className="w-3.5 h-3.5" strokeWidth={1.75} />
-            <span>Showroom &amp; Leadership Showcase</span>
-          </div>
+          <p className="section-eyebrow">Showroom &amp; Leadership Showcase</p>
           <h2 className="section-headline">
             Inside KM Car Deals, Kalaburagi
           </h2>
@@ -127,8 +124,8 @@ export const ShowroomGallery: React.FC = () => {
 
                   {/* Quick View Hover Icon */}
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                    <div className="w-12 h-12 rounded-full bg-gradient-gold text-slate-950 flex items-center justify-center shadow-premium scale-90 group-hover:scale-100 transition-transform">
-                      <Eye className="w-4.5 h-4.5" strokeWidth={1.75} />
+                    <div className="w-11 h-11 rounded-full bg-white text-slate-900 flex items-center justify-center scale-90 group-hover:scale-100 transition-transform">
+                      <Eye className="w-4 h-4" strokeWidth={1.75} />
                     </div>
                   </div>
 

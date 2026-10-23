@@ -18,13 +18,12 @@ export function TermsOfService() {
       <div className="pt-32 pb-24 px-4 lg:px-8">
         <div className="max-w-3xl mx-auto space-y-14">
           {/* Header */}
-          <div className="text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6 -mx-4 sm:mx-0 shadow-xl relative overflow-hidden">
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_70%_20%,rgba(201,169,110,0.35),transparent_60%)]" />
-            <p className="section-eyebrow-light flex items-center justify-center gap-1.5 relative z-10">
+          <div className="text-center space-y-4 bg-gradient-obsidian rounded-3xl py-14 px-6 -mx-4 sm:mx-0">
+            <p className="section-eyebrow-light flex items-center justify-center gap-1.5">
               <Scale className="w-3.5 h-3.5 text-amber-400" /> Legal
             </p>
-            <h1 className="section-headline-light relative z-10">Terms &amp; Conditions</h1>
-            <p className="text-sm text-slate-400 relative z-10">Last updated: September 2026</p>
+            <h1 className="section-headline-light">Terms &amp; Conditions</h1>
+            <p className="text-sm text-slate-400">Last updated: September 2026</p>
           </div>
 
           <p className="text-[15px] leading-7 text-slate-600">
