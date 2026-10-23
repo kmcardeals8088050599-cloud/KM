@@ -355,30 +355,32 @@ export const CarDetailsView: React.FC<CarDetailsViewProps> = ({
               View All <ChevronRight className="w-3.5 h-3.5" strokeWidth={1.75} />
             </button>
           </div>
-          {/* Desktop grid */}
-          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {relatedCars.slice(0, 3).map(rc => (
-              <CarCard
-                key={rc.id}
-                car={rc}
-                onSelectCar={onSelectCar}
-                onQuickView={onSelectCar}
-                onExchangeSelect={onOpenExchangeModal}
-              />
-            ))}
-          </div>
-          {/* Mobile swipe carousel */}
-          <div className="swipe-row md:hidden -mx-4 px-4 gap-4">
-            {relatedCars.slice(0, 5).map(rc => (
-              <div key={rc.id} className="swipe-item w-[78%] mr-4">
+          <div>
+            {/* Desktop grid */}
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedCars.slice(0, 3).map(rc => (
                 <CarCard
+                  key={rc.id}
                   car={rc}
                   onSelectCar={onSelectCar}
                   onQuickView={onSelectCar}
                   onExchangeSelect={onOpenExchangeModal}
                 />
-              </div>
-            ))}
+              ))}
+            </div>
+            {/* Mobile swipe carousel */}
+            <div className="swipe-row md:hidden -mx-4 px-4 gap-4">
+              {relatedCars.slice(0, 5).map(rc => (
+                <div key={rc.id} className="swipe-item w-[78%] mr-4">
+                  <CarCard
+                    car={rc}
+                    onSelectCar={onSelectCar}
+                    onQuickView={onSelectCar}
+                    onExchangeSelect={onOpenExchangeModal}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

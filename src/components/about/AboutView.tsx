@@ -102,6 +102,7 @@ export const AboutView: React.FC = () => {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Meet our directors &amp; team</h2>
           </div>
 
+          <div>
           {/* Mobile: swipe carousel. Desktop: grid */}
           <div className="swipe-row gap-5 px-1 -mx-1 sm:hidden">
             {[
@@ -159,6 +160,7 @@ export const AboutView: React.FC = () => {
                 <p className="text-sm text-slate-500 mt-2">Dedicated professionals handling technical inspections, RTO documentation, and bank finance facilitation.</p>
               </div>
             </div>
+          </div>
           </div>
         </div>
 

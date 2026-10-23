@@ -53,6 +53,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
           <h1 className="text-lg md:text-xl font-semibold text-slate-900 tracking-tight">Car Comparison</h1>
         </div>
 
+        <div>
         {/* ===== Desktop: side-by-side cards + full spec table ===== */}
         <div className="hidden md:block space-y-8">
           <div className="grid gap-4" style={{ gridTemplateColumns: `180px repeat(${cars.length}, 1fr)` }}>
@@ -157,6 +158,7 @@ export const CompareView: React.FC<CompareViewProps> = ({ cars, onBack, onSelect
               <p className="text-xs text-slate-400 text-center">Add a car to compare</p>
             </div>
           ))}
+        </div>
         </div>
       </div>
     </div>
