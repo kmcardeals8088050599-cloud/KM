@@ -73,37 +73,39 @@ export const FeaturedCars: React.FC<FeaturedCarsProps> = ({
         </div>
 
         {/* Cars Grid — desktop: elevated 3-col grid. Mobile: bespoke swipe carousel, ~85vw cards with a peek of the next. */}
-        <motion.div layout className="swipe-row gap-4 -mx-4 px-4 md:hidden">
-          <AnimatePresence mode="popLayout">
-            {featuredList.slice(0, 6).map(car => (
-              <div key={car.id} className="swipe-item w-[85vw] max-w-sm">
+        <div>
+          <motion.div layout className="swipe-row gap-4 -mx-4 px-4 md:hidden">
+            <AnimatePresence mode="popLayout">
+              {featuredList.slice(0, 6).map(car => (
+                <div key={car.id} className="swipe-item w-[85vw] max-w-sm">
+                  <CarCard
+                    car={car}
+                    onSelectCar={onSelectCar}
+                    onQuickView={onQuickView}
+                    onExchangeSelect={onExchangeSelect}
+                  />
+                </div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+
+          <motion.div
+            layout
+            className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <AnimatePresence mode="popLayout">
+              {featuredList.slice(0, 6).map(car => (
                 <CarCard
+                  key={car.id}
                   car={car}
                   onSelectCar={onSelectCar}
                   onQuickView={onQuickView}
                   onExchangeSelect={onExchangeSelect}
                 />
-              </div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-
-        <motion.div
-          layout
-          className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <AnimatePresence mode="popLayout">
-            {featuredList.slice(0, 6).map(car => (
-              <CarCard
-                key={car.id}
-                car={car}
-                onSelectCar={onSelectCar}
-                onQuickView={onQuickView}
-                onExchangeSelect={onExchangeSelect}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
 
         {/* Bottom CTA to view full inventory */}
         <div className="text-center pt-4">

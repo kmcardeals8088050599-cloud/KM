@@ -60,6 +60,7 @@ export const ShowroomGallery: React.FC = () => {
         </div>
 
         {/* Gallery — mobile: swipe showcase carousel of big photography. Desktop: elevated grid. */}
+        <div>
         <div className="swipe-row gap-5 -mx-4 px-4 md:hidden">
           {filteredPhotos.map((photo) => (
             <div
@@ -147,6 +148,7 @@ export const ShowroomGallery: React.FC = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+        </div>
       </div>
 
       {/* Lightbox Modal */}

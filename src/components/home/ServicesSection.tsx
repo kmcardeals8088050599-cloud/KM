@@ -98,50 +98,52 @@ export const ServicesSection: React.FC<ServicesSectionProps> = () => {
         </div>
 
         {/* Services — desktop: elevated 4-col grid. Mobile: swipe carousel (reads better than 4 stacked cards). */}
-        <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className="swipe-item w-[82vw] max-w-sm executive-card rounded-3xl p-7 flex flex-col justify-between"
-            >
-              <ServiceCardBody service={service} />
-              <div className="pt-6">
-                <button
-                  onClick={() => {
-                    navigate(service.route);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="btn-primary-apple btn-sm w-full"
-                >
-                  <span>{service.actionLabel}</span>
-                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
-                </button>
+        <div>
+          <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className="swipe-item w-[82vw] max-w-sm executive-card rounded-3xl p-7 flex flex-col justify-between"
+              >
+                <ServiceCardBody service={service} />
+                <div className="pt-6">
+                  <button
+                    onClick={() => {
+                      navigate(service.route);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="btn-primary-apple btn-sm w-full"
+                  >
+                    <span>{service.actionLabel}</span>
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className="executive-card rounded-3xl p-7 flex flex-col justify-between"
-            >
-              <ServiceCardBody service={service} />
-              <div className="pt-6">
-                <button
-                  onClick={() => {
-                    navigate(service.route);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="btn-primary-apple btn-sm w-full"
-                >
-                  <span>{service.actionLabel}</span>
-                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
-                </button>
+          <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className="executive-card rounded-3xl p-7 flex flex-col justify-between"
+              >
+                <ServiceCardBody service={service} />
+                <div className="pt-6">
+                  <button
+                    onClick={() => {
+                      navigate(service.route);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="btn-primary-apple btn-sm w-full"
+                  >
+                    <span>{service.actionLabel}</span>
+                    <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

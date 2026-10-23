@@ -72,27 +72,29 @@ export const Testimonials: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile: swipe carousel of testimonial cards */}
-        <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
-          {TESTIMONIALS.map(item => (
-            <div
-              key={item.id}
-              className="swipe-item w-[85vw] max-w-sm executive-card p-7 rounded-3xl flex flex-col justify-between space-y-4"
-            >
-              <TestimonialBody item={item} />
-            </div>
-          ))}
-        </div>
+        <div>
+          {/* Mobile: swipe carousel of testimonial cards */}
+          <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
+            {TESTIMONIALS.map(item => (
+              <div
+                key={item.id}
+                className="swipe-item w-[85vw] max-w-sm executive-card p-7 rounded-3xl flex flex-col justify-between space-y-4"
+              >
+                <TestimonialBody item={item} />
+              </div>
+            ))}
+          </div>
 
-        <div className="hidden md:grid grid-cols-3 gap-6">
-          {TESTIMONIALS.map(item => (
-            <div
-              key={item.id}
-              className="executive-card p-7 rounded-3xl flex flex-col justify-between space-y-4"
-            >
-              <TestimonialBody item={item} />
-            </div>
-          ))}
+          <div className="hidden md:grid grid-cols-3 gap-6">
+            {TESTIMONIALS.map(item => (
+              <div
+                key={item.id}
+                className="executive-card p-7 rounded-3xl flex flex-col justify-between space-y-4"
+              >
+                <TestimonialBody item={item} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

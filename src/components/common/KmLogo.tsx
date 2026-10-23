@@ -99,7 +99,7 @@ export const KmLogo: React.FC<KmLogoProps> = ({
           </span>
           {showSubtext && (
             <span
-              className={`uppercase font-extrabold tracking-[0.22em] mt-1 leading-none ${subtextSizes}`}
+              className={`hidden sm:block uppercase font-extrabold tracking-[0.22em] mt-1 leading-none whitespace-nowrap ${subtextSizes}`}
               style={{ color: textSecondary }}
             >
               MULTI BRAND PRE OWNED CARS

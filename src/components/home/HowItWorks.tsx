@@ -68,51 +68,53 @@ export const HowItWorks: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Mobile: swipe carousel of numbered steps */}
-        <div className="swipe-row gap-4 -mx-4 px-4 sm:hidden">
-          {steps.map((step, idx) => (
-            <div
-              key={idx}
-              className="swipe-item w-[78vw] max-w-xs executive-card p-6 rounded-3xl relative overflow-hidden"
-            >
-              <div className="text-7xl font-extrabold text-slate-100 absolute -top-3 right-2 select-none leading-none">
-                {step.num}
+        <div>
+          {/* Mobile: swipe carousel of numbered steps */}
+          <div className="swipe-row gap-4 -mx-4 px-4 sm:hidden">
+            {steps.map((step, idx) => (
+              <div
+                key={idx}
+                className="swipe-item w-[78vw] max-w-xs executive-card p-6 rounded-3xl relative overflow-hidden"
+              >
+                <div className="text-7xl font-extrabold text-slate-100 absolute -top-3 right-2 select-none leading-none">
+                  {step.num}
+                </div>
+                <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center mb-5 relative z-10">
+                  {React.cloneElement(step.icon, { className: 'w-5 h-5 text-amber-400', strokeWidth: 1.75 })}
+                </div>
+                <h3 className="text-base font-semibold text-slate-900 mb-2 relative z-10">{step.title}</h3>
+                <p className="text-[13px] text-slate-500 leading-relaxed relative z-10">{step.desc}</p>
               </div>
-              <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center mb-5 relative z-10">
-                {React.cloneElement(step.icon, { className: 'w-5 h-5 text-amber-400', strokeWidth: 1.75 })}
-              </div>
-              <h3 className="text-base font-semibold text-slate-900 mb-2 relative z-10">{step.title}</h3>
-              <p className="text-[13px] text-slate-500 leading-relaxed relative z-10">{step.desc}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-6 relative"
+          >
+            {steps.map((step, idx) => (
+              <motion.div
+                key={idx}
+                variants={itemVariants}
+                className="executive-card p-6 rounded-3xl relative overflow-hidden"
+              >
+                <div className="text-7xl font-extrabold text-slate-100 absolute -top-3 right-2 select-none leading-none">
+                  {step.num}
+                </div>
+
+                <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center mb-5 relative z-10">
+                  {React.cloneElement(step.icon, { className: 'w-5 h-5 text-amber-400', strokeWidth: 1.75 })}
+                </div>
+
+                <h3 className="text-base font-semibold text-slate-900 mb-2 relative z-10">{step.title}</h3>
+                <p className="text-[13px] text-slate-500 leading-relaxed relative z-10">{step.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-6 relative"
-        >
-          {steps.map((step, idx) => (
-            <motion.div
-              key={idx}
-              variants={itemVariants}
-              className="executive-card p-6 rounded-3xl relative overflow-hidden"
-            >
-              <div className="text-7xl font-extrabold text-slate-100 absolute -top-3 right-2 select-none leading-none">
-                {step.num}
-              </div>
-
-              <div className="w-11 h-11 rounded-2xl bg-slate-900 flex items-center justify-center mb-5 relative z-10">
-                {React.cloneElement(step.icon, { className: 'w-5 h-5 text-amber-400', strokeWidth: 1.75 })}
-              </div>
-
-              <h3 className="text-base font-semibold text-slate-900 mb-2 relative z-10">{step.title}</h3>
-              <p className="text-[13px] text-slate-500 leading-relaxed relative z-10">{step.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
       </div>
     </section>
   );

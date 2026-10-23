@@ -74,43 +74,45 @@ export const WhyChooseUs: React.FC = () => {
           </p>
         </motion.div>
 
-        {/* Mobile: swipe carousel of pillar cards */}
-        <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
-          {pillars.map((item, index) => (
-            <div
-              key={index}
-              className="swipe-item w-[80vw] max-w-sm executive-card p-7 rounded-3xl"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
-                {item.icon}
+        <div>
+          {/* Mobile: swipe carousel of pillar cards */}
+          <div className="swipe-row gap-4 -mx-4 px-4 md:hidden">
+            {pillars.map((item, index) => (
+              <div
+                key={index}
+                className="swipe-item w-[80vw] max-w-sm executive-card p-7 rounded-3xl"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
+                  {item.icon}
+                </div>
+                <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
+                <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
               </div>
-              <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
-              <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {pillars.map((item, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              className="executive-card p-7 rounded-3xl"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
-                {item.icon}
-              </div>
-              <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
-              <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {pillars.map((item, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                className="executive-card p-7 rounded-3xl"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center mb-5">
+                  {item.icon}
+                </div>
+                <h3 className="text-base font-semibold text-slate-900 mb-2">{item.title}</h3>
+                <p className="text-[13px] text-slate-500 leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );
