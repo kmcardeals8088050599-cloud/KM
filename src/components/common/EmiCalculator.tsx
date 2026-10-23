@@ -113,7 +113,7 @@ export const EmiCalculator: React.FC<EmiCalculatorProps> = ({ initialCarPriceLak
         </div>
 
         {/* Breakdown Card — bold, substantial output figures */}
-        <div className="bg-slate-50 border border-slate-200 p-6 sm:p-7 rounded-2xl flex flex-col justify-between text-slate-900">
+        <div className="highlight-card p-6 sm:p-7 flex flex-col justify-between text-slate-900">
           <div className="space-y-4">
             <span className="section-eyebrow !text-[11px] block">Calculated Monthly EMI</span>
             <div className="flex items-baseline gap-1.5">

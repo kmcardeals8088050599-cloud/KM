@@ -228,16 +228,20 @@ function MainAppContent() {
           <Route
             path="/inventory"
             element={
-              <div className="section-pad apple-container space-y-8 md:space-y-10 min-h-screen">
-                <div className="space-y-3 text-center max-w-2xl mx-auto">
-                  <span className="section-eyebrow">Inventory</span>
-                  <h1 className="section-headline mt-1 !text-3xl md:!text-5xl">
-                    All pre-owned cars
-                  </h1>
-                  <p className="text-sm text-slate-500">
-                    150-point inspected, ready for delivery in Kalaburagi.
-                  </p>
+              <div className="min-h-screen">
+                <div className="bg-mesh-light">
+                  <div className="apple-container pt-14 pb-10 md:pt-16 md:pb-12 space-y-3 text-center max-w-2xl mx-auto">
+                    <span className="section-eyebrow">Inventory</span>
+                    <h1 className="section-headline mt-1 !text-3xl md:!text-5xl">
+                      All <span className="text-gradient-amber">pre-owned</span> cars
+                    </h1>
+                    <p className="text-sm text-slate-500">
+                      150-point inspected, ready for delivery in Kalaburagi.
+                    </p>
+                  </div>
                 </div>
+
+                <div className="apple-container space-y-8 md:space-y-10 pt-8 md:pt-10 pb-16 md:pb-20">
 
                 {/* Filter Bar — inline panel on desktop, sticky trigger + bottom sheet on mobile */}
                 <InventoryFilter
@@ -330,6 +334,7 @@ function MainAppContent() {
                     ))}
                   </div>
                 )}
+                </div>
               </div>
             }
           />

@@ -10,7 +10,7 @@ export const LocationSection: React.FC = () => {
   );
 
   return (
-    <section className="section-pad relative z-10 bg-slate-50 overflow-hidden">
+    <section className="section-pad relative z-10 bg-mesh-light overflow-hidden">
       <div className="apple-container space-y-14 relative z-10">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <p className="section-eyebrow">Verified Showroom Location</p>

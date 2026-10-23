@@ -36,7 +36,7 @@ export const BuySellView: React.FC<BuySellViewProps> = ({ setActiveTab }) => {
     <div className="pb-28 bg-white min-h-screen text-slate-800">
       <div className="apple-container space-y-20">
         {/* Header - light band */}
-        <div className="relative -mx-6 lg:-mx-8 bg-slate-50 border-b border-slate-200 px-6 lg:px-8 section-pad">
+        <div className="relative -mx-6 lg:-mx-8 bg-mesh-light border-b border-slate-200 px-6 lg:px-8 section-pad">
           <div className="relative z-10 text-center max-w-3xl mx-auto space-y-4">
             <p className="section-eyebrow">Buy, Sell, Exchange &amp; Brokerage</p>
             <h1 className="section-headline">
